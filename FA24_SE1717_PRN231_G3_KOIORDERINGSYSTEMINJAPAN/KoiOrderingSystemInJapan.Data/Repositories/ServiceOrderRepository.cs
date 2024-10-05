@@ -11,6 +11,6 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
     public class ServiceOrderRepository : GenericRepository<ServiceOrder>
     {
         public ServiceOrderRepository() { }
-        public ServiceOrderRepository(KoiTravelShopContext context) => _context = context;
+        public ServiceOrderRepository(KoiOrderingSystemInJapanContext context) => _context = context;
     }
 }
