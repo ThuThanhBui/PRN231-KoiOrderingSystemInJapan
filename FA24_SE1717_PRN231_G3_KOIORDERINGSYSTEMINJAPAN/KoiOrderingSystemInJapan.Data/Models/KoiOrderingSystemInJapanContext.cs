@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace KoiOrderingSystemInJapan.Data.Models;
 
@@ -53,15 +54,24 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    public static string GetConnectionString(string connectionStringName)
+    {
+        var config = new ConfigurationBuilder()
+            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+            .AddJsonFile("appsettings.json")
+            .Build();
+
+        string connectionString = config.GetConnectionString(connectionStringName);
+        return connectionString;
+    }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=FA24_SE1717_PRN231_G3_KOIORDERINGSYSTEMINJAPAN;Integrated Security=True;Encrypt=False");
+        => optionsBuilder.UseSqlServer(GetConnectionString("DefaultConnection"));
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Category__3214EC07988DA18E");
+            entity.HasKey(e => e.Id).HasName("PK__Category__3214EC079D65C953");
 
             entity.ToTable("Category");
 
@@ -74,7 +84,7 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
         modelBuilder.Entity<Customer>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Customer__3214EC075A93C649");
+            entity.HasKey(e => e.Id).HasName("PK__Customer__3214EC0783D161D5");
 
             entity.ToTable("Customer");
 
@@ -92,7 +102,7 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
         modelBuilder.Entity<CustomerService>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Customer__3214EC071C1F76D4");
+            entity.HasKey(e => e.Id).HasName("PK__Customer__3214EC076D8A77FE");
 
             entity.ToTable("CustomerService");
 
@@ -112,7 +122,7 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
         modelBuilder.Entity<Delivery>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Delivery__3214EC07759B55F6");
+            entity.HasKey(e => e.Id).HasName("PK__Delivery__3214EC0763C01D9C");
 
             entity.ToTable("Delivery");
 
@@ -126,16 +136,16 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
             entity.HasOne(d => d.DeliveryStaff).WithMany(p => p.Deliveries)
                 .HasForeignKey(d => d.DeliveryStaffId)
-                .HasConstraintName("FK__Delivery__Delive__6B24EA82");
+                .HasConstraintName("FK__Delivery__Delive__6D0D32F4");
 
             entity.HasOne(d => d.KoiOrder).WithMany(p => p.Deliveries)
                 .HasForeignKey(d => d.KoiOrderId)
-                .HasConstraintName("FK__Delivery__KoiOrd__6A30C649");
+                .HasConstraintName("FK__Delivery__KoiOrd__6C190EBB");
         });
 
         modelBuilder.Entity<DeliveryDetail>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Delivery__3214EC0704E04A2B");
+            entity.HasKey(e => e.Id).HasName("PK__Delivery__3214EC07A2418794");
 
             entity.ToTable("DeliveryDetail");
 
@@ -147,12 +157,12 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
             entity.HasOne(d => d.Delivery).WithMany(p => p.DeliveryDetails)
                 .HasForeignKey(d => d.DeliveryId)
-                .HasConstraintName("FK__DeliveryD__Deliv__6E01572D");
+                .HasConstraintName("FK__DeliveryD__Deliv__6FE99F9F");
         });
 
         modelBuilder.Entity<Farm>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Farm__3214EC076C9B587C");
+            entity.HasKey(e => e.Id).HasName("PK__Farm__3214EC07E10CB573");
 
             entity.ToTable("Farm");
 
@@ -167,7 +177,7 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
         modelBuilder.Entity<FarmCategory>(entity =>
         {
-            entity.HasKey(e => new { e.FarmId, e.CategoryId }).HasName("PK__FarmCate__4CEB2919C60E3268");
+            entity.HasKey(e => new { e.FarmId, e.CategoryId }).HasName("PK__FarmCate__4CEB2919BD08ADBB");
 
             entity.ToTable("FarmCategory");
 
@@ -187,7 +197,7 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
         modelBuilder.Entity<Invoice>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Invoice__3214EC0785BA55A6");
+            entity.HasKey(e => e.Id).HasName("PK__Invoice__3214EC07E643E311");
 
             entity.ToTable("Invoice");
 
@@ -200,7 +210,7 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
         modelBuilder.Entity<KoiFish>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__KoiFish__3214EC079E2A05CF");
+            entity.HasKey(e => e.Id).HasName("PK__KoiFish__3214EC07595CE366");
 
             entity.ToTable("KoiFish");
 
@@ -221,9 +231,11 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
         modelBuilder.Entity<KoiOrder>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__KoiOrder__3214EC0767E1CC8E");
+            entity.HasKey(e => e.Id).HasName("PK__KoiOrder__3214EC07029F5F78");
 
             entity.ToTable("KoiOrder");
+
+            entity.HasIndex(e => e.InvoiceId, "UQ__KoiOrder__D796AAB41CDF105A").IsUnique();
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
@@ -232,16 +244,16 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
             entity.HasOne(d => d.Customer).WithMany(p => p.KoiOrders)
                 .HasForeignKey(d => d.CustomerId)
-                .HasConstraintName("FK__KoiOrder__Custom__628FA481");
+                .HasConstraintName("FK__KoiOrder__Custom__6477ECF3");
 
-            entity.HasOne(d => d.Invoice).WithMany(p => p.KoiOrders)
-                .HasForeignKey(d => d.InvoiceId)
-                .HasConstraintName("FK__KoiOrder__Invoic__6383C8BA");
+            entity.HasOne(d => d.Invoice).WithOne(p => p.KoiOrder)
+                .HasForeignKey<KoiOrder>(d => d.InvoiceId)
+                .HasConstraintName("FK__KoiOrder__Invoic__656C112C");
         });
 
         modelBuilder.Entity<OrderDetail>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__OrderDet__3214EC07F688EE67");
+            entity.HasKey(e => e.Id).HasName("PK__OrderDet__3214EC074CE09AB1");
 
             entity.ToTable("OrderDetail");
 
@@ -252,16 +264,16 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
             entity.HasOne(d => d.KoiFish).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.KoiFishId)
-                .HasConstraintName("FK__OrderDeta__KoiFi__66603565");
+                .HasConstraintName("FK__OrderDeta__KoiFi__68487DD7");
 
             entity.HasOne(d => d.KoiOrder).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.KoiOrderId)
-                .HasConstraintName("FK__OrderDeta__KoiOr__6754599E");
+                .HasConstraintName("FK__OrderDeta__KoiOr__693CA210");
         });
 
         modelBuilder.Entity<Sale>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Sales__3214EC073F2BDEA3");
+            entity.HasKey(e => e.Id).HasName("PK__Sales__3214EC076C3531DD");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.ApprovalBy).HasMaxLength(50);
@@ -282,7 +294,7 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
         modelBuilder.Entity<Service>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Service__3214EC079A0861BA");
+            entity.HasKey(e => e.Id).HasName("PK__Service__3214EC0709930618");
 
             entity.ToTable("Service");
 
@@ -305,16 +317,18 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
                         .HasConstraintName("FK__ServiceCu__Servi__49C3F6B7"),
                     j =>
                     {
-                        j.HasKey("ServiceId", "CustomerServiceId").HasName("PK__ServiceC__D4E064472AB63F1E");
+                        j.HasKey("ServiceId", "CustomerServiceId").HasName("PK__ServiceC__D4E064473718CC44");
                         j.ToTable("ServiceCustomerService");
                     });
         });
 
         modelBuilder.Entity<ServiceOrder>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__ServiceO__3214EC07DC75EFD8");
+            entity.HasKey(e => e.Id).HasName("PK__ServiceO__3214EC0784D5FC0F");
 
             entity.ToTable("ServiceOrder");
+
+            entity.HasIndex(e => e.InvoiceId, "UQ__ServiceO__D796AAB40303665E").IsUnique();
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
@@ -323,16 +337,16 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
             entity.HasOne(d => d.CustomerService).WithMany(p => p.ServiceOrders)
                 .HasForeignKey(d => d.CustomerServiceId)
-                .HasConstraintName("FK__ServiceOr__Custo__5EBF139D");
+                .HasConstraintName("FK__ServiceOr__Custo__5FB337D6");
 
-            entity.HasOne(d => d.Invoice).WithMany(p => p.ServiceOrders)
-                .HasForeignKey(d => d.InvoiceId)
-                .HasConstraintName("FK__ServiceOr__Invoi__5FB337D6");
+            entity.HasOne(d => d.Invoice).WithOne(p => p.ServiceOrder)
+                .HasForeignKey<ServiceOrder>(d => d.InvoiceId)
+                .HasConstraintName("FK__ServiceOr__Invoi__60A75C0F");
         });
 
         modelBuilder.Entity<Size>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Size__3214EC07C9E8BAB5");
+            entity.HasKey(e => e.Id).HasName("PK__Size__3214EC0763D0AA1D");
 
             entity.ToTable("Size");
 
@@ -344,7 +358,7 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
         modelBuilder.Entity<Travel>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Travel__3214EC07DBF05A73");
+            entity.HasKey(e => e.Id).HasName("PK__Travel__3214EC07D4680B3C");
 
             entity.ToTable("Travel");
 
@@ -358,7 +372,7 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
         modelBuilder.Entity<TravelFarm>(entity =>
         {
-            entity.HasKey(e => new { e.TravelId, e.FarmId }).HasName("PK__TravelFa__67E6E99ED943A1CA");
+            entity.HasKey(e => new { e.TravelId, e.FarmId }).HasName("PK__TravelFa__67E6E99E47391E2A");
 
             entity.ToTable("TravelFarm");
 
@@ -378,7 +392,7 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__User__3214EC07BCE823F0");
+            entity.HasKey(e => e.Id).HasName("PK__User__3214EC070F0ED132");
 
             entity.ToTable("User");
 
