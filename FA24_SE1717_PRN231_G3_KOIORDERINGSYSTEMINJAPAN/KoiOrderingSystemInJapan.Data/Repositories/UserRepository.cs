@@ -12,7 +12,7 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
     public class UserRepository : GenericRepository<User>
     {
         public UserRepository() { }
-        public UserRepository(KoiTravelShopContext context) => _context = context;
+        public UserRepository(KoiOrderingSystemInJapanContext context) => _context = context;
 
         public async Task<List<User>> GetAllAsync()
         {

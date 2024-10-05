@@ -21,7 +21,7 @@ public partial class Invoice
 
     public DateTime? UpdatedDate { get; set; }
 
-    public bool? IsDeleted { get; set; }
+    public bool IsDeleted { get; set; }
 
     public virtual ICollection<KoiOrder> KoiOrders { get; set; } = new List<KoiOrder>();
 

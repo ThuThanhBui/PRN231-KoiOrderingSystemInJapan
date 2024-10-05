@@ -14,9 +14,9 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
 {
     public class UsersController : Controller
     {
-        private readonly KoiTravelShopContext _context;
+        private readonly KoiOrderingSystemInJapanContext _context;
 
-        public UsersController(KoiTravelShopContext context)
+        public UsersController(KoiOrderingSystemInJapanContext context)
         {
             _context = context;
         }

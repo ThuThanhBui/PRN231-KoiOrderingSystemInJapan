@@ -10,14 +10,14 @@ namespace KoiOrderingSystemInJapan.Data.Base
 {
     public class GenericRepository<T> where T : class
     {
-        protected KoiTravelShopContext _context;
+        protected KoiOrderingSystemInJapanContext _context;
 
         public GenericRepository()
         {
-            _context ??= new KoiTravelShopContext();
+            _context ??= new KoiOrderingSystemInJapanContext();
         }
 
-        public GenericRepository(KoiTravelShopContext context)
+        public GenericRepository(KoiOrderingSystemInJapanContext context)
         {
             _context = context;
         }

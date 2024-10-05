@@ -19,6 +19,10 @@ public partial class Sale
 
     public string ApprovalStatus { get; set; }
 
+    public string ApprovalDate { get; set; }
+
+    public string ApprovalBy { get; set; }
+
     public int? CreatedBy { get; set; }
 
     public DateTime? CreatedDate { get; set; }
@@ -27,7 +31,7 @@ public partial class Sale
 
     public DateTime? UpdatedDate { get; set; }
 
-    public bool? IsDeleted { get; set; }
+    public bool IsDeleted { get; set; }
 
     public virtual CustomerService CustomerService { get; set; }
 

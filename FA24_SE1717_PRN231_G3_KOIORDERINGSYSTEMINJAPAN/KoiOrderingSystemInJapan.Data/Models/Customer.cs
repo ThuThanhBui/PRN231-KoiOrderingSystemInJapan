@@ -27,7 +27,7 @@ public partial class Customer
 
     public DateTime? UpdatedDate { get; set; }
 
-    public bool? IsDeleted { get; set; }
+    public bool IsDeleted { get; set; }
 
     public string Note { get; set; }
 
