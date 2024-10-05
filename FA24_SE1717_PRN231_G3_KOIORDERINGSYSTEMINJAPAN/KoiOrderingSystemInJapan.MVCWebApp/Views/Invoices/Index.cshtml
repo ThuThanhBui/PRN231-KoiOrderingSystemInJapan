@@ -1,0 +1,70 @@
+﻿@model IEnumerable<KoiOrderingSystemInJapan.Data.Models.Invoice>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Invoices</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">
+                @Html.DisplayNameFor(model => model.PaymentAmount)
+            </th>
+            <th scope="col">
+                @Html.DisplayNameFor(model => model.PaymentDate)
+            </th>
+            <th scope="col">
+                @Html.DisplayNameFor(model => model.CreatedBy)
+            </th>
+            <th scope="col">
+                @Html.DisplayNameFor(model => model.CreatedDate)
+            </th>
+            <th scope="col">
+                @Html.DisplayNameFor(model => model.UpdatedBy)
+            </th>
+            <th scope="col">
+                @Html.DisplayNameFor(model => model.UpdatedDate)
+            </th>
+            <th scope="col">
+                @Html.DisplayNameFor(model => model.IsDeleted)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td  scope="row">
+                @Html.DisplayFor(modelItem => item.PaymentAmount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PaymentDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UpdatedBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UpdatedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsDeleted)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
