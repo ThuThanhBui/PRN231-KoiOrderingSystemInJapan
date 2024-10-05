@@ -8,11 +8,7 @@ using System.Threading.Tasks;
 
 namespace KoiOrderingSystemInJapan.Data.Repositories
 {
-    public class InvoiceRepository : GenericRepository<Invoice>
+    public class OrderDetailRepository : GenericRepository<OrderDetail>
     {
-        public InvoiceRepository() { }
-
-        public InvoiceRepository(KoiOrderingSystemInJapanContext context)  => _context = context;
-
     }
 }

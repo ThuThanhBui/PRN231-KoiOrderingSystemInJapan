@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KoiOrderingSystemInJapan.Data.Request.Payment
+namespace KoiOrderingSystemInJapan.Data.Request.ServiceOrder
 {
     public class RequestPaymentServiceModel
     {

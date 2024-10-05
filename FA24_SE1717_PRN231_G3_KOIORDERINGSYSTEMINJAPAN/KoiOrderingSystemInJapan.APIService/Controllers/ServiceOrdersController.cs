@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using KoiOrderingSystemInJapan.Data.Models;
 using KoiOrderingSystemInJapan.Service;
 using KoiOrderingSystemInJapan.Service.Base;
-using KoiOrderingSystemInJapan.Data.Request.Payment;
+using KoiOrderingSystemInJapan.Data.Request.ServiceOrder;
 
 namespace KoiOrderingSystemInJapan.APIService.Controllers
 {
