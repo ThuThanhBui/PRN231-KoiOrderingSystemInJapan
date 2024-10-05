@@ -19,7 +19,7 @@ public partial class FarmCategory
 
     public DateTime? UpdatedDate { get; set; }
 
-    public bool? IsDeleted { get; set; }
+    public bool IsDeleted { get; set; }
 
     public virtual Category Category { get; set; }
 

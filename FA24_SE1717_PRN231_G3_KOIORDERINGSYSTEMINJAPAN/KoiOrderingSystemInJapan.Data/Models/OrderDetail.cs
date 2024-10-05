@@ -23,7 +23,7 @@ public partial class OrderDetail
 
     public DateTime? UpdatedDate { get; set; }
 
-    public bool? IsDeleted { get; set; }
+    public bool IsDeleted { get; set; }
 
     public virtual KoiFish KoiFish { get; set; }
 

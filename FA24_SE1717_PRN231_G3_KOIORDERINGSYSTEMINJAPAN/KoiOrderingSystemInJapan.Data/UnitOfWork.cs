@@ -10,12 +10,12 @@ namespace KoiOrderingSystemInJapan.Data
 {
     public class UnitOfWork
     {
-        private KoiTravelShopContext context;
+        private KoiOrderingSystemInJapanContext context;
         private UserRepository userRepository;
 
         public UnitOfWork()
         {
-            context ??= new KoiTravelShopContext();
+            context ??= new KoiOrderingSystemInJapanContext();
         }
 
         public UserRepository User

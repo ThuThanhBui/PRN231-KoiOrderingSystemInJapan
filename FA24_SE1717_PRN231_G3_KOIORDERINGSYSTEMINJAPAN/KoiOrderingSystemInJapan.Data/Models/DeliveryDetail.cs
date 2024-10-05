@@ -23,7 +23,7 @@ public partial class DeliveryDetail
 
     public DateTime? UpdatedDate { get; set; }
 
-    public bool? IsDeleted { get; set; }
+    public bool IsDeleted { get; set; }
 
     public virtual Delivery Delivery { get; set; }
 }

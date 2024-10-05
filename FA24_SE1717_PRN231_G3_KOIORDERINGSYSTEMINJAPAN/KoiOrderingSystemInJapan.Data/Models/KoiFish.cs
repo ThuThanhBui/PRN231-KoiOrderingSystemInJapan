@@ -27,7 +27,7 @@ public partial class KoiFish
 
     public DateTime? UpdatedDate { get; set; }
 
-    public bool? IsDeleted { get; set; }
+    public bool IsDeleted { get; set; }
 
     public virtual Category Category { get; set; }
 

@@ -3,17 +3,16 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace KoiOrderingSystemInJapan.Data.Models;
 
-public partial class KoiTravelShopContext : DbContext
+public partial class KoiOrderingSystemInJapanContext : DbContext
 {
-    public KoiTravelShopContext()
+    public KoiOrderingSystemInJapanContext()
     {
     }
 
-    public KoiTravelShopContext(DbContextOptions<KoiTravelShopContext> options)
+    public KoiOrderingSystemInJapanContext(DbContextOptions<KoiOrderingSystemInJapanContext> options)
         : base(options)
     {
     }
@@ -54,24 +53,15 @@ public partial class KoiTravelShopContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-    public static string GetConnectionString(string connectionStringName)
-    {
-        var config = new ConfigurationBuilder()
-            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-            .AddJsonFile("appsettings.json")
-            .Build();
-
-        string connectionString = config.GetConnectionString(connectionStringName);
-        return connectionString;
-    }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer(GetConnectionString("DefaultConnection"));
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=FA24_SE1717_PRN231_G3_KOIORDERINGSYSTEMINJAPAN;Integrated Security=True;Encrypt=False");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Category__3214EC07C0E45651");
+            entity.HasKey(e => e.Id).HasName("PK__Category__3214EC07988DA18E");
 
             entity.ToTable("Category");
 
@@ -84,7 +74,7 @@ public partial class KoiTravelShopContext : DbContext
 
         modelBuilder.Entity<Customer>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Customer__3214EC0760461D60");
+            entity.HasKey(e => e.Id).HasName("PK__Customer__3214EC075A93C649");
 
             entity.ToTable("Customer");
 
@@ -102,7 +92,7 @@ public partial class KoiTravelShopContext : DbContext
 
         modelBuilder.Entity<CustomerService>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Customer__3214EC073BC6E14A");
+            entity.HasKey(e => e.Id).HasName("PK__Customer__3214EC071C1F76D4");
 
             entity.ToTable("CustomerService");
 
@@ -122,7 +112,7 @@ public partial class KoiTravelShopContext : DbContext
 
         modelBuilder.Entity<Delivery>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Delivery__3214EC07E0CA9A10");
+            entity.HasKey(e => e.Id).HasName("PK__Delivery__3214EC07759B55F6");
 
             entity.ToTable("Delivery");
 
@@ -145,7 +135,7 @@ public partial class KoiTravelShopContext : DbContext
 
         modelBuilder.Entity<DeliveryDetail>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Delivery__3214EC07EB3FFA8E");
+            entity.HasKey(e => e.Id).HasName("PK__Delivery__3214EC0704E04A2B");
 
             entity.ToTable("DeliveryDetail");
 
@@ -162,7 +152,7 @@ public partial class KoiTravelShopContext : DbContext
 
         modelBuilder.Entity<Farm>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Farm__3214EC072CEBCE4F");
+            entity.HasKey(e => e.Id).HasName("PK__Farm__3214EC076C9B587C");
 
             entity.ToTable("Farm");
 
@@ -177,7 +167,7 @@ public partial class KoiTravelShopContext : DbContext
 
         modelBuilder.Entity<FarmCategory>(entity =>
         {
-            entity.HasKey(e => new { e.FarmId, e.CategoryId }).HasName("PK__FarmCate__4CEB29196E17428D");
+            entity.HasKey(e => new { e.FarmId, e.CategoryId }).HasName("PK__FarmCate__4CEB2919C60E3268");
 
             entity.ToTable("FarmCategory");
 
@@ -197,7 +187,7 @@ public partial class KoiTravelShopContext : DbContext
 
         modelBuilder.Entity<Invoice>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Invoice__3214EC07A198B1E7");
+            entity.HasKey(e => e.Id).HasName("PK__Invoice__3214EC0785BA55A6");
 
             entity.ToTable("Invoice");
 
@@ -210,7 +200,7 @@ public partial class KoiTravelShopContext : DbContext
 
         modelBuilder.Entity<KoiFish>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__KoiFish__3214EC07E46D9EE7");
+            entity.HasKey(e => e.Id).HasName("PK__KoiFish__3214EC079E2A05CF");
 
             entity.ToTable("KoiFish");
 
@@ -231,7 +221,7 @@ public partial class KoiTravelShopContext : DbContext
 
         modelBuilder.Entity<KoiOrder>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__KoiOrder__3214EC077F04A601");
+            entity.HasKey(e => e.Id).HasName("PK__KoiOrder__3214EC0767E1CC8E");
 
             entity.ToTable("KoiOrder");
 
@@ -251,7 +241,7 @@ public partial class KoiTravelShopContext : DbContext
 
         modelBuilder.Entity<OrderDetail>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__OrderDet__3214EC0792DF444A");
+            entity.HasKey(e => e.Id).HasName("PK__OrderDet__3214EC07F688EE67");
 
             entity.ToTable("OrderDetail");
 
@@ -271,9 +261,11 @@ public partial class KoiTravelShopContext : DbContext
 
         modelBuilder.Entity<Sale>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Sales__3214EC0767213DB9");
+            entity.HasKey(e => e.Id).HasName("PK__Sales__3214EC073F2BDEA3");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.ApprovalBy).HasMaxLength(50);
+            entity.Property(e => e.ApprovalDate).HasMaxLength(50);
             entity.Property(e => e.ApprovalStatus).HasMaxLength(50);
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.TotalPrice).HasColumnType("decimal(10, 2)");
@@ -290,7 +282,7 @@ public partial class KoiTravelShopContext : DbContext
 
         modelBuilder.Entity<Service>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Service__3214EC07A85B1BF5");
+            entity.HasKey(e => e.Id).HasName("PK__Service__3214EC079A0861BA");
 
             entity.ToTable("Service");
 
@@ -313,14 +305,14 @@ public partial class KoiTravelShopContext : DbContext
                         .HasConstraintName("FK__ServiceCu__Servi__49C3F6B7"),
                     j =>
                     {
-                        j.HasKey("ServiceId", "CustomerServiceId").HasName("PK__ServiceC__D4E064474C79E18F");
+                        j.HasKey("ServiceId", "CustomerServiceId").HasName("PK__ServiceC__D4E064472AB63F1E");
                         j.ToTable("ServiceCustomerService");
                     });
         });
 
         modelBuilder.Entity<ServiceOrder>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__ServiceO__3214EC07199B577B");
+            entity.HasKey(e => e.Id).HasName("PK__ServiceO__3214EC07DC75EFD8");
 
             entity.ToTable("ServiceOrder");
 
@@ -340,7 +332,7 @@ public partial class KoiTravelShopContext : DbContext
 
         modelBuilder.Entity<Size>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Size__3214EC07EEB6DAE2");
+            entity.HasKey(e => e.Id).HasName("PK__Size__3214EC07C9E8BAB5");
 
             entity.ToTable("Size");
 
@@ -352,7 +344,7 @@ public partial class KoiTravelShopContext : DbContext
 
         modelBuilder.Entity<Travel>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Travel__3214EC07F908B7CD");
+            entity.HasKey(e => e.Id).HasName("PK__Travel__3214EC07DBF05A73");
 
             entity.ToTable("Travel");
 
@@ -366,7 +358,7 @@ public partial class KoiTravelShopContext : DbContext
 
         modelBuilder.Entity<TravelFarm>(entity =>
         {
-            entity.HasKey(e => new { e.TravelId, e.FarmId }).HasName("PK__TravelFa__67E6E99E7D690691");
+            entity.HasKey(e => new { e.TravelId, e.FarmId }).HasName("PK__TravelFa__67E6E99ED943A1CA");
 
             entity.ToTable("TravelFarm");
 
@@ -386,7 +378,7 @@ public partial class KoiTravelShopContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__User__3214EC0742347F05");
+            entity.HasKey(e => e.Id).HasName("PK__User__3214EC07BCE823F0");
 
             entity.ToTable("User");
 
