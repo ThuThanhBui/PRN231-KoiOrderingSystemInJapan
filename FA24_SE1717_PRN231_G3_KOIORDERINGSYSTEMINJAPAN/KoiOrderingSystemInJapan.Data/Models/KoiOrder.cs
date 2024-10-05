@@ -25,7 +25,7 @@ public partial class KoiOrder
 
     public DateTime? UpdatedDate { get; set; }
 
-    public bool? IsDeleted { get; set; }
+    public bool IsDeleted { get; set; }
 
     public virtual Customer Customer { get; set; }
 

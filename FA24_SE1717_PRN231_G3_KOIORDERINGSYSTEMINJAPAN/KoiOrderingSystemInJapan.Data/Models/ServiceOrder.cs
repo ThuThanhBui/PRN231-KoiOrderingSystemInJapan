@@ -25,7 +25,7 @@ public partial class ServiceOrder
 
     public DateTime? UpdatedDate { get; set; }
 
-    public bool? IsDeleted { get; set; }
+    public bool IsDeleted { get; set; }
 
     public virtual CustomerService CustomerService { get; set; }
 

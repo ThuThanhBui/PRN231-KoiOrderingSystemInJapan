@@ -19,7 +19,7 @@ public partial class Size
 
     public DateTime? UpdatedDate { get; set; }
 
-    public bool? IsDeleted { get; set; }
+    public bool IsDeleted { get; set; }
 
     public virtual ICollection<KoiFish> KoiFishes { get; set; } = new List<KoiFish>();
 }

@@ -27,7 +27,7 @@ public partial class User
 
     public DateTime? UpdatedDate { get; set; }
 
-    public bool IsDeleted { get; set; } = false;
+    public bool IsDeleted { get; set; }
 
     public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
 

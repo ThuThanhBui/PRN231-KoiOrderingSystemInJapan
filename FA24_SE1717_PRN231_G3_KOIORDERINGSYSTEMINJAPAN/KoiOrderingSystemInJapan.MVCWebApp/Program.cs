@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 //DI
-builder.Services.AddScoped<KoiTravelShopContext>();
+builder.Services.AddScoped<KoiOrderingSystemInJapanContext>();
 
 var app = builder.Build();
 
