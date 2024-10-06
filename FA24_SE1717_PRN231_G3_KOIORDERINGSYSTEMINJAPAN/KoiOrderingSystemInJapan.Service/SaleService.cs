@@ -2,11 +2,6 @@
 using KoiOrderingSystemInJapan.Data;
 using KoiOrderingSystemInJapan.Data.Models;
 using KoiOrderingSystemInJapan.Service.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KoiOrderingSystemInJapan.Service
 {
@@ -19,7 +14,7 @@ namespace KoiOrderingSystemInJapan.Service
         Task<IBusinessResult> Save(Sale sale);
         Task<IBusinessResult> DeleteById(Guid id);
     }
-    public class SaleService: ISaleService
+    public class SaleService : ISaleService
     {
         private readonly UnitOfWork unitOfWork;
         public SaleService()
