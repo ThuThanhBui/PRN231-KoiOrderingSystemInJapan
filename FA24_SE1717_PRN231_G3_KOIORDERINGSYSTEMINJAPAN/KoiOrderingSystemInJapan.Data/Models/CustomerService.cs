@@ -33,11 +33,11 @@ public partial class CustomerService
 
     public virtual User Customer { get; set; }
 
-    public virtual ICollection<Sale> Sales { get; set; } = new List<Sale>();
+    public virtual Travel Travel { get; set; }
 
     public virtual ICollection<ServiceOrder> ServiceOrders { get; set; } = new List<ServiceOrder>();
 
-    public virtual Travel Travel { get; set; }
+    public virtual ICollection<Sale> Sales { get; set; } = new List<Sale>();
 
-    public virtual ICollection<Service> Services { get; set; } = new List<Service>();
+    public virtual ICollection<ServiceXCustomerService> ServiceXCustomerService { get; set; } = new List<ServiceXCustomerService>();
 }

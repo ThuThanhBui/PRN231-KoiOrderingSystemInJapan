@@ -4,11 +4,6 @@ using KoiOrderingSystemInJapan.Data.Models;
 using KoiOrderingSystemInJapan.Data.Request.Payment;
 using KoiOrderingSystemInJapan.Data.Request.ServiceOrder;
 using KoiOrderingSystemInJapan.Service.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KoiOrderingSystemInJapan.Service
 {
@@ -143,29 +138,30 @@ namespace KoiOrderingSystemInJapan.Service
                     TotalPrice = request.TotalPrice,
                     Invoice = new Invoice
                     {
-                        Id= Guid.NewGuid(),
+                        Id = Guid.NewGuid(),
                         PaymentAmount = request.TotalPrice,
                         PaymentDate = DateTime.Now
                     }
                 };
                 var serviceOrderResult = await _unitOfWork.ServiceOrder.CreateAsync(serviceOrderEntity);
 
-                if(serviceOrderResult == 0)
+                if (serviceOrderResult == 0)
                 {
                     return new BusinessResult(Const.FAIL_CREATE_CODE, Const.FAIL_CREATE_MSG, new ServiceOrder());
                 }
                 var momoRequest = new RequestCreateOrderModel
                 {
-                   Buy_date = DateTime.Now,
-                   OrderId = serviceOrderEntity.Id,
-                   OrderType = "ServiceOrder",
-                   Price = (decimal)serviceOrderEntity.TotalPrice,
-                   UserId = Guid.Parse("CEE6AF68-AD06-A429-AC1F-4DB478DF913F")
+                    Buy_date = DateTime.Now,
+                    OrderId = serviceOrderEntity.Id,
+                    OrderType = "ServiceOrder",
+                    Price = (decimal)serviceOrderEntity.TotalPrice,
+                    UserId = Guid.Parse("CEE6AF68-AD06-A429-AC1F-4DB478DF913F")
                 };
                 var result = await _paymentService.CreatePaymentAsync(momoRequest);
                 return new BusinessResult(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG, result);
 
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return new BusinessResult(Const.ERROR_EXCEPTION, ex.Message);
             }

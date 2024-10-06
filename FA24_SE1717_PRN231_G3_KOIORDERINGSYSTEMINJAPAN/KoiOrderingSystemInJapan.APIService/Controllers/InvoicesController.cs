@@ -1,7 +1,6 @@
 ﻿using KoiOrderingSystemInJapan.Data.Models;
-using KoiOrderingSystemInJapan.Service.Base;
 using KoiOrderingSystemInJapan.Service;
-using Microsoft.AspNetCore.Http;
+using KoiOrderingSystemInJapan.Service.Base;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KoiOrderingSystemInJapan.APIService.Controllers
@@ -12,9 +11,9 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
     {
         private readonly IInvoiceService _invoiceService;
 
-       
+
         public InvoicesController() => _invoiceService ??= new InvoiceService();
-       
+
         [HttpGet]
         public async Task<IBusinessResult> GetInvoices()
         {

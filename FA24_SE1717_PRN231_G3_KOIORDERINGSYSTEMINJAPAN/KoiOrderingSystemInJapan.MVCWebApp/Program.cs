@@ -1,4 +1,4 @@
-using KoiOrderingSystemInJapan.Data.Models;
+using KoiOrderingSystemInJapan.Data.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 

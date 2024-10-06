@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace KoiOrderingSystemInJapan.Service.Base
+﻿namespace KoiOrderingSystemInJapan.Service.Base
 {
     public interface IBusinessResult
     {
