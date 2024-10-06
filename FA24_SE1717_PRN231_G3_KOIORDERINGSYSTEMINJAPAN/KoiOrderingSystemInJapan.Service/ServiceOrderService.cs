@@ -170,5 +170,10 @@ namespace KoiOrderingSystemInJapan.Service
                 return new BusinessResult(Const.ERROR_EXCEPTION, ex.Message);
             }
         }
+
+        public Task<IBusinessResult> Update(ServiceOrder serviceOrder)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

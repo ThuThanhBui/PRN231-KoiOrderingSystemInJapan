@@ -34,11 +34,11 @@ var app = builder.Build();
 
 app.UseCors("AllowSpecificOrigin");
 
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<KoiOrderingSystemInJapanContext>();
-    DummyData.SeedDatabase(context);
-}
+//using (var scope = app.Services.CreateScope())
+//{
+//    var context = scope.ServiceProvider.GetRequiredService<KoiOrderingSystemInJapanContext>();
+//    DummyData.SeedDatabase(context);
+//}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

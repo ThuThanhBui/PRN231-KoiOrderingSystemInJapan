@@ -35,7 +35,7 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
         [HttpGet("{id}")]
         public async Task<IBusinessResult> GetServiceOrder(Guid id)
         {
-            return await serviceOrderService.GetById(id);
+            return await _serviceOrderSerivce.GetById(id);
 
             return await _serviceOrderSerivce.GetById(id);
         }
@@ -45,7 +45,7 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
         [HttpPut("{id}")]
         public async Task<IBusinessResult> PutServiceOrder(ServiceOrder serviceOrder)
         {
-            return await serviceOrderService.Save(serviceOrder);
+            return await _serviceOrderSerivce.Save(serviceOrder);
 
             return await _serviceOrderSerivce.Save(serviceOrder);
         }
