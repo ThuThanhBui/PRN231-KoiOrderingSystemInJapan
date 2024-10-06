@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using KoiOrderingSystemInJapan.Data.Models;
 using KoiOrderingSystemInJapan.Service;
 using KoiOrderingSystemInJapan.Service.Base;
+using KoiOrderingSystemInJapan.Data.Request.ServiceOrder;
 
 namespace KoiOrderingSystemInJapan.APIService.Controllers
 {
@@ -15,18 +16,19 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
     [ApiController]
     public class ServiceOrdersController : ControllerBase
     {
-        private IServiceOrderService serviceOrderService;
-
+        private readonly IServiceOrderService _serviceOrderSerivce;
+        private readonly IPaymentService _paymentService;
         public ServiceOrdersController()
         {
-            serviceOrderService ??= new ServiceOrderService();
+            _serviceOrderSerivce ??= new ServiceOrderService();
+            _paymentService ??= new PaymentService();
         }
 
         // GET: api/ServiceOrders
         [HttpGet]
         public async Task<IBusinessResult> GetServiceOrders()
         {
-            return await serviceOrderService.GetAll();
+            return await _serviceOrderSerivce.GetAll();
         }
 
         // GET: api/ServiceOrders/5
@@ -35,6 +37,7 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
         {
             return await serviceOrderService.GetById(id);
 
+            return await _serviceOrderSerivce.GetById(id);
         }
 
         // PUT: api/ServiceOrders/5
@@ -44,6 +47,7 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
         {
             return await serviceOrderService.Save(serviceOrder);
 
+            return await _serviceOrderSerivce.Save(serviceOrder);
         }
 
         // POST: api/ServiceOrders
@@ -51,16 +55,20 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
         [HttpPost]
         public async Task<IBusinessResult> PostServiceOrder(ServiceOrder serviceOrder)
         {
-            return await serviceOrderService.Save(serviceOrder);
+            return await _serviceOrderSerivce.Save(serviceOrder);
+        }
 
+        [HttpPost("create_payment")]
+        public async Task<IBusinessResult> PostCreatePayment(RequestPaymentServiceModel request)
+        {
+            return await _serviceOrderSerivce.CreatePayment(request);
         }
 
         // DELETE: api/ServiceOrders/5
         [HttpDelete("{id}")]
         public async Task<IBusinessResult> DeleteServiceOrder(Guid id)
         {
-            return await serviceOrderService.DeleteById(id);
-
+            return await _serviceOrderSerivce.DeleteById(id);
         }
 
     }

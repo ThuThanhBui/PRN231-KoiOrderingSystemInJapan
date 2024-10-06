@@ -12,6 +12,8 @@ namespace KoiOrderingSystemInJapan.Data
     {
         private KoiOrderingSystemInJapanContext context;
         private UserRepository userRepository;
+        private InvoiceRepository invoiceRepository;
+        private ServiceOrderRepository serviceOrderRepository;
         private SaleRepository saleRepository;
         private ServiceOrderRepository serviceOrderRepository;
 
@@ -23,6 +25,15 @@ namespace KoiOrderingSystemInJapan.Data
         public UserRepository User
         {
             get { return userRepository ??= new UserRepository(context); }
+        }
+
+        public InvoiceRepository Invoice
+        {
+            get { return invoiceRepository ??= new InvoiceRepository(context); }
+        }
+        public ServiceOrderRepository ServiceOrder
+        {
+            get { return serviceOrderRepository ??= new ServiceOrderRepository(context); }
         }
 
         public SaleRepository Sale

@@ -1,6 +1,8 @@
 ﻿using KoiOrderingSystemInJapan.Common;
 using KoiOrderingSystemInJapan.Data;
 using KoiOrderingSystemInJapan.Data.Models;
+using KoiOrderingSystemInJapan.Data.Request.Payment;
+using KoiOrderingSystemInJapan.Data.Request.ServiceOrder;
 using KoiOrderingSystemInJapan.Service.Base;
 using System;
 using System.Collections.Generic;
@@ -18,40 +20,41 @@ namespace KoiOrderingSystemInJapan.Service
         Task<IBusinessResult> Update(ServiceOrder serviceOrder);
         Task<IBusinessResult> Save(ServiceOrder serviceOrder);
         Task<IBusinessResult> DeleteById(Guid id);
+        Task<IBusinessResult> CreatePayment(RequestPaymentServiceModel serviceOrder);
     }
-    public class ServiceOrderService: IServiceOrderService
+    public class ServiceOrderService : IServiceOrderService
     {
-        private readonly UnitOfWork unitOfWork;
+        private readonly UnitOfWork _unitOfWork;
+        private readonly IPaymentService _paymentService;
         public ServiceOrderService()
         {
-            unitOfWork ??= new UnitOfWork();
+            this._unitOfWork ??= new UnitOfWork();
+            this._paymentService ??= new PaymentService();
         }
         public Task<IBusinessResult> Create(ServiceOrder serviceOrder)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IBusinessResult> DeleteById(Guid id)
+        public async Task<IBusinessResult> DeleteById(Guid code)
         {
             try
             {
-                var e = await unitOfWork.ServiceOrder.GetByIdAsync(id);
-
-                if (e == null)
+                var serviceOrder = await _unitOfWork.ServiceOrder.GetByIdAsync(code);
+                if (serviceOrder == null)
                 {
-                    return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG);
+                    return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, new ServiceOrder());
                 }
                 else
                 {
-                    bool rs = await unitOfWork.ServiceOrder.RemoveAsync(e);
-
-                    if (rs)
+                    var result = await _unitOfWork.ServiceOrder.RemoveAsync(serviceOrder);
+                    if (result)
                     {
-                        return new BusinessResult(Const.SUCCESS_DELETE_CODE, Const.SUCCESS_DELETE_MSG);
+                        return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, serviceOrder);
                     }
                     else
                     {
-                        return new BusinessResult(Const.FAIL_DELETE_CODE, Const.FAIL_DELETE_MSG);
+                        return new BusinessResult(Const.FAIL_DELETE_CODE, Const.FAIL_DELETE_MSG, serviceOrder);
                     }
                 }
             }
@@ -63,32 +66,29 @@ namespace KoiOrderingSystemInJapan.Service
 
         public async Task<IBusinessResult> GetAll()
         {
-            var users = await unitOfWork.ServiceOrder.GetAllAsync();
-            if (users == null)
+            #region Business rule
+
+            #endregion
+            var serviceOrder = await _unitOfWork.ServiceOrder.GetAllAsync();
+            if (serviceOrder == null)
             {
-                return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, new List<User>());
+                return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, new List<ServiceOrder>());
             }
             else
             {
-                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, users);
+                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, serviceOrder);
             }
         }
-
-        public async Task<IBusinessResult> GetById(Guid id)
+        public async Task<IBusinessResult> GetById(Guid code)
         {
-            try
+            var serviceOrder = await _unitOfWork.ServiceOrder.GetByIdAsync(code);
+            if (serviceOrder == null)
             {
-                var e = await unitOfWork.ServiceOrder.GetByIdAsync(id);
-
-                if (e == null)
-                {
-                    return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, new User());
-                }
-                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, e);
+                return new BusinessResult(Const.FAIL_READ_CODE, Const.FAIL_READ_MSG, new ServiceOrder());
             }
-            catch (Exception ex)
+            else
             {
-                return new BusinessResult(Const.ERROR_EXCEPTION, ex.Message);
+                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, serviceOrder);
             }
         }
 
@@ -97,33 +97,30 @@ namespace KoiOrderingSystemInJapan.Service
             try
             {
                 int result = -1;
+                var serviceOrderTmp = _unitOfWork.ServiceOrder.GetById(serviceOrder.Id);
 
-                var e = unitOfWork.ServiceOrder.GetById(serviceOrder.Id);
-
-                if (e != null)
+                if (serviceOrderTmp == null)
                 {
-                    result = await unitOfWork.ServiceOrder.UpdateAsync(serviceOrder);
-
+                    result = await _unitOfWork.ServiceOrder.CreateAsync(serviceOrder);
                     if (result > 0)
                     {
-                        return new BusinessResult(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG);
+                        return new BusinessResult(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG, result);
                     }
                     else
                     {
-                        return new BusinessResult(Const.FAIL_UPDATE_CODE, Const.FAIL_UPDATE_MSG);
+                        return new BusinessResult(Const.FAIL_CREATE_CODE, Const.FAIL_CREATE_MSG, new Invoice());
                     }
                 }
                 else
                 {
-                    result = await unitOfWork.ServiceOrder.CreateAsync(serviceOrder);
-
+                    result = await _unitOfWork.ServiceOrder.UpdateAsync(serviceOrder);
                     if (result > 0)
                     {
-                        return new BusinessResult(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG);
+                        return new BusinessResult(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG, result);
                     }
                     else
                     {
-                        return new BusinessResult(Const.FAIL_CREATE_CODE, Const.FAIL_CREATE_MSG);
+                        return new BusinessResult(Const.FAIL_CREATE_CODE, Const.FAIL_CREATE_MSG, new ServiceOrder());
                     }
                 }
             }
@@ -133,9 +130,45 @@ namespace KoiOrderingSystemInJapan.Service
             }
         }
 
-        public Task<IBusinessResult> Update(ServiceOrder serviceOrder)
+        public async Task<IBusinessResult> CreatePayment(RequestPaymentServiceModel request)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var serviceOrderEntity = new ServiceOrder
+                {
+                    Id = Guid.NewGuid(),
+                    InvoiceId = null,
+                    CustomerServiceId = request.CustomerServiceId,
+                    Quantity = request.Quantity,
+                    TotalPrice = request.TotalPrice,
+                    Invoice = new Invoice
+                    {
+                        Id= Guid.NewGuid(),
+                        PaymentAmount = request.TotalPrice,
+                        PaymentDate = DateTime.Now
+                    }
+                };
+                var serviceOrderResult = await _unitOfWork.ServiceOrder.CreateAsync(serviceOrderEntity);
+
+                if(serviceOrderResult == 0)
+                {
+                    return new BusinessResult(Const.FAIL_CREATE_CODE, Const.FAIL_CREATE_MSG, new ServiceOrder());
+                }
+                var momoRequest = new RequestCreateOrderModel
+                {
+                   Buy_date = DateTime.Now,
+                   OrderId = serviceOrderEntity.Id,
+                   OrderType = "ServiceOrder",
+                   Price = (decimal)serviceOrderEntity.TotalPrice,
+                   UserId = Guid.Parse("CEE6AF68-AD06-A429-AC1F-4DB478DF913F")
+                };
+                var result = await _paymentService.CreatePaymentAsync(momoRequest);
+                return new BusinessResult(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG, result);
+
+            } catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXCEPTION, ex.Message);
+            }
         }
     }
 }

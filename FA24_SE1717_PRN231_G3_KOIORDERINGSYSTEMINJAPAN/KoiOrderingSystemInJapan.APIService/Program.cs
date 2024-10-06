@@ -2,6 +2,8 @@
 using KoiOrderingSystemInJapan.Data.Models;
 using KoiOrderingSystemInJapan.Data;
 using Microsoft.EntityFrameworkCore;
+using KoiOrderingSystemInJapan.Data.Request.Payment;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -26,6 +28,8 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 });
+IConfiguration configuration = builder.Configuration;
+MomoSettingsModel.Instance = configuration.GetSection("MomoAPI").Get<MomoSettingsModel>();
 var app = builder.Build();
 
 app.UseCors("AllowSpecificOrigin");
