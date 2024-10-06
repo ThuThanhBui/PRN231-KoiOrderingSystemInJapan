@@ -1,10 +1,10 @@
 ﻿<div class="row">
     <div class="col-md-10">
-        <h3 class="display-8">Customer List</h3>
+        <h3 class="display-8">Sale Management</h3>
     </div>
     <div class="col-md-2 text-end">
         <button type="button" class="btn btn-primary" onclick="add();">
-            Add Customer
+            Add New Sale
         </button>
     </div>
 </div>
@@ -13,56 +13,65 @@
         <table class="table table-striped table-bordered table-hover">
             <thead>
                 <tr class="card-header">
-                    <th class="card-title text-center">First Name</th>
-                    <th class="card-title text-center">Last Name</th>
-                    <th class="card-title text-center">Address</th>
+                    <th class="card-title text-center">CustomerServiceId</th>
+                    <th class="card-title text-center">Proposal Details</th>
+                    <th class="card-title text-center">Total Price</th>
+                    <th class="card-title text-center">Status</th>
+                    <th class="card-title text-center">Response Date</th>
+                    <th class="card-title text-center">Response By</th>
+                    <th class="card-title text-center">Sale Staff</th>
                 </tr>
             </thead>
-            <tbody class="tblCustomers">
+            <tbody class="tblSales">
             </tbody>
         </table>
     </div>
 </div>
-<div class="modal" id="userModal" tabindex="-1" aria-labelledby="userModelLabel" aria-hidden="false">
+<div class="modal" id="saleModal" tabindex="-1" aria-labelledby="saleModelLabel" aria-hidden="false">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             @using (Html.BeginForm(null, null, FormMethod.Post, new { name = "frm", id = "frm" }))
             {
                 @Html.AntiForgeryToken()
                 <div class="modal-header">
-                    <h5 class="modal-title" id="userModalLabel">User</h5>
+                    <h5 class="modal-title" id="saleModalLabel">User</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                        <input type="hidden" id="Id" />
                     <div class="form-group row">
                         <div class="col-md-6">
-                            <label for="1">Code</label>
-                            <input type="hidden" id="Id" />
-                            <input type="text" id="Code" name="Code" class="form-control" />
+                            <label for="1">Customer Service</label>
+                            <input type="text" id="CustomerServiceId" name="CustomerServiceId" class="form-control" />
                         </div>
                         <div class="col-md-6">
-                            <label for="1">Full Name</label>
-                            <input type="text" id="FullName" name="FullName" class="form-control" />
+                            <label for="1">Proposal Details</label>
+                            <input type="text" id="ProposalDetails" name="ProposalDetails" class="form-control" />
                         </div>
                         <div class="col-md-6">
-                            <label for="1">Short Name</label>
-                            <input type="text" id="ShortName" name="ShortName" class="form-control" />
+                            <label for="1">Total Price</label>
+                            <input type="text" id="TotalPrice" name="TotalPrice" class="form-control" />
+                        </div>
+                        
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label for="1">Status</label>
+                            <input type="text" id="Status" name="Status" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="1">Response By</label>
+                            <input type="text" id="ResponseBy" name="ResponseBy" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="1">Response Date</label>
+                            <input type="text" id="ResponseDate" name="ResponseDate" class="form-control" />
                         </div>
                     </div>
                     <div class="form-group row">
                         <div class="col-md-6">
-                            <label for="1">Address</label>
-                            <input type="text" id="Address" name="Address" class="form-control" />
-                        </div>
-                        <div class="col-md-6">
-                            <label for="1" >Address</label>
-                            <input type="text" id="Phone" name="Phone" class="form-control" />
-                        </div>
-                        <div class="col-md-6">
-                            <label for="1">
-                                Address
-                            </label>
-                             <input type="text" id="Fax" name="Fax" class="form-control" />
+                            <label for="1">Sale Staff</label>
+                            <input type="text" id="SaleStaffId" name="SaleStaffId" class="form-control" />
                         </div>
                     </div>
 
@@ -84,21 +93,24 @@
 
         function loadData() {
             $.ajax({
-                url: 'https://localhost:7298/api/Users',
+                url: 'https://localhost:7298/api/Sales',
                 type: "GET",
                 contentType: "application/json;charset=utf-8",
                 dataType: "json",
                 success: function (result) {
                     var html = '';
                     $.each(result.data, function (key, item) {
-                        //console.log(item);
                         html += '<tr>';
-                        html += '<td>' + item.firstname + '</td>';
-                        html += '<td>' + item.lastname + '</td>';
-                        html += '<td>' + item.role + '</td>';
+                        html += '<td>' + item.customerServiceId + '</td>';
+                        html += '<td>' + item.proposalDetails + '</td>';
+                        html += '<td>' + item.totalPrice + '</td>';
+                        html += '<td>' + item.status + '</td>';
+                        html += '<td>' + item.responseDate + '</td>';
+                        html += '<td>' + item.responseByNavigation.firstname + ' ' + item.responseByNavigation.firstname '</td>';
+                        html += '<td>' + item.saleStaff.firstname + ' ' + item.saleStaff.lastname + '</td>';
                         html += '</tr>';
                     });
-                    $('.tblCustomers').html(html);
+                    $('.tblSales').html(html);
                 },
                 error: function (xhr, error) {
                     alert(xhr.statusText);
@@ -134,8 +146,8 @@
         });
 
         function add() {
-            $("#userModalLabel").html("Add New");
-            $('#userModal').modal('show');
+            $("#saleModalLabel").html("Add New Sale");
+            $('#saleModal').modal('show');
         }
     </script>
 }

@@ -1,3 +1,7 @@
+﻿using KoiOrderingSystemInJapan.APIService.Controllers;
+using KoiOrderingSystemInJapan.Data.Models;
+using KoiOrderingSystemInJapan.Data;
+using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -25,6 +29,12 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 var app = builder.Build();
 
 app.UseCors("AllowSpecificOrigin");
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<KoiOrderingSystemInJapanContext>();
+    DummyData.SeedDatabase(context);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

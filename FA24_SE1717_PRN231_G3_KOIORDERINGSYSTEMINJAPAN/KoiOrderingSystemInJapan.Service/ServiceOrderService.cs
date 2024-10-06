@@ -2,26 +2,31 @@
 using KoiOrderingSystemInJapan.Data;
 using KoiOrderingSystemInJapan.Data.Models;
 using KoiOrderingSystemInJapan.Service.Base;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace KoiOrderingSystemInJapan.Service
 {
-    public interface IUserService
+    public interface IServiceOrderService
     {
         Task<IBusinessResult> GetAll();
         Task<IBusinessResult> GetById(Guid id);
-        Task<IBusinessResult> Create(User user);
-        Task<IBusinessResult> Update(User user);
-        Task<IBusinessResult> Save(User user);
+        Task<IBusinessResult> Create(ServiceOrder serviceOrder);
+        Task<IBusinessResult> Update(ServiceOrder serviceOrder);
+        Task<IBusinessResult> Save(ServiceOrder serviceOrder);
         Task<IBusinessResult> DeleteById(Guid id);
     }
-    public class UserService : IUserService
+    public class ServiceOrderService: IServiceOrderService
     {
         private readonly UnitOfWork unitOfWork;
-        public UserService()
+        public ServiceOrderService()
         {
             unitOfWork ??= new UnitOfWork();
         }
-        public Task<IBusinessResult> Create(User user)
+        public Task<IBusinessResult> Create(ServiceOrder serviceOrder)
         {
             throw new NotImplementedException();
         }
@@ -30,15 +35,15 @@ namespace KoiOrderingSystemInJapan.Service
         {
             try
             {
-                var u = await unitOfWork.User.GetByIdAsync(id);
+                var e = await unitOfWork.ServiceOrder.GetByIdAsync(id);
 
-                if (u == null)
+                if (e == null)
                 {
                     return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG);
                 }
                 else
                 {
-                    bool rs = await unitOfWork.User.RemoveAsync(u);
+                    bool rs = await unitOfWork.ServiceOrder.RemoveAsync(e);
 
                     if (rs)
                     {
@@ -58,7 +63,7 @@ namespace KoiOrderingSystemInJapan.Service
 
         public async Task<IBusinessResult> GetAll()
         {
-            var users = await unitOfWork.User.GetAllAsync();
+            var users = await unitOfWork.ServiceOrder.GetAllAsync();
             if (users == null)
             {
                 return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, new List<User>());
@@ -73,13 +78,13 @@ namespace KoiOrderingSystemInJapan.Service
         {
             try
             {
-                var u = await unitOfWork.User.GetByIdAsync(id);
+                var e = await unitOfWork.ServiceOrder.GetByIdAsync(id);
 
-                if (u == null)
+                if (e == null)
                 {
                     return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, new User());
                 }
-                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, u);
+                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, e);
             }
             catch (Exception ex)
             {
@@ -87,17 +92,17 @@ namespace KoiOrderingSystemInJapan.Service
             }
         }
 
-        public async Task<IBusinessResult> Save(User user)
+        public async Task<IBusinessResult> Save(ServiceOrder serviceOrder)
         {
             try
             {
                 int result = -1;
 
-                var u = unitOfWork.User.GetById(user.Id);
+                var e = unitOfWork.ServiceOrder.GetById(serviceOrder.Id);
 
-                if (u != null)
+                if (e != null)
                 {
-                    result = await unitOfWork.User.UpdateAsync(user);
+                    result = await unitOfWork.ServiceOrder.UpdateAsync(serviceOrder);
 
                     if (result > 0)
                     {
@@ -110,7 +115,7 @@ namespace KoiOrderingSystemInJapan.Service
                 }
                 else
                 {
-                    result = await unitOfWork.User.CreateAsync(user);
+                    result = await unitOfWork.ServiceOrder.CreateAsync(serviceOrder);
 
                     if (result > 0)
                     {
@@ -128,7 +133,7 @@ namespace KoiOrderingSystemInJapan.Service
             }
         }
 
-        public Task<IBusinessResult> Update(User user)
+        public Task<IBusinessResult> Update(ServiceOrder serviceOrder)
         {
             throw new NotImplementedException();
         }

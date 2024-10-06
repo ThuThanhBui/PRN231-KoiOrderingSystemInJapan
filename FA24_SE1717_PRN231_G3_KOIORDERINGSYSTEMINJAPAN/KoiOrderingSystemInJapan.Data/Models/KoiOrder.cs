@@ -17,17 +17,17 @@ public partial class KoiOrder
 
     public decimal? TotalPrice { get; set; }
 
-    public int? CreatedBy { get; set; }
+    public string CreatedBy { get; set; }
 
     public DateTime? CreatedDate { get; set; }
 
-    public int? UpdatedBy { get; set; }
+    public string UpdatedBy { get; set; }
 
     public DateTime? UpdatedDate { get; set; }
 
     public bool IsDeleted { get; set; }
 
-    public virtual Customer Customer { get; set; }
+    public virtual User Customer { get; set; }
 
     public virtual ICollection<Delivery> Deliveries { get; set; } = new List<Delivery>();
 
