@@ -31,7 +31,7 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
 
         // GET: api/Users/5
         [HttpGet("{id}")]
-        public async Task<IBusinessResult> GetUser(int id)
+        public async Task<IBusinessResult> GetUser(Guid id)
         {
             var user = await _userService.GetById(id);
 

@@ -16,7 +16,7 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
 
         public async Task<List<User>> GetAllAsync()
         {
-            return await _context.Users.Include(e => e.Customers).ToListAsync();
+            return await _context.Users.ToListAsync();
         }
     }
 }

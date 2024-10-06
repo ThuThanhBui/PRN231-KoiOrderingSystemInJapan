@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace KoiOrderingSystemInJapan.Data.Models;
 
@@ -19,8 +18,6 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
     }
 
     public virtual DbSet<Category> Categories { get; set; }
-
-    public virtual DbSet<Customer> Customers { get; set; }
 
     public virtual DbSet<CustomerService> CustomerServices { get; set; }
 
@@ -54,254 +51,254 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-    public static string GetConnectionString(string connectionStringName)
-    {
-        var config = new ConfigurationBuilder()
-            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-            .AddJsonFile("appsettings.json")
-            .Build();
-
-        string connectionString = config.GetConnectionString(connectionStringName);
-        return connectionString;
-    }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer(GetConnectionString("DefaultConnection"));
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=FA24_SE1717_PRN231_G3_KOIORDERINGSYSTEMINJAPAN;Integrated Security=True;Encrypt=False");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Category__3214EC079D65C953");
+            entity.HasKey(e => e.Id).HasName("PK__Category__3214EC0784A9C9CB");
 
             entity.ToTable("Category");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CreatedBy).HasMaxLength(255);
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.Img).HasMaxLength(255);
             entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.UpdatedBy).HasMaxLength(255);
             entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
-        });
-
-        modelBuilder.Entity<Customer>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__Customer__3214EC0783D161D5");
-
-            entity.ToTable("Customer");
-
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Address).HasMaxLength(255);
-            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
-            entity.Property(e => e.Firstname).HasMaxLength(255);
-            entity.Property(e => e.Lastname).HasMaxLength(255);
-            entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
-
-            entity.HasOne(d => d.User).WithMany(p => p.Customers)
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__Customer__UserId__4316F928");
         });
 
         modelBuilder.Entity<CustomerService>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Customer__3214EC076D8A77FE");
+            entity.HasKey(e => e.Id).HasName("PK__Customer__3214EC07FCEC401A");
 
             entity.ToTable("CustomerService");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CreatedBy).HasMaxLength(255);
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.Status).HasMaxLength(50);
+            entity.Property(e => e.UpdatedBy).HasMaxLength(255);
             entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
 
             entity.HasOne(d => d.Customer).WithMany(p => p.CustomerServices)
                 .HasForeignKey(d => d.CustomerId)
-                .HasConstraintName("FK__CustomerS__Custo__45F365D3");
+                .HasConstraintName("FK__CustomerS__Custo__4316F928");
 
             entity.HasOne(d => d.Travel).WithMany(p => p.CustomerServices)
                 .HasForeignKey(d => d.TravelId)
-                .HasConstraintName("FK__CustomerS__Trave__46E78A0C");
+                .HasConstraintName("FK__CustomerS__Trave__440B1D61");
         });
 
         modelBuilder.Entity<Delivery>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Delivery__3214EC0763C01D9C");
+            entity.HasKey(e => e.Id).HasName("PK__Delivery__3214EC07F25BCCD6");
 
             entity.ToTable("Delivery");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Address).HasMaxLength(255);
             entity.Property(e => e.Code).HasMaxLength(255);
+            entity.Property(e => e.CreatedBy).HasMaxLength(255);
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.TotalAmount).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.UpdatedBy).HasMaxLength(255);
             entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
 
             entity.HasOne(d => d.DeliveryStaff).WithMany(p => p.Deliveries)
                 .HasForeignKey(d => d.DeliveryStaffId)
-                .HasConstraintName("FK__Delivery__Delive__6D0D32F4");
+                .HasConstraintName("FK__Delivery__Delive__6B24EA82");
 
             entity.HasOne(d => d.KoiOrder).WithMany(p => p.Deliveries)
                 .HasForeignKey(d => d.KoiOrderId)
-                .HasConstraintName("FK__Delivery__KoiOrd__6C190EBB");
+                .HasConstraintName("FK__Delivery__KoiOrd__6A30C649");
         });
 
         modelBuilder.Entity<DeliveryDetail>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Delivery__3214EC07A2418794");
+            entity.HasKey(e => e.Id).HasName("PK__Delivery__3214EC072E6A74F4");
 
             entity.ToTable("DeliveryDetail");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CreatedBy).HasMaxLength(255);
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.Description).HasMaxLength(50);
             entity.Property(e => e.Name).HasMaxLength(50);
+            entity.Property(e => e.UpdatedBy).HasMaxLength(255);
             entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
 
             entity.HasOne(d => d.Delivery).WithMany(p => p.DeliveryDetails)
                 .HasForeignKey(d => d.DeliveryId)
-                .HasConstraintName("FK__DeliveryD__Deliv__6FE99F9F");
+                .HasConstraintName("FK__DeliveryD__Deliv__6E01572D");
         });
 
         modelBuilder.Entity<Farm>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Farm__3214EC07E10CB573");
+            entity.HasKey(e => e.Id).HasName("PK__Farm__3214EC070BA1B823");
 
             entity.ToTable("Farm");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Address).HasMaxLength(255);
+            entity.Property(e => e.CreatedBy).HasMaxLength(255);
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.Email).HasMaxLength(255);
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.Owner).HasMaxLength(255);
+            entity.Property(e => e.UpdatedBy).HasMaxLength(255);
             entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<FarmCategory>(entity =>
         {
-            entity.HasKey(e => new { e.FarmId, e.CategoryId }).HasName("PK__FarmCate__4CEB2919BD08ADBB");
+            entity.HasKey(e => new { e.FarmId, e.CategoryId }).HasName("PK__FarmCate__4CEB2919BDAC7C61");
 
             entity.ToTable("FarmCategory");
 
+            entity.Property(e => e.CreatedBy).HasMaxLength(255);
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+            entity.Property(e => e.UpdatedBy).HasMaxLength(255);
             entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
 
             entity.HasOne(d => d.Category).WithMany(p => p.FarmCategories)
                 .HasForeignKey(d => d.CategoryId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__FarmCateg__Categ__5441852A");
+                .HasConstraintName("FK__FarmCateg__Categ__52593CB8");
 
             entity.HasOne(d => d.Farm).WithMany(p => p.FarmCategories)
                 .HasForeignKey(d => d.FarmId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__FarmCateg__FarmI__534D60F1");
+                .HasConstraintName("FK__FarmCateg__FarmI__5165187F");
         });
 
         modelBuilder.Entity<Invoice>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Invoice__3214EC07E643E311");
+            entity.HasKey(e => e.Id).HasName("PK__Invoice__3214EC0708D73E19");
 
             entity.ToTable("Invoice");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CreatedBy).HasMaxLength(255);
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.PaymentAmount).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.PaymentDate).HasColumnType("datetime");
+            entity.Property(e => e.UpdatedBy).HasMaxLength(255);
             entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<KoiFish>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__KoiFish__3214EC07595CE366");
+            entity.HasKey(e => e.Id).HasName("PK__KoiFish__3214EC0717958643");
 
             entity.ToTable("KoiFish");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CreatedBy).HasMaxLength(255);
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.Gender).HasMaxLength(50);
             entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.UpdatedBy).HasMaxLength(255);
             entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
 
             entity.HasOne(d => d.Category).WithMany(p => p.KoiFishes)
                 .HasForeignKey(d => d.CategoryId)
-                .HasConstraintName("FK__KoiFish__Categor__59FA5E80");
+                .HasConstraintName("FK__KoiFish__Categor__5812160E");
 
             entity.HasOne(d => d.Size).WithMany(p => p.KoiFishes)
                 .HasForeignKey(d => d.SizeId)
-                .HasConstraintName("FK__KoiFish__SizeId__59063A47");
+                .HasConstraintName("FK__KoiFish__SizeId__571DF1D5");
         });
 
         modelBuilder.Entity<KoiOrder>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__KoiOrder__3214EC07029F5F78");
+            entity.HasKey(e => e.Id).HasName("PK__KoiOrder__3214EC0732E1F1C2");
 
             entity.ToTable("KoiOrder");
 
-            entity.HasIndex(e => e.InvoiceId, "UQ__KoiOrder__D796AAB41CDF105A").IsUnique();
+            entity.HasIndex(e => e.InvoiceId, "UQ__KoiOrder__D796AAB453F8EE31").IsUnique();
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CreatedBy).HasMaxLength(255);
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.TotalPrice).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.UpdatedBy).HasMaxLength(255);
             entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
 
             entity.HasOne(d => d.Customer).WithMany(p => p.KoiOrders)
                 .HasForeignKey(d => d.CustomerId)
-                .HasConstraintName("FK__KoiOrder__Custom__6477ECF3");
+                .HasConstraintName("FK__KoiOrder__Custom__628FA481");
 
             entity.HasOne(d => d.Invoice).WithOne(p => p.KoiOrder)
                 .HasForeignKey<KoiOrder>(d => d.InvoiceId)
-                .HasConstraintName("FK__KoiOrder__Invoic__656C112C");
+                .HasConstraintName("FK__KoiOrder__Invoic__6383C8BA");
         });
 
         modelBuilder.Entity<OrderDetail>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__OrderDet__3214EC074CE09AB1");
+            entity.HasKey(e => e.Id).HasName("PK__OrderDet__3214EC070E39EDDC");
 
             entity.ToTable("OrderDetail");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CreatedBy).HasMaxLength(255);
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.UpdatedBy).HasMaxLength(255);
             entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
 
             entity.HasOne(d => d.KoiFish).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.KoiFishId)
-                .HasConstraintName("FK__OrderDeta__KoiFi__68487DD7");
+                .HasConstraintName("FK__OrderDeta__KoiFi__66603565");
 
             entity.HasOne(d => d.KoiOrder).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.KoiOrderId)
-                .HasConstraintName("FK__OrderDeta__KoiOr__693CA210");
+                .HasConstraintName("FK__OrderDeta__KoiOr__6754599E");
         });
 
         modelBuilder.Entity<Sale>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Sales__3214EC076C3531DD");
+            entity.HasKey(e => e.Id).HasName("PK__Sales__3214EC07D581FD9D");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.ApprovalBy).HasMaxLength(50);
-            entity.Property(e => e.ApprovalDate).HasMaxLength(50);
-            entity.Property(e => e.ApprovalStatus).HasMaxLength(50);
+            entity.Property(e => e.CreatedBy).HasMaxLength(255);
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+            entity.Property(e => e.ResponseDate).HasMaxLength(50);
+            entity.Property(e => e.Status).HasMaxLength(50);
             entity.Property(e => e.TotalPrice).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.UpdatedBy).HasMaxLength(255);
             entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
 
             entity.HasOne(d => d.CustomerService).WithMany(p => p.Sales)
                 .HasForeignKey(d => d.CustomerServiceId)
-                .HasConstraintName("FK__Sales__CustomerS__4D94879B");
+                .HasConstraintName("FK__Sales__CustomerS__4AB81AF0");
 
-            entity.HasOne(d => d.SaleStaff).WithMany(p => p.Sales)
+            entity.HasOne(d => d.ResponseByNavigation).WithMany(p => p.SaleResponseByNavigations)
+                .HasForeignKey(d => d.ResponseBy)
+                .HasConstraintName("FK__Sales__ResponseB__4CA06362");
+
+            entity.HasOne(d => d.SaleStaff).WithMany(p => p.SaleSaleStaffs)
                 .HasForeignKey(d => d.SaleStaffId)
-                .HasConstraintName("FK__Sales__SaleStaff__4E88ABD4");
+                .HasConstraintName("FK__Sales__SaleStaff__4BAC3F29");
         });
 
         modelBuilder.Entity<Service>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Service__3214EC0709930618");
+            entity.HasKey(e => e.Id).HasName("PK__Service__3214EC07620A1376");
 
             entity.ToTable("Service");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CreatedBy).HasMaxLength(255);
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.ServiceName).HasMaxLength(255);
+            entity.Property(e => e.UpdatedBy).HasMaxLength(255);
             entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
 
             entity.HasMany(d => d.CustomerServices).WithMany(p => p.Services)
@@ -310,73 +307,81 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
                     r => r.HasOne<CustomerService>().WithMany()
                         .HasForeignKey("CustomerServiceId")
                         .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__ServiceCu__Custo__4AB81AF0"),
+                        .HasConstraintName("FK__ServiceCu__Custo__47DBAE45"),
                     l => l.HasOne<Service>().WithMany()
                         .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__ServiceCu__Servi__49C3F6B7"),
+                        .HasConstraintName("FK__ServiceCu__Servi__46E78A0C"),
                     j =>
                     {
-                        j.HasKey("ServiceId", "CustomerServiceId").HasName("PK__ServiceC__D4E064473718CC44");
+                        j.HasKey("ServiceId", "CustomerServiceId").HasName("PK__ServiceC__D4E0644762FAFE8C");
                         j.ToTable("ServiceCustomerService");
                     });
         });
 
         modelBuilder.Entity<ServiceOrder>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__ServiceO__3214EC0784D5FC0F");
+            entity.HasKey(e => e.Id).HasName("PK__ServiceO__3214EC07E25BE609");
 
             entity.ToTable("ServiceOrder");
 
-            entity.HasIndex(e => e.InvoiceId, "UQ__ServiceO__D796AAB40303665E").IsUnique();
+            entity.HasIndex(e => e.InvoiceId, "UQ__ServiceO__D796AAB4864698CD").IsUnique();
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CreatedBy).HasMaxLength(255);
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.TotalPrice).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.UpdatedBy).HasMaxLength(255);
             entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
 
             entity.HasOne(d => d.CustomerService).WithMany(p => p.ServiceOrders)
                 .HasForeignKey(d => d.CustomerServiceId)
-                .HasConstraintName("FK__ServiceOr__Custo__5FB337D6");
+                .HasConstraintName("FK__ServiceOr__Custo__5DCAEF64");
 
             entity.HasOne(d => d.Invoice).WithOne(p => p.ServiceOrder)
                 .HasForeignKey<ServiceOrder>(d => d.InvoiceId)
-                .HasConstraintName("FK__ServiceOr__Invoi__60A75C0F");
+                .HasConstraintName("FK__ServiceOr__Invoi__5EBF139D");
         });
 
         modelBuilder.Entity<Size>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Size__3214EC0763D0AA1D");
+            entity.HasKey(e => e.Id).HasName("PK__Size__3214EC07728D2CA4");
 
             entity.ToTable("Size");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CreatedBy).HasMaxLength(255);
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.SizeInCm).HasColumnType("decimal(5, 2)");
+            entity.Property(e => e.UpdatedBy).HasMaxLength(255);
             entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<Travel>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Travel__3214EC07D4680B3C");
+            entity.HasKey(e => e.Id).HasName("PK__Travel__3214EC07BD769DC2");
 
             entity.ToTable("Travel");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CreatedBy).HasMaxLength(255);
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.Location).HasMaxLength(255);
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.UpdatedBy).HasMaxLength(255);
             entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<TravelFarm>(entity =>
         {
-            entity.HasKey(e => new { e.TravelId, e.FarmId }).HasName("PK__TravelFa__67E6E99E47391E2A");
+            entity.HasKey(e => new { e.TravelId, e.FarmId }).HasName("PK__TravelFa__67E6E99E614E8687");
 
             entity.ToTable("TravelFarm");
 
+            entity.Property(e => e.CreatedBy).HasMaxLength(255);
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+            entity.Property(e => e.UpdatedBy).HasMaxLength(255);
             entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
 
             entity.HasOne(d => d.Farm).WithMany(p => p.TravelFarms)
@@ -392,16 +397,21 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__User__3214EC070F0ED132");
+            entity.HasKey(e => e.Id).HasName("PK__User__3214EC075E78D140");
 
             entity.ToTable("User");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Address).HasMaxLength(255);
+            entity.Property(e => e.CreatedBy).HasMaxLength(255);
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+            entity.Property(e => e.Email).HasMaxLength(255);
             entity.Property(e => e.Firstname).HasMaxLength(255);
             entity.Property(e => e.Lastname).HasMaxLength(255);
             entity.Property(e => e.Password).HasMaxLength(255);
+            entity.Property(e => e.Phone).HasMaxLength(255);
             entity.Property(e => e.Role).HasMaxLength(255);
+            entity.Property(e => e.UpdatedBy).HasMaxLength(255);
             entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
             entity.Property(e => e.Username).HasMaxLength(255);
         });

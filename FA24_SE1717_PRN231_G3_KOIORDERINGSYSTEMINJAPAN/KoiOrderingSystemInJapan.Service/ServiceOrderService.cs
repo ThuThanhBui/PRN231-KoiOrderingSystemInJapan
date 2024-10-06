@@ -16,6 +16,8 @@ namespace KoiOrderingSystemInJapan.Service
     {
         Task<IBusinessResult> GetAll();
         Task<IBusinessResult> GetById(Guid id);
+        Task<IBusinessResult> Create(ServiceOrder serviceOrder);
+        Task<IBusinessResult> Update(ServiceOrder serviceOrder);
         Task<IBusinessResult> Save(ServiceOrder serviceOrder);
         Task<IBusinessResult> DeleteById(Guid id);
         Task<IBusinessResult> CreatePayment(RequestPaymentServiceModel serviceOrder);
@@ -28,6 +30,10 @@ namespace KoiOrderingSystemInJapan.Service
         {
             this._unitOfWork ??= new UnitOfWork();
             this._paymentService ??= new PaymentService();
+        }
+        public Task<IBusinessResult> Create(ServiceOrder serviceOrder)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<IBusinessResult> DeleteById(Guid code)
@@ -57,6 +63,7 @@ namespace KoiOrderingSystemInJapan.Service
                 return new BusinessResult(Const.ERROR_EXCEPTION, ex.Message);
             }
         }
+
         public async Task<IBusinessResult> GetAll()
         {
             #region Business rule
@@ -162,6 +169,11 @@ namespace KoiOrderingSystemInJapan.Service
             {
                 return new BusinessResult(Const.ERROR_EXCEPTION, ex.Message);
             }
+        }
+
+        public Task<IBusinessResult> Update(ServiceOrder serviceOrder)
+        {
+            throw new NotImplementedException();
         }
     }
 }
