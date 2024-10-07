@@ -15,7 +15,7 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
     [ApiController]
     public class DeliveriesController : ControllerBase
     {
-        private readonly KoiTravelShopContext _context;
+      
         private readonly DeliveryService _deliverySerivce;
 
         public DeliveriesController( )
