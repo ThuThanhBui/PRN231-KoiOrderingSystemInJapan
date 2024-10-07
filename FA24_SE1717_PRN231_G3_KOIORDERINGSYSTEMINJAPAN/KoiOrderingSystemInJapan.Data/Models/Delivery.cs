@@ -17,7 +17,7 @@ public partial class Delivery
 
     public string Name { get; set; }
 
-    public int? Phone { get; set; }
+    public string Phone { get; set; }
 
     public string Address { get; set; }
 
@@ -34,6 +34,9 @@ public partial class Delivery
     public DateTime? UpdatedDate { get; set; }
 
     public bool IsDeleted { get; set; }
+
+    public string Note { get; set; }
+
 
     public virtual ICollection<DeliveryDetail> DeliveryDetails { get; set; } = new List<DeliveryDetail>();
 

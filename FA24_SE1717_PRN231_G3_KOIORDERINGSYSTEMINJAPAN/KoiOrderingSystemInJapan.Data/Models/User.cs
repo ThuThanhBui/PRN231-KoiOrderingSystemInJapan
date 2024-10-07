@@ -9,6 +9,8 @@ public partial class User
 {
     public Guid Id { get; set; }
 
+    public string Image { get; set; }
+
     public string Firstname { get; set; }
 
     public string Lastname { get; set; }
@@ -17,7 +19,9 @@ public partial class User
 
     public string Address { get; set; }
 
-    public string Role { get; set; }
+    public Enum.Gender Gender { get; set; }
+
+    public Enum.Role Role { get; set; }
 
     public string Username { get; set; }
 
@@ -37,13 +41,13 @@ public partial class User
 
     public bool IsDeleted { get; set; }
 
+    public string Note { get; set; }
+
     public virtual ICollection<CustomerService> CustomerServices { get; set; } = new List<CustomerService>();
 
     public virtual ICollection<Delivery> Deliveries { get; set; } = new List<Delivery>();
 
     public virtual ICollection<KoiOrder> KoiOrders { get; set; } = new List<KoiOrder>();
-
-    public virtual ICollection<Sale> SaleResponseByNavigations { get; set; } = new List<Sale>();
 
     public virtual ICollection<Sale> SaleSaleStaffs { get; set; } = new List<Sale>();
 }

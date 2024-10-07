@@ -25,6 +25,9 @@ public partial class OrderDetail
 
     public bool IsDeleted { get; set; }
 
+    public string Note { get; set; }
+
+
     public virtual KoiFish KoiFish { get; set; }
 
     public virtual KoiOrder KoiOrder { get; set; }

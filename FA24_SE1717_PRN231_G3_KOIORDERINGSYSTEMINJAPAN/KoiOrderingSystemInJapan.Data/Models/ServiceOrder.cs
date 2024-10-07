@@ -27,6 +27,9 @@ public partial class ServiceOrder
 
     public bool IsDeleted { get; set; }
 
+    public string Note { get; set; }
+
+
     public virtual CustomerService CustomerService { get; set; }
 
     public virtual Invoice Invoice { get; set; }

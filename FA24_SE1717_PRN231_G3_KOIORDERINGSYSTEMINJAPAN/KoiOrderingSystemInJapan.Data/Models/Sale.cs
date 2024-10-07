@@ -17,11 +17,11 @@ public partial class Sale
 
     public decimal? TotalPrice { get; set; }
 
-    public string Status { get; set; }
+    public Enum.StatusSale Status { get; set; }
 
-    public string ResponseDate { get; set; }
+    public DateTime? ResponseDate { get; set; }
 
-    public Guid? ResponseBy { get; set; }
+    public string? ResponseBy { get; set; } //manager name
 
     public string CreatedBy { get; set; }
 
@@ -33,9 +33,9 @@ public partial class Sale
 
     public bool IsDeleted { get; set; }
 
-    public virtual CustomerService CustomerService { get; set; }
+    public string Note { get; set; }
 
-    public virtual User ResponseByNavigation { get; set; }
+    public virtual CustomerService CustomerService { get; set; }
 
     public virtual User SaleStaff { get; set; }
 }
