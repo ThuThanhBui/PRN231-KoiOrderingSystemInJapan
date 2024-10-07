@@ -1,4 +1,5 @@
 ﻿using KoiOrderingSystemInJapan.Data.Base;
+using KoiOrderingSystemInJapan.Data.Context;
 using KoiOrderingSystemInJapan.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,6 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
     public class DeliveryDetailRepository : GenericRepository<DeliveryDetail>
     {
         public DeliveryDetailRepository() { }
-        public DeliveryDetailRepository(KoiTravelShopContext context) { }
+        public DeliveryDetailRepository(KoiOrderingSystemInJapanContext context) { }
     }
 }
