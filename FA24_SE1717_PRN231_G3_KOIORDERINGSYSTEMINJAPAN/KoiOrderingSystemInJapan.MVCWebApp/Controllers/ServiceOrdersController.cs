@@ -17,24 +17,25 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
         // GET: ServiceOrders
         public async Task<IActionResult> Index()
         {
-            using (var httpClient = new HttpClient())
-            {
-                using (var response = await httpClient.GetAsync(Const.APIEndPoint + "ServiceOrders"))
-                {
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var content = await response.Content.ReadAsStringAsync();
-                        var result = JsonConvert.DeserializeObject<BusinessResult>(content);
-                        if (result != null)
-                        {
-                            var data = JsonConvert.DeserializeObject<List<ServiceOrder>>(result.Data.ToString());
-                            return View(data);
+            //using (var httpClient = new HttpClient())
+            //{
+            //    using (var response = await httpClient.GetAsync(Const.APIEndPoint + "ServiceOrders"))
+            //    {
+            //        if (response.IsSuccessStatusCode)
+            //        {
+            //            var content = await response.Content.ReadAsStringAsync();
+            //            var result = JsonConvert.DeserializeObject<BusinessResult>(content);
+            //            if (result != null)
+            //            {
+            //                var data = JsonConvert.DeserializeObject<List<ServiceOrder>>(result.Data.ToString());
+            //                return View(data);
 
-                        }
-                    }
-                }
-            }
-            return View(new List<ServiceOrder>());
+            //            }
+            //        }
+            //    }
+            //}
+            //return View(new List<ServiceOrder>());
+            return View();
         }
 
         // GET: ServiceOrders/Details/5

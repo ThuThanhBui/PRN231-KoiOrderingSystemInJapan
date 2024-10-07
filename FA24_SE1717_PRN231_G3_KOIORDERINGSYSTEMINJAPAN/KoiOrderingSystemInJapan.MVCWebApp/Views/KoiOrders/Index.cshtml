@@ -1,0 +1,57 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Koi Orders</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Customer name</th>
+            <th scope="col">Invoice Id</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Total Price</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody class="tblKoiOrders">
+       
+    </tbody>
+</table>
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            getData();
+        })
+
+        function getData() {
+            $.ajax({
+                url: "https://localhost:7298/api/KoiOrders",
+                type:"Get",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    var html = "";
+                    $.each(result.data, function (key, item) {
+                        html += '<tr>';
+                        html += '<th scope="row">' + key + '</th>'
+                        html += '<td scope="row">' + item.customer.firstname + item.customer.lastname + '</td>'
+                        html += '<td scope="row">' + item.invoiceId + '</td>'
+                        html += '<td scope="row">' + item.quantity + '</td>'
+                        html += '<td scope="row">' + item.totalPrice + '</td>'
+                        html += '<td scope="row">' + '<a href="/KoiOrders/Details/'+ item.id + '">Details</a>' + '</td>'
+                    })
+                    $('.tblKoiOrders').html(html);
+                },
+                error: function (xhr, error) {
+                    alert(xhr.statusText);
+                }
+            })
+        }
+    </script>
+}
