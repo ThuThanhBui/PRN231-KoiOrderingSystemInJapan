@@ -19,10 +19,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Customer]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[CustomerService]",
          "ObjectType": 0
       },

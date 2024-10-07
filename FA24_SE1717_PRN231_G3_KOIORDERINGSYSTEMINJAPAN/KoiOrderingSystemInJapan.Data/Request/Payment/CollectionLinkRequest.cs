@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace KoiOrderingSystemInJapan.Data.Request.Payment
+﻿namespace KoiOrderingSystemInJapan.Data.Request.Payment
 {
     public class CollectionLinkRequest
     {
@@ -24,6 +18,6 @@ namespace KoiOrderingSystemInJapan.Data.Request.Payment
         public bool autoCapture { get; set; }
         public string lang { get; set; }
         public string signature { get; set; }
-        public int orderExpireTime {  get; set; }
+        public int orderExpireTime { get; set; }
     }
 }

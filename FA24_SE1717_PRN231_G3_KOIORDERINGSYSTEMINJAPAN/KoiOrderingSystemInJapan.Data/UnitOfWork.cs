@@ -1,10 +1,5 @@
-﻿using KoiOrderingSystemInJapan.Data.Models;
+﻿using KoiOrderingSystemInJapan.Data.Context;
 using KoiOrderingSystemInJapan.Data.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KoiOrderingSystemInJapan.Data
 {
@@ -12,8 +7,11 @@ namespace KoiOrderingSystemInJapan.Data
     {
         private KoiOrderingSystemInJapanContext context;
         private UserRepository userRepository;
+        private DeliveryRepository deliveryRepository;
+        private DeliveryDetailRepository deliveryDetailRepository;
         private InvoiceRepository invoiceRepository;
         private ServiceOrderRepository serviceOrderRepository;
+        private SaleRepository saleRepository;
         private KoiOrderRepository koiOrderRepository;
         public UnitOfWork()
         {
@@ -25,6 +23,20 @@ namespace KoiOrderingSystemInJapan.Data
             get { return userRepository ??= new UserRepository(context); }
         }
 
+        public DeliveryRepository Delivery
+        {
+            get
+            {
+                return deliveryRepository ??= new DeliveryRepository(context);
+            }
+        }
+        public DeliveryDetailRepository DeliveryDetail
+        {
+            get
+            {
+                return deliveryDetailRepository ??= new DeliveryDetailRepository(context);
+            }
+        }
         public InvoiceRepository Invoice
         {
             get { return invoiceRepository ??= new InvoiceRepository(context); }
@@ -36,6 +48,11 @@ namespace KoiOrderingSystemInJapan.Data
         public KoiOrderRepository KoiOrder
         {
             get { return koiOrderRepository ??= new KoiOrderRepository(context); }
+        }
+
+        public SaleRepository Sale
+        {
+            get { return saleRepository ??= new SaleRepository(context); }
         }
 
         ////TO-DO CODE HERE/////////////////

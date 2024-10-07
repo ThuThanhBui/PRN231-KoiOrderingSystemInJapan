@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using KoiOrderingSystemInJapan.Data.Models;
+﻿using KoiOrderingSystemInJapan.Data.Models;
+using KoiOrderingSystemInJapan.Data.Request.ServiceOrder;
 using KoiOrderingSystemInJapan.Service;
 using KoiOrderingSystemInJapan.Service.Base;
-using KoiOrderingSystemInJapan.Data.Request.ServiceOrder;
+using Microsoft.AspNetCore.Mvc;
 
 namespace KoiOrderingSystemInJapan.APIService.Controllers
 {
@@ -35,6 +29,7 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
         [HttpGet("{id}")]
         public async Task<IBusinessResult> GetServiceOrder(Guid id)
         {
+            return await _serviceOrderSerivce.GetById(id);
 
             return await _serviceOrderSerivce.GetById(id);
         }
@@ -44,6 +39,7 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
         [HttpPut("{id}")]
         public async Task<IBusinessResult> PutServiceOrder(ServiceOrder serviceOrder)
         {
+            return await _serviceOrderSerivce.Save(serviceOrder);
 
             return await _serviceOrderSerivce.Save(serviceOrder);
         }
@@ -68,5 +64,6 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
         {
             return await _serviceOrderSerivce.DeleteById(id);
         }
+
     }
 }

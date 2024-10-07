@@ -15,11 +15,11 @@ public partial class Service
 
     public decimal? Price { get; set; }
 
-    public int? CreatedBy { get; set; }
+    public string CreatedBy { get; set; }
 
     public DateTime? CreatedDate { get; set; }
 
-    public int? UpdatedBy { get; set; }
+    public string UpdatedBy { get; set; }
 
     public DateTime? UpdatedDate { get; set; }
 
@@ -27,5 +27,5 @@ public partial class Service
 
     public string Note { get; set; }
 
-    public virtual ICollection<CustomerService> CustomerServices { get; set; } = new List<CustomerService>();
+    public virtual ICollection<ServiceXCustomerService> ServiceXCustomerService { get; set; } = new List<ServiceXCustomerService>();
 }

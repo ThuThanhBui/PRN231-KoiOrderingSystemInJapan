@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using KoiOrderingSystemInJapan.Data.Models;
-using KoiOrderingSystemInJapan.Service.Base;
+﻿using KoiOrderingSystemInJapan.Data.Models;
 using KoiOrderingSystemInJapan.Service;
+using KoiOrderingSystemInJapan.Service.Base;
+using Microsoft.AspNetCore.Mvc;
 
 namespace KoiOrderingSystemInJapan.APIService.Controllers
 {
@@ -31,7 +25,7 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
 
         // GET: api/Users/5
         [HttpGet("{id}")]
-        public async Task<IBusinessResult> GetUser(int id)
+        public async Task<IBusinessResult> GetUser(Guid id)
         {
             var user = await _userService.GetById(id);
 

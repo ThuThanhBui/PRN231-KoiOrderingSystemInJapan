@@ -4,11 +4,6 @@ using KoiOrderingSystemInJapan.Data.Models;
 using KoiOrderingSystemInJapan.Data.Request.Payment;
 using KoiOrderingSystemInJapan.Data.Request.ServiceOrder;
 using KoiOrderingSystemInJapan.Service.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KoiOrderingSystemInJapan.Service
 {
@@ -16,6 +11,8 @@ namespace KoiOrderingSystemInJapan.Service
     {
         Task<IBusinessResult> GetAll();
         Task<IBusinessResult> GetById(Guid id);
+        Task<IBusinessResult> Create(ServiceOrder serviceOrder);
+        Task<IBusinessResult> Update(ServiceOrder serviceOrder);
         Task<IBusinessResult> Save(ServiceOrder serviceOrder);
         Task<IBusinessResult> DeleteById(Guid id);
         Task<IBusinessResult> CreatePayment(RequestPaymentServiceModel serviceOrder);
@@ -28,6 +25,10 @@ namespace KoiOrderingSystemInJapan.Service
         {
             this._unitOfWork ??= new UnitOfWork();
             this._paymentService ??= new PaymentService();
+        }
+        public Task<IBusinessResult> Create(ServiceOrder serviceOrder)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<IBusinessResult> DeleteById(Guid code)
@@ -57,6 +58,7 @@ namespace KoiOrderingSystemInJapan.Service
                 return new BusinessResult(Const.ERROR_EXCEPTION, ex.Message);
             }
         }
+
         public async Task<IBusinessResult> GetAll()
         {
             #region Business rule
@@ -136,14 +138,14 @@ namespace KoiOrderingSystemInJapan.Service
                     TotalPrice = request.TotalPrice,
                     Invoice = new Invoice
                     {
-                        Id= Guid.NewGuid(),
+                        Id = Guid.NewGuid(),
                         PaymentAmount = request.TotalPrice,
                         PaymentDate = DateTime.Now
                     }
                 };
                 var serviceOrderResult = await _unitOfWork.ServiceOrder.CreateAsync(serviceOrderEntity);
 
-                if(serviceOrderResult == 0)
+                if (serviceOrderResult == 0)
                 {
                     return new BusinessResult(Const.FAIL_CREATE_CODE, Const.FAIL_CREATE_MSG, new ServiceOrder());
                 }
@@ -157,10 +159,16 @@ namespace KoiOrderingSystemInJapan.Service
                 var result = await _paymentService.CreatePaymentAsync(momoRequest);
                 return new BusinessResult(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG, result);
 
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return new BusinessResult(Const.ERROR_EXCEPTION, ex.Message);
             }
+        }
+
+        public Task<IBusinessResult> Update(ServiceOrder serviceOrder)
+        {
+            throw new NotImplementedException();
         }
     }
 }
