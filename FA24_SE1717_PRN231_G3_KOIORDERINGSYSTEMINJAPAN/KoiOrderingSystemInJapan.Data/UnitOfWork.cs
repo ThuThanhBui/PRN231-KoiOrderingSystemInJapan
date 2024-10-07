@@ -12,7 +12,8 @@ namespace KoiOrderingSystemInJapan.Data
     {
         private KoiTravelShopContext context;
         private UserRepository userRepository;
-
+        private DeliveryRepository deliveryRepository;
+        private DeliveryDetailRepository deliveryDetailRepository;
         public UnitOfWork()
         {
             context ??= new KoiTravelShopContext();
@@ -23,6 +24,20 @@ namespace KoiOrderingSystemInJapan.Data
             get { return userRepository ??= new UserRepository(context); }
         }
 
+        public DeliveryRepository Delivery
+        {
+            get
+            {
+                return deliveryRepository ??= new DeliveryRepository(context);
+            }
+        }
+        public DeliveryDetailRepository DeliveryDetail
+        {
+            get
+            {
+                return deliveryDetailRepository ??= new DeliveryDetailRepository(context);
+            }
+        }
         ////TO-DO CODE HERE/////////////////
 
         #region Set transaction isolation levels
