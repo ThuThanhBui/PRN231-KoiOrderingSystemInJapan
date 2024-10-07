@@ -25,5 +25,8 @@ public partial class DeliveryDetail
 
     public bool IsDeleted { get; set; }
 
+    public string Note { get; set; }
+
+
     public virtual Delivery Delivery { get; set; }
 }

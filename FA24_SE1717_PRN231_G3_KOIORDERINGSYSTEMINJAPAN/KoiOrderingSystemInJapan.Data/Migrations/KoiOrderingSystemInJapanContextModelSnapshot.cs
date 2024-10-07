@@ -17,7 +17,7 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.5")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -42,9 +42,6 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UpdatedBy")
@@ -87,6 +84,7 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("TravelId")
@@ -138,11 +136,14 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool?>("PaymentReceived")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("Phone")
-                        .HasColumnType("int");
+                    b.Property<string>("Phone")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("TotalAmount")
                         .HasColumnType("decimal(10, 2)");
@@ -157,7 +158,9 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
 
                     b.HasIndex("DeliveryStaffId");
 
-                    b.HasIndex("KoiOrderId");
+                    b.HasIndex("KoiOrderId")
+                        .IsUnique()
+                        .HasFilter("[KoiOrderId] IS NOT NULL");
 
                     b.ToTable("Delivery", (string)null);
                 });
@@ -185,6 +188,9 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UpdatedBy")
@@ -231,8 +237,8 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                     b.Property<string>("Owner")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Phone")
-                        .HasColumnType("int");
+                    b.Property<string>("Phone")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -324,20 +330,30 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("DateSold")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("Dob")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Gender")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Origin")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal?>("Price")
                         .HasColumnType("decimal(10, 2)");
 
-                    b.Property<Guid?>("SizeId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -348,8 +364,6 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("SizeId");
 
                     b.ToTable("KoiFish", (string)null);
                 });
@@ -375,6 +389,9 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("Quantity")
                         .HasColumnType("int");
@@ -421,6 +438,9 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                     b.Property<Guid?>("KoiOrderId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal?>("Price")
                         .HasColumnType("decimal(10, 2)");
 
@@ -458,19 +478,23 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ProposalDetails")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("ResponseBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ResponseDate")
+                    b.Property<string>("ResponseBy")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ResponseDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid?>("SaleStaffId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Status")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("TotalPrice")
@@ -484,9 +508,9 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerServiceId");
-
-                    b.HasIndex("ResponseBy");
+                    b.HasIndex("CustomerServiceId")
+                        .IsUnique()
+                        .HasFilter("[CustomerServiceId] IS NOT NULL");
 
                     b.HasIndex("SaleStaffId");
 
@@ -554,6 +578,9 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("Quantity")
                         .HasColumnType("int");
 
@@ -608,8 +635,17 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<Guid?>("KoiFishId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal?>("SizeInCm")
-                        .HasColumnType("decimal(5, 2)");
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("SizeInGram")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -618,6 +654,10 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("KoiFishId")
+                        .IsUnique()
+                        .HasFilter("[KoiFishId] IS NOT NULL");
 
                     b.ToTable("Size", (string)null);
                 });
@@ -719,10 +759,20 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                     b.Property<string>("Firstname")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<string>("Lastname")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
@@ -732,6 +782,7 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Role")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UpdatedBy")
@@ -770,8 +821,8 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                         .HasForeignKey("DeliveryStaffId");
 
                     b.HasOne("KoiOrderingSystemInJapan.Data.Models.KoiOrder", "KoiOrder")
-                        .WithMany("Deliveries")
-                        .HasForeignKey("KoiOrderId");
+                        .WithOne("Deliveries")
+                        .HasForeignKey("KoiOrderingSystemInJapan.Data.Models.Delivery", "KoiOrderId");
 
                     b.Navigation("DeliveryStaff");
 
@@ -810,13 +861,7 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                         .WithMany("KoiFishes")
                         .HasForeignKey("CategoryId");
 
-                    b.HasOne("KoiOrderingSystemInJapan.Data.Models.Size", "Size")
-                        .WithMany("KoiFishes")
-                        .HasForeignKey("SizeId");
-
                     b.Navigation("Category");
-
-                    b.Navigation("Size");
                 });
 
             modelBuilder.Entity("KoiOrderingSystemInJapan.Data.Models.KoiOrder", b =>
@@ -852,20 +897,14 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
             modelBuilder.Entity("KoiOrderingSystemInJapan.Data.Models.Sale", b =>
                 {
                     b.HasOne("KoiOrderingSystemInJapan.Data.Models.CustomerService", "CustomerService")
-                        .WithMany("Sales")
-                        .HasForeignKey("CustomerServiceId");
-
-                    b.HasOne("KoiOrderingSystemInJapan.Data.Models.User", "ResponseByNavigation")
-                        .WithMany("SaleResponseByNavigations")
-                        .HasForeignKey("ResponseBy");
+                        .WithOne("Sale")
+                        .HasForeignKey("KoiOrderingSystemInJapan.Data.Models.Sale", "CustomerServiceId");
 
                     b.HasOne("KoiOrderingSystemInJapan.Data.Models.User", "SaleStaff")
                         .WithMany("SaleSaleStaffs")
                         .HasForeignKey("SaleStaffId");
 
                     b.Navigation("CustomerService");
-
-                    b.Navigation("ResponseByNavigation");
 
                     b.Navigation("SaleStaff");
                 });
@@ -902,6 +941,15 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                     b.Navigation("Service");
                 });
 
+            modelBuilder.Entity("KoiOrderingSystemInJapan.Data.Models.Size", b =>
+                {
+                    b.HasOne("KoiOrderingSystemInJapan.Data.Models.KoiFish", "KoiFish")
+                        .WithOne("Size")
+                        .HasForeignKey("KoiOrderingSystemInJapan.Data.Models.Size", "KoiFishId");
+
+                    b.Navigation("KoiFish");
+                });
+
             modelBuilder.Entity("KoiOrderingSystemInJapan.Data.Models.TravelFarm", b =>
                 {
                     b.HasOne("KoiOrderingSystemInJapan.Data.Models.Farm", "Farm")
@@ -928,7 +976,7 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
 
             modelBuilder.Entity("KoiOrderingSystemInJapan.Data.Models.CustomerService", b =>
                 {
-                    b.Navigation("Sales");
+                    b.Navigation("Sale");
 
                     b.Navigation("ServiceOrders");
 
@@ -957,6 +1005,8 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
             modelBuilder.Entity("KoiOrderingSystemInJapan.Data.Models.KoiFish", b =>
                 {
                     b.Navigation("OrderDetails");
+
+                    b.Navigation("Size");
                 });
 
             modelBuilder.Entity("KoiOrderingSystemInJapan.Data.Models.KoiOrder", b =>
@@ -969,11 +1019,6 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
             modelBuilder.Entity("KoiOrderingSystemInJapan.Data.Models.Service", b =>
                 {
                     b.Navigation("ServiceXCustomerService");
-                });
-
-            modelBuilder.Entity("KoiOrderingSystemInJapan.Data.Models.Size", b =>
-                {
-                    b.Navigation("KoiFishes");
                 });
 
             modelBuilder.Entity("KoiOrderingSystemInJapan.Data.Models.Travel", b =>
@@ -990,8 +1035,6 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                     b.Navigation("Deliveries");
 
                     b.Navigation("KoiOrders");
-
-                    b.Navigation("SaleResponseByNavigations");
 
                     b.Navigation("SaleSaleStaffs");
                 });

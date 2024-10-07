@@ -1,4 +1,5 @@
-﻿using KoiOrderingSystemInJapan.Data.Context;
+﻿using KoiOrderingSystemInJapan.Data;
+using KoiOrderingSystemInJapan.Data.Context;
 using KoiOrderingSystemInJapan.Data.Request.Payment;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,11 +41,11 @@ var app = builder.Build();
 
 app.UseCors("AllowSpecificOrigin");
 
-//using (var scope = app.Services.CreateScope())
-//{
-//    var context = scope.ServiceProvider.GetRequiredService<KoiOrderingSystemInJapanContext>();
-//    DummyData.SeedDatabase(context);
-//}
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<KoiOrderingSystemInJapanContext>();
+    DummyData.SeedDatabase(context);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

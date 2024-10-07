@@ -27,9 +27,11 @@ public partial class KoiOrder
 
     public bool IsDeleted { get; set; }
 
+    public string Note { get; set; }
+
     public virtual User Customer { get; set; }
 
-    public virtual ICollection<Delivery> Deliveries { get; set; } = new List<Delivery>();
+    public virtual Delivery Deliveries { get; set; }
 
     public virtual Invoice Invoice { get; set; }
 

@@ -9,7 +9,7 @@ public partial class KoiFish
 {
     public Guid Id { get; set; }
 
-    public Guid? SizeId { get; set; }
+    public DateTime Dob {  get; set; }
 
     public Guid? CategoryId { get; set; }
 
@@ -17,7 +17,13 @@ public partial class KoiFish
 
     public string Description { get; set; }
 
-    public string Gender { get; set; }
+    public string Origin { get; set; }
+
+    public string Status { get; set; } //bán hay chưa
+
+    public DateTime DateSold { get; set; }//ngày bán
+
+    public Enum.Gender Gender { get; set; }
 
     public string CreatedBy { get; set; }
 
@@ -31,7 +37,8 @@ public partial class KoiFish
 
     public virtual Category Category { get; set; }
 
+    public virtual Size Size { get; set; }
+
     public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
 
-    public virtual Size Size { get; set; }
 }

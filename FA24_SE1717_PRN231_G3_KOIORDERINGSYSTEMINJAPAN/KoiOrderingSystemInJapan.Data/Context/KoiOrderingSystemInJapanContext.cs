@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using KoiOrderingSystemInJapan.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Configuration;
+using static KoiOrderingSystemInJapan.Data.Enum;
 
 namespace KoiOrderingSystemInJapan.Data.Context;
 
@@ -85,11 +87,16 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
         modelBuilder.Entity<CustomerService>(entity =>
         {
+            var converterCustomerServiceStatus = new EnumToStringConverter<Enum.CustomerServiceStatus>();
+
             entity.HasKey(e => e.Id);
 
             entity.ToTable("CustomerService");
 
             entity.Property(e => e.Id).ValueGeneratedOnAdd().HasDefaultValueSql("NEWId()");
+
+            entity.Property(x => x.Status)
+                .HasConversion(converterCustomerServiceStatus);
 
             entity.HasOne(d => d.Customer).WithMany(p => p.CustomerServices)
                 .HasForeignKey(d => d.CustomerId)
@@ -102,6 +109,10 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
             entity.HasMany(e => e.ServiceXCustomerService)
                 .WithOne(e => e.CustomerService)
                 .HasForeignKey(e => e.CustomerServiceId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            entity.HasOne(d => d.Sale).WithOne(p => p.CustomerService)
+                .HasForeignKey<Sale>(d => d.CustomerServiceId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
@@ -118,8 +129,8 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
                 .HasForeignKey(d => d.DeliveryStaffId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
-            entity.HasOne(d => d.KoiOrder).WithMany(p => p.Deliveries)
-                .HasForeignKey(d => d.KoiOrderId)
+            entity.HasOne(d => d.KoiOrder).WithOne(p => p.Deliveries)
+                .HasForeignKey<Delivery>(d => d.KoiOrderId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
@@ -172,6 +183,8 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
         modelBuilder.Entity<KoiFish>(entity =>
         {
+            var converterGender = new EnumToStringConverter<Gender>();
+
             entity.HasKey(e => e.Id);
 
             entity.ToTable("KoiFish");
@@ -179,12 +192,15 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
             entity.Property(e => e.Id).ValueGeneratedOnAdd().HasDefaultValueSql("NEWId()");
             entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
 
+            entity.Property(x => x.Gender)
+                .HasConversion(converterGender);
+
             entity.HasOne(d => d.Category).WithMany(p => p.KoiFishes)
                 .HasForeignKey(d => d.CategoryId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
-            entity.HasOne(d => d.Size).WithMany(p => p.KoiFishes)
-                .HasForeignKey(d => d.SizeId)
+            entity.HasOne(d => d.Size).WithOne(p => p.KoiFish)
+                .HasForeignKey<Size>(d => d.KoiFishId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
@@ -226,18 +242,15 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
         modelBuilder.Entity<Sale>(entity =>
         {
+            var converterStatusSale = new EnumToStringConverter<StatusSale>();
+
             entity.HasKey(e => e.Id);
 
             entity.Property(e => e.Id).ValueGeneratedOnAdd().HasDefaultValueSql("NEWId()");
             entity.Property(e => e.TotalPrice).HasColumnType("decimal(10, 2)");
 
-            entity.HasOne(d => d.CustomerService).WithMany(p => p.Sales)
-                .HasForeignKey(d => d.CustomerServiceId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
-
-            entity.HasOne(d => d.ResponseByNavigation).WithMany(p => p.SaleResponseByNavigations)
-                .HasForeignKey(d => d.ResponseBy)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+            entity.Property(x => x.Status)
+                .HasConversion(converterStatusSale);
 
             entity.HasOne(d => d.SaleStaff).WithMany(p => p.SaleSaleStaffs)
                 .HasForeignKey(d => d.SaleStaffId)
@@ -277,16 +290,6 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
-        modelBuilder.Entity<Size>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-
-            entity.ToTable("Size");
-
-            entity.Property(e => e.Id).ValueGeneratedOnAdd().HasDefaultValueSql("NEWId()");
-            entity.Property(e => e.SizeInCm).HasColumnType("decimal(5, 2)");
-        });
-
         modelBuilder.Entity<Travel>(entity =>
         {
             entity.HasKey(e => e.Id);
@@ -314,9 +317,25 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
+            var converterRole = new EnumToStringConverter<Role>();
+            var converterGender = new EnumToStringConverter<Gender>();
+
             entity.HasKey(e => e.Id);
 
             entity.ToTable("User");
+
+            entity.Property(e => e.Id).ValueGeneratedOnAdd().HasDefaultValueSql("NEWId()");
+            entity.Property(x => x.Role)
+                .HasConversion(converterRole);
+            entity.Property(x => x.Gender)
+                .HasConversion(converterGender);
+        });
+
+        modelBuilder.Entity<Size>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+
+            entity.ToTable("Size");
 
             entity.Property(e => e.Id).ValueGeneratedOnAdd().HasDefaultValueSql("NEWId()");
         });

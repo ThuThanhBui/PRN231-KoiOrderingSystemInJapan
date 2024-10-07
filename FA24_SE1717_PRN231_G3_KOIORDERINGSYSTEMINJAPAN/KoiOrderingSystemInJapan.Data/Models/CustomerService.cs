@@ -17,7 +17,7 @@ public partial class CustomerService
 
     public int? NumberOfPerson { get; set; }
 
-    public string Status { get; set; }
+    public Enum.CustomerServiceStatus Status { get; set; }
 
     public string CreatedBy { get; set; }
 
@@ -37,7 +37,7 @@ public partial class CustomerService
 
     public virtual ICollection<ServiceOrder> ServiceOrders { get; set; } = new List<ServiceOrder>();
 
-    public virtual ICollection<Sale> Sales { get; set; } = new List<Sale>();
+    public virtual Sale Sale { get; set; }
 
     public virtual ICollection<ServiceXCustomerService> ServiceXCustomerService { get; set; } = new List<ServiceXCustomerService>();
 }
