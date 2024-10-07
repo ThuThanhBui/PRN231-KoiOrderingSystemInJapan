@@ -1,23 +1,18 @@
-﻿using KoiOrderingSystemInJapan.Data.Models;
+﻿using KoiOrderingSystemInJapan.Data.Context;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KoiOrderingSystemInJapan.Data.Base
 {
     public class GenericRepository<T> where T : class
     {
-        protected KoiTravelShopContext _context;
+        protected KoiOrderingSystemInJapanContext _context;
 
         public GenericRepository()
         {
-            _context ??= new KoiTravelShopContext();
+            _context ??= new KoiOrderingSystemInJapanContext();
         }
 
-        public GenericRepository(KoiTravelShopContext context)
+        public GenericRepository(KoiOrderingSystemInJapanContext context)
         {
             _context = context;
         }

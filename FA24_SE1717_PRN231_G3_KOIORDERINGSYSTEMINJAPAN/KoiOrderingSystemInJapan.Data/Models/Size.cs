@@ -11,15 +11,15 @@ public partial class Size
 
     public decimal? SizeInCm { get; set; }
 
-    public int? CreatedBy { get; set; }
+    public string CreatedBy { get; set; }
 
     public DateTime? CreatedDate { get; set; }
 
-    public int? UpdatedBy { get; set; }
+    public string UpdatedBy { get; set; }
 
     public DateTime? UpdatedDate { get; set; }
 
-    public bool? IsDeleted { get; set; }
+    public bool IsDeleted { get; set; }
 
     public virtual ICollection<KoiFish> KoiFishes { get; set; } = new List<KoiFish>();
 }

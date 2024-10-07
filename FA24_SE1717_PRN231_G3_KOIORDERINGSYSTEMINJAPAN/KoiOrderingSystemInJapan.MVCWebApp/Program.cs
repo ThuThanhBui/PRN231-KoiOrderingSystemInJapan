@@ -1,4 +1,4 @@
-using KoiOrderingSystemInJapan.Data.Models;
+using KoiOrderingSystemInJapan.Data.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 //DI
-builder.Services.AddScoped<KoiTravelShopContext>();
+builder.Services.AddScoped<KoiOrderingSystemInJapanContext>();
 
 var app = builder.Build();
 

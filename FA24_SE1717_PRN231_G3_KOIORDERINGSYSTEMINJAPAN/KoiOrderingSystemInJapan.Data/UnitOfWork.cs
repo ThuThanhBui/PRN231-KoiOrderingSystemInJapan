@@ -1,22 +1,21 @@
-﻿using KoiOrderingSystemInJapan.Data.Models;
+﻿using KoiOrderingSystemInJapan.Data.Context;
 using KoiOrderingSystemInJapan.Data.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KoiOrderingSystemInJapan.Data
 {
     public class UnitOfWork
     {
-        private KoiTravelShopContext context;
+        private KoiOrderingSystemInJapanContext context;
         private UserRepository userRepository;
         private DeliveryRepository deliveryRepository;
         private DeliveryDetailRepository deliveryDetailRepository;
+        private InvoiceRepository invoiceRepository;
+        private ServiceOrderRepository serviceOrderRepository;
+        private SaleRepository saleRepository;
+
         public UnitOfWork()
         {
-            context ??= new KoiTravelShopContext();
+            context ??= new KoiOrderingSystemInJapanContext();
         }
 
         public UserRepository User
@@ -38,6 +37,20 @@ namespace KoiOrderingSystemInJapan.Data
                 return deliveryDetailRepository ??= new DeliveryDetailRepository(context);
             }
         }
+        public InvoiceRepository Invoice
+        {
+            get { return invoiceRepository ??= new InvoiceRepository(context); }
+        }
+        public ServiceOrderRepository ServiceOrder
+        {
+            get { return serviceOrderRepository ??= new ServiceOrderRepository(context); }
+        }
+
+        public SaleRepository Sale
+        {
+            get { return saleRepository ??= new SaleRepository(context); }
+        }
+
         ////TO-DO CODE HERE/////////////////
 
         #region Set transaction isolation levels

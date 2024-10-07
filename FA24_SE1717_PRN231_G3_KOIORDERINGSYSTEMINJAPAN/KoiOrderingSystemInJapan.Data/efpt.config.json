@@ -1,6 +1,6 @@
 ﻿{
    "CodeGenerationMode": 4,
-   "ContextClassName": "KoiTravelShopContext",
+   "ContextClassName": "KoiOrderingSystemInJapanContext",
    "ContextNamespace": null,
    "FilterSchemas": false,
    "IncludeConnectionString": true,
@@ -16,10 +16,6 @@
    "Tables": [
       {
          "Name": "[dbo].[Category]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Customer]",
          "ObjectType": 0
       },
       {

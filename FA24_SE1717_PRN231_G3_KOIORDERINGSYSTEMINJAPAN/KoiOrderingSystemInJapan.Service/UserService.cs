@@ -8,7 +8,7 @@ namespace KoiOrderingSystemInJapan.Service
     public interface IUserService
     {
         Task<IBusinessResult> GetAll();
-        Task<IBusinessResult> GetById(int id);
+        Task<IBusinessResult> GetById(Guid id);
         Task<IBusinessResult> Create(User user);
         Task<IBusinessResult> Update(User user);
         Task<IBusinessResult> Save(User user);
@@ -69,7 +69,7 @@ namespace KoiOrderingSystemInJapan.Service
             }
         }
 
-        public async Task<IBusinessResult> GetById(int id)
+        public async Task<IBusinessResult> GetById(Guid id)
         {
             try
             {

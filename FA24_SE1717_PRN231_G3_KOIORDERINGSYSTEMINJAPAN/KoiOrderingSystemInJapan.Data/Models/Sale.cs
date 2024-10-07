@@ -17,19 +17,25 @@ public partial class Sale
 
     public decimal? TotalPrice { get; set; }
 
-    public string ApprovalStatus { get; set; }
+    public string Status { get; set; }
 
-    public int? CreatedBy { get; set; }
+    public string ResponseDate { get; set; }
+
+    public Guid? ResponseBy { get; set; }
+
+    public string CreatedBy { get; set; }
 
     public DateTime? CreatedDate { get; set; }
 
-    public int? UpdatedBy { get; set; }
+    public string UpdatedBy { get; set; }
 
     public DateTime? UpdatedDate { get; set; }
 
-    public bool? IsDeleted { get; set; }
+    public bool IsDeleted { get; set; }
 
     public virtual CustomerService CustomerService { get; set; }
+
+    public virtual User ResponseByNavigation { get; set; }
 
     public virtual User SaleStaff { get; set; }
 }
