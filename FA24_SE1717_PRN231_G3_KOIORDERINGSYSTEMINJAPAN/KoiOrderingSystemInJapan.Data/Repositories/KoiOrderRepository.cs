@@ -1,4 +1,5 @@
 ﻿using KoiOrderingSystemInJapan.Data.Base;
+using KoiOrderingSystemInJapan.Data.Context;
 using KoiOrderingSystemInJapan.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
