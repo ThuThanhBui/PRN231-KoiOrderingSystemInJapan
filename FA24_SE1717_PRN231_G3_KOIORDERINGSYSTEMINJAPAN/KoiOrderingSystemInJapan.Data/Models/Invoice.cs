@@ -13,17 +13,19 @@ public partial class Invoice
 
     public DateTime? PaymentDate { get; set; }
 
-    public string CreatedBy { get; set; }
+    public string? CreatedBy { get; set; }
 
     public DateTime? CreatedDate { get; set; }
 
-    public string UpdatedBy { get; set; }
+    public string? UpdatedBy { get; set; }
 
     public DateTime? UpdatedDate { get; set; }
 
     public bool IsDeleted { get; set; }
 
-    public virtual KoiOrder KoiOrder { get; set; }
+    public string? Note { get; set; }
 
-    public virtual ServiceOrder ServiceOrder { get; set; }
+    public virtual KoiOrder? KoiOrder { get; set; }
+
+    public virtual ServiceOrder? ServiceOrder { get; set; }
 }

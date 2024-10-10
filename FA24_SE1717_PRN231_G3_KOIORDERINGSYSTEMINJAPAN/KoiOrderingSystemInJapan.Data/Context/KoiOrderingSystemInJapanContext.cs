@@ -337,6 +337,10 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
             entity.ToTable("Size");
 
+            entity.Property(e => e.SizeInCm).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.SizeInGram).HasColumnType("decimal(10, 2)");
+
+
             entity.Property(e => e.Id).ValueGeneratedOnAdd().HasDefaultValueSql("NEWId()");
         });
 

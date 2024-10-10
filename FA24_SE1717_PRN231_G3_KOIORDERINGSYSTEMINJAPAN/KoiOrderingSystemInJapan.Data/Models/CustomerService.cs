@@ -17,27 +17,27 @@ public partial class CustomerService
 
     public int? NumberOfPerson { get; set; }
 
-    public Enum.CustomerServiceStatus Status { get; set; }
+    public Enum.CustomerServiceStatus? Status { get; set; }
 
-    public string CreatedBy { get; set; }
+    public string? CreatedBy { get; set; }
 
     public DateTime? CreatedDate { get; set; }
 
-    public string UpdatedBy { get; set; }
+    public string? UpdatedBy { get; set; }
 
     public DateTime? UpdatedDate { get; set; }
 
     public bool IsDeleted { get; set; }
 
-    public string Note { get; set; }
+    public string? Note { get; set; }
 
-    public virtual User Customer { get; set; }
+    public virtual User? Customer { get; set; }
 
-    public virtual Travel Travel { get; set; }
+    public virtual Travel? Travel { get; set; }
 
     public virtual ICollection<ServiceOrder> ServiceOrders { get; set; } = new List<ServiceOrder>();
 
-    public virtual Sale Sale { get; set; }
+    public virtual Sale? Sale { get; set; }
 
     public virtual ICollection<ServiceXCustomerService> ServiceXCustomerService { get; set; } = new List<ServiceXCustomerService>();
 }

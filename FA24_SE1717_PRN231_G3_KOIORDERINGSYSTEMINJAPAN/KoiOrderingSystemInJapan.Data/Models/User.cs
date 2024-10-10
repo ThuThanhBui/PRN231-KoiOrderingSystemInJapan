@@ -9,39 +9,39 @@ public partial class User
 {
     public Guid Id { get; set; }
 
-    public string Image { get; set; }
+    public string? Image { get; set; }
 
-    public string Firstname { get; set; }
+    public string? Firstname { get; set; }
 
-    public string Lastname { get; set; }
+    public string? Lastname { get; set; }
 
     public DateOnly? Dob { get; set; }
 
-    public string Address { get; set; }
+    public string? Address { get; set; }
 
-    public Enum.Gender Gender { get; set; }
+    public Enum.Gender? Gender { get; set; }
 
-    public Enum.Role Role { get; set; }
+    public Enum.Role? Role { get; set; }
 
-    public string Username { get; set; }
+    public string? Username { get; set; }
 
-    public string Password { get; set; }
+    public string? Password { get; set; }
 
-    public string Phone { get; set; }
+    public string? Phone { get; set; }
 
-    public string Email { get; set; }
+    public string? Email { get; set; }
 
-    public string CreatedBy { get; set; }
+    public string? CreatedBy { get; set; }
 
     public DateTime? CreatedDate { get; set; }
 
-    public string UpdatedBy { get; set; }
+    public string? UpdatedBy { get; set; }
 
     public DateTime? UpdatedDate { get; set; }
 
     public bool IsDeleted { get; set; }
 
-    public string Note { get; set; }
+    public string? Note { get; set; }
 
     public virtual ICollection<CustomerService> CustomerServices { get; set; } = new List<CustomerService>();
 
