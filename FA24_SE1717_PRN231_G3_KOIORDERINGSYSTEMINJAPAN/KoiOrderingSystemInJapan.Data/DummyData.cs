@@ -13,8 +13,8 @@ namespace KoiOrderingSystemInJapan.Data
             GenerateTravelFarm(context, 10);
             GenerateUser(context, 50);
             GenerateService(context, 20);
-            GenerateCustomerService(context, 20);
-            GenerateServiceCustomerService(context, 20);
+            GenerateBookingRequest(context, 20);
+            GenerateServiceBookingRequest(context, 20);
             GenerateSale(context, 20);
             GenerateCategory(context, 10);
             GenerateFarmCategory(context, 30);
@@ -150,10 +150,10 @@ namespace KoiOrderingSystemInJapan.Data
             }
         }
 
-        public static void GenerateCustomerService(DbContext context, int count)
+        public static void GenerateBookingRequest(DbContext context, int count)
         {
             
-            if (!context.Set<CustomerService>().Any())
+            if (!context.Set<BookingRequest>().Any())
             {
                 // Lấy danh sách các Id đã tồn tại
                 var userIds = context.Set<User>().Where(u => u.Role == Enum.Role.Customer).Select(u => u.Id).ToList();
@@ -161,13 +161,13 @@ namespace KoiOrderingSystemInJapan.Data
                 // Lấy danh sách các Id đã tồn tại
                 var travelIds = context.Set<Travel>().Select(u => u.Id).ToList();
 
-                var fakers = new Faker<CustomerService>()
+                var fakers = new Faker<BookingRequest>()
                     .RuleFor(a => a.Id, f => Guid.NewGuid())
                     .RuleFor(a => a.CustomerId, f => f.PickRandom(userIds))
                     .RuleFor(a => a.TravelId, f => f.PickRandom(travelIds))
                     .RuleFor(a => a.QuantityService, f => f.Random.Int(1, 10))
                     .RuleFor(a => a.NumberOfPerson, f => f.Random.Int(1, 10))
-                    .RuleFor(a => a.Status, f => f.PickRandom<Enum.CustomerServiceStatus>())
+                    .RuleFor(a => a.Status, f => f.PickRandom<Enum.BookingRequestStatus>())
                     .RuleFor(s => s.CreatedBy, f => "tsql@gmail.com")
                     .RuleFor(s => s.CreatedDate, f => f.Date.Past(2))
                     .RuleFor(s => s.UpdatedBy, f => "tsql@gmail.com")
@@ -176,32 +176,32 @@ namespace KoiOrderingSystemInJapan.Data
                     .RuleFor(a => a.Note, f => f.Lorem.Sentence());
                 var list = fakers.Generate(count); 
 
-                context.Set<CustomerService>().AddRange(list); // Thêm vào cơ sở dữ liệu
+                context.Set<BookingRequest>().AddRange(list); // Thêm vào cơ sở dữ liệu
                 context.SaveChanges(); // Lưu thay đổi
             }
         }
 
-        public static void GenerateServiceCustomerService(DbContext context, int count)
+        public static void GenerateServiceBookingRequest(DbContext context, int count)
         {
 
-            if (!context.Set<ServiceXCustomerService>().Any())
+            if (!context.Set<ServiceXBookingRequest>().Any())
             {
                 // Lấy danh sách các Id đã tồn tại
                 var sIds = context.Set<Service>().Select(u => u.Id).ToList();
-                var csIds = context.Set<CustomerService>().Select(u => u.Id).ToList();
+                var csIds = context.Set<BookingRequest>().Select(u => u.Id).ToList();
 
-                var fakers = new Faker<ServiceXCustomerService>()
+                var fakers = new Faker<ServiceXBookingRequest>()
                     .RuleFor(a => a.ServiceId, f => f.PickRandom(sIds))
-                    .RuleFor(a => a.CustomerServiceId, f => f.PickRandom(csIds));
+                    .RuleFor(a => a.BookingRequestId, f => f.PickRandom(csIds));
 
                 var list = fakers.Generate(count);
 
                 // Loại bỏ các bản ghi trùng lặp
-                var distinctList = list.GroupBy(x => new { x.ServiceId, x.CustomerServiceId })
+                var distinctList = list.GroupBy(x => new { x.ServiceId, x.BookingRequestId })
                                        .Select(g => g.First()) // Chọn bản ghi đầu tiên trong nhóm trùng lặp
                                        .ToList();
 
-                context.Set<ServiceXCustomerService>().AddRange(distinctList); // Thêm vào cơ sở dữ liệu
+                context.Set<ServiceXBookingRequest>().AddRange(distinctList); // Thêm vào cơ sở dữ liệu
                 context.SaveChanges(); // Lưu thay đổi
             }
         }
@@ -212,24 +212,24 @@ namespace KoiOrderingSystemInJapan.Data
             {
                 // Lấy danh sách các Id đã tồn tại
                 var ssIds = context.Set<User>().Where(u => u.Role == Enum.Role.SaleStaff).Select(u => u.Id).ToList();
-                var csIds = context.Set<CustomerService>().Select(u => u.Id).ToList();
+                var csIds = context.Set<BookingRequest>().Select(u => u.Id).ToList();
                 var mIds = context.Set<User>().Where(u => u.Role == Enum.Role.Manager).Select(u => u.Firstname + " " + u.Lastname).ToList();
 
-                var usedCustomerServiceIds = new HashSet<Guid>(); // Dùng HashSet để lưu trữ CustomerServiceId đã sử dụng
+                var usedBookingRequestIds = new HashSet<Guid>(); // Dùng HashSet để lưu trữ BookingRequestId đã sử dụng
 
                 var fakers = new Faker<Sale>()
                     .RuleFor(a => a.Id, f => Guid.NewGuid())
                     .RuleFor(a => a.SaleStaffId, f => f.PickRandom(ssIds))
-                    .RuleFor(a => a.CustomerServiceId, f =>
+                    .RuleFor(a => a.BookingRequestId, f =>
                     {
-                        // Tìm một CustomerServiceId chưa được sử dụng
+                        // Tìm một BookingRequestId chưa được sử dụng
                         Guid customerServiceId;
                         do
                         {
                             customerServiceId = f.PickRandom(csIds);
-                        } while (usedCustomerServiceIds.Contains(customerServiceId));
+                        } while (usedBookingRequestIds.Contains(customerServiceId));
 
-                        usedCustomerServiceIds.Add(customerServiceId); // Thêm vào danh sách đã sử dụng
+                        usedBookingRequestIds.Add(customerServiceId); // Thêm vào danh sách đã sử dụng
                         return customerServiceId;
                     })
                     .RuleFor(a => a.ResponseBy, f => f.PickRandom(mIds))
@@ -386,14 +386,14 @@ namespace KoiOrderingSystemInJapan.Data
             if (!context.Set<ServiceOrder>().Any())
             {
                 // Lấy danh sách các Id đã tồn tại
-                var csIds = context.Set<CustomerService>().Select(u => u.Id).ToList();
+                var csIds = context.Set<BookingRequest>().Select(u => u.Id).ToList();
 
                 // Lấy danh sách các Id đã tồn tại
                 var iIds = context.Set<Invoice>().Select(u => u.Id).ToList();
 
                 var fakers = new Faker<ServiceOrder>()
                     .RuleFor(a => a.Id, f => Guid.NewGuid())
-                    .RuleFor(a => a.CustomerServiceId, f => f.PickRandom(csIds))
+                    .RuleFor(a => a.BookingRequestId, f => f.PickRandom(csIds))
                     .RuleFor(a => a.InvoiceId, f => f.PickRandom(iIds))
                     .RuleFor(a => a.Quantity, f => f.Random.Int(1, 10))
                     .RuleFor(a => a.TotalPrice, f => f.Random.Decimal(100, 10000))

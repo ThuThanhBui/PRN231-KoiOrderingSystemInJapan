@@ -91,7 +91,7 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "Status",
-                table: "CustomerService",
+                table: "BookingRequest",
                 type: "nvarchar(max)",
                 nullable: true,
                 oldClrType: typeof(string),
@@ -199,7 +199,7 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
 
             migrationBuilder.AlterColumn<string>(
                 name: "Status",
-                table: "CustomerService",
+                table: "BookingRequest",
                 type: "nvarchar(max)",
                 nullable: false,
                 defaultValue: "",

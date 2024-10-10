@@ -23,7 +23,7 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
     public virtual DbSet<Category> Categories { get; set; }
 
-    public virtual DbSet<CustomerService> CustomerServices { get; set; }
+    public virtual DbSet<BookingRequest> BookingRequests { get; set; }
 
     public virtual DbSet<Delivery> Deliveries { get; set; }
 
@@ -79,40 +79,40 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
             entity.Property(e => e.Id).ValueGeneratedOnAdd().HasDefaultValueSql("NEWId()");
         });
 
-        modelBuilder.Entity<ServiceXCustomerService>(entity =>
+        modelBuilder.Entity<ServiceXBookingRequest>(entity =>
         {
-            entity.HasKey(e => new { e.ServiceId, e.CustomerServiceId });
-            entity.ToTable("ServiceXCustomerService");
+            entity.HasKey(e => new { e.ServiceId, e.BookingRequestId });
+            entity.ToTable("ServiceXBookingRequest");
         });
 
-        modelBuilder.Entity<CustomerService>(entity =>
+        modelBuilder.Entity<BookingRequest>(entity =>
         {
-            var converterCustomerServiceStatus = new EnumToStringConverter<Enum.CustomerServiceStatus>();
+            var converterBookingRequestStatus = new EnumToStringConverter<Enum.BookingRequestStatus>();
 
             entity.HasKey(e => e.Id);
 
-            entity.ToTable("CustomerService");
+            entity.ToTable("BookingRequest");
 
             entity.Property(e => e.Id).ValueGeneratedOnAdd().HasDefaultValueSql("NEWId()");
 
             entity.Property(x => x.Status)
-                .HasConversion(converterCustomerServiceStatus);
+                .HasConversion(converterBookingRequestStatus);
 
-            entity.HasOne(d => d.Customer).WithMany(p => p.CustomerServices)
+            entity.HasOne(d => d.Customer).WithMany(p => p.BookingRequests)
                 .HasForeignKey(d => d.CustomerId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
-            entity.HasOne(d => d.Travel).WithMany(p => p.CustomerServices)
+            entity.HasOne(d => d.Travel).WithMany(p => p.BookingRequests)
                 .HasForeignKey(d => d.TravelId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
-            entity.HasMany(e => e.ServiceXCustomerService)
-                .WithOne(e => e.CustomerService)
-                .HasForeignKey(e => e.CustomerServiceId)
+            entity.HasMany(e => e.ServiceXBookingRequest)
+                .WithOne(e => e.BookingRequest)
+                .HasForeignKey(e => e.BookingRequestId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
-            entity.HasOne(d => d.Sale).WithOne(p => p.CustomerService)
-                .HasForeignKey<Sale>(d => d.CustomerServiceId)
+            entity.HasOne(d => d.Sale).WithOne(p => p.BookingRequest)
+                .HasForeignKey<Sale>(d => d.BookingRequestId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
@@ -266,7 +266,7 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
             entity.Property(e => e.Id).ValueGeneratedOnAdd().HasDefaultValueSql("NEWId()");
             entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
 
-            entity.HasMany(e => e.ServiceXCustomerService)
+            entity.HasMany(e => e.ServiceXBookingRequest)
                 .WithOne(e => e.Service)
                 .HasForeignKey(e => e.ServiceId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
@@ -281,8 +281,8 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
             entity.Property(e => e.Id).ValueGeneratedOnAdd().HasDefaultValueSql("NEWId()");
             entity.Property(e => e.TotalPrice).HasColumnType("decimal(10, 2)");
 
-            entity.HasOne(d => d.CustomerService).WithMany(p => p.ServiceOrders)
-                .HasForeignKey(d => d.CustomerServiceId)
+            entity.HasOne(d => d.BookingRequest).WithMany(p => p.ServiceOrders)
+                .HasForeignKey(d => d.BookingRequestId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
             entity.HasOne(d => d.Invoice).WithOne(p => p.ServiceOrder)

@@ -12,7 +12,7 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
 
         public async Task<List<Sale>> GetAllAsync()
         {
-            return await _context.Sales.Include(e => e.CustomerService).Include(e => e.SaleStaff).ToListAsync();
+            return await _context.Sales.Include(e => e.BookingRequest).Include(e => e.SaleStaff).ToListAsync();
         }
     }
 }
