@@ -15,7 +15,7 @@ namespace KoiOrderingSystemInJapan.Data
             Rejected
         }
 
-        public enum CustomerServiceStatus
+        public enum BookingRequestStatus
         {
             Pending,
             Approved,

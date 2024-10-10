@@ -222,7 +222,7 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CustomerService",
+                name: "BookingRequest",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWId()"),
@@ -240,14 +240,14 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CustomerService", x => x.Id);
+                    table.PrimaryKey("PK_BookingRequest", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CustomerService_Travel_TravelId",
+                        name: "FK_BookingRequest_Travel_TravelId",
                         column: x => x.TravelId,
                         principalTable: "Travel",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_CustomerService_User_CustomerId",
+                        name: "FK_BookingRequest_User_CustomerId",
                         column: x => x.CustomerId,
                         principalTable: "User",
                         principalColumn: "Id");
@@ -314,7 +314,7 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWId()"),
-                    CustomerServiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    BookingRequestId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     SaleStaffId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ProposalDetails = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TotalPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: true),
@@ -332,9 +332,9 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                 {
                     table.PrimaryKey("PK_Sales", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Sales_CustomerService_CustomerServiceId",
-                        column: x => x.CustomerServiceId,
-                        principalTable: "CustomerService",
+                        name: "FK_Sales_BookingRequest_BookingRequestId",
+                        column: x => x.BookingRequestId,
+                        principalTable: "BookingRequest",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Sales_User_SaleStaffId",
@@ -348,7 +348,7 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWId()"),
-                    CustomerServiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    BookingRequestId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     InvoiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Quantity = table.Column<int>(type: "int", nullable: true),
                     TotalPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: true),
@@ -363,9 +363,9 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                 {
                     table.PrimaryKey("PK_ServiceOrder", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ServiceOrder_CustomerService_CustomerServiceId",
-                        column: x => x.CustomerServiceId,
-                        principalTable: "CustomerService",
+                        name: "FK_ServiceOrder_BookingRequest_BookingRequestId",
+                        column: x => x.BookingRequestId,
+                        principalTable: "BookingRequest",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_ServiceOrder_Invoice_InvoiceId",
@@ -375,22 +375,22 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ServiceXCustomerService",
+                name: "ServiceXBookingRequest",
                 columns: table => new
                 {
                     ServiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CustomerServiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    BookingRequestId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ServiceXCustomerService", x => new { x.ServiceId, x.CustomerServiceId });
+                    table.PrimaryKey("PK_ServiceXBookingRequest", x => new { x.ServiceId, x.BookingRequestId });
                     table.ForeignKey(
-                        name: "FK_ServiceXCustomerService_CustomerService_CustomerServiceId",
-                        column: x => x.CustomerServiceId,
-                        principalTable: "CustomerService",
+                        name: "FK_ServiceXBookingRequest_BookingRequest_BookingRequestId",
+                        column: x => x.BookingRequestId,
+                        principalTable: "BookingRequest",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_ServiceXCustomerService_Service_ServiceId",
+                        name: "FK_ServiceXBookingRequest_Service_ServiceId",
                         column: x => x.ServiceId,
                         principalTable: "Service",
                         principalColumn: "Id");
@@ -487,13 +487,13 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_CustomerService_CustomerId",
-                table: "CustomerService",
+                name: "IX_BookingRequest_CustomerId",
+                table: "BookingRequest",
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CustomerService_TravelId",
-                table: "CustomerService",
+                name: "IX_BookingRequest_TravelId",
+                table: "BookingRequest",
                 column: "TravelId");
 
             migrationBuilder.CreateIndex(
@@ -546,11 +546,11 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                 column: "KoiOrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Sales_CustomerServiceId",
+                name: "IX_Sales_BookingRequestId",
                 table: "Sales",
-                column: "CustomerServiceId",
+                column: "BookingRequestId",
                 unique: true,
-                filter: "[CustomerServiceId] IS NOT NULL");
+                filter: "[BookingRequestId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Sales_SaleStaffId",
@@ -558,9 +558,9 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                 column: "SaleStaffId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ServiceOrder_CustomerServiceId",
+                name: "IX_ServiceOrder_BookingRequestId",
                 table: "ServiceOrder",
-                column: "CustomerServiceId");
+                column: "BookingRequestId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ServiceOrder_InvoiceId",
@@ -570,9 +570,9 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                 filter: "[InvoiceId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ServiceXCustomerService_CustomerServiceId",
-                table: "ServiceXCustomerService",
-                column: "CustomerServiceId");
+                name: "IX_ServiceXBookingRequest_BookingRequestId",
+                table: "ServiceXBookingRequest",
+                column: "BookingRequestId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Size_KoiFishId",
@@ -606,7 +606,7 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                 name: "ServiceOrder");
 
             migrationBuilder.DropTable(
-                name: "ServiceXCustomerService");
+                name: "ServiceXBookingRequest");
 
             migrationBuilder.DropTable(
                 name: "Size");
@@ -618,7 +618,7 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                 name: "Delivery");
 
             migrationBuilder.DropTable(
-                name: "CustomerService");
+                name: "BookingRequest");
 
             migrationBuilder.DropTable(
                 name: "Service");

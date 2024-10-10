@@ -133,7 +133,7 @@ namespace KoiOrderingSystemInJapan.Service
                 {
                     Id = Guid.NewGuid(),
                     InvoiceId = null,
-                    CustomerServiceId = request.CustomerServiceId,
+                    BookingRequestId = request.BookingRequestId,
                     Quantity = request.Quantity,
                     TotalPrice = request.TotalPrice,
                     Invoice = new Invoice

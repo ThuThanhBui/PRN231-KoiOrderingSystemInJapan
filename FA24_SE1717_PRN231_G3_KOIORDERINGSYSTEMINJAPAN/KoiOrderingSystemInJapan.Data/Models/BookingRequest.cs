@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace KoiOrderingSystemInJapan.Data.Models;
 
-public partial class CustomerService
+public partial class BookingRequest
 {
     public Guid Id { get; set; }
 
@@ -17,7 +17,7 @@ public partial class CustomerService
 
     public int? NumberOfPerson { get; set; }
 
-    public Enum.CustomerServiceStatus? Status { get; set; }
+    public Enum.BookingRequestStatus? Status { get; set; }
 
     public string? CreatedBy { get; set; }
 
@@ -39,5 +39,5 @@ public partial class CustomerService
 
     public virtual Sale? Sale { get; set; }
 
-    public virtual ICollection<ServiceXCustomerService> ServiceXCustomerService { get; set; } = new List<ServiceXCustomerService>();
+    public virtual ICollection<ServiceXBookingRequest> ServiceXBookingRequest { get; set; } = new List<ServiceXBookingRequest>();
 }
