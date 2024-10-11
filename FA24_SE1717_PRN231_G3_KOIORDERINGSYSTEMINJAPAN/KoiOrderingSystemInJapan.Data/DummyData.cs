@@ -42,7 +42,7 @@ namespace KoiOrderingSystemInJapan.Data
                     .RuleFor(s => s.UpdatedDate, f => f.Date.Recent())
                     .RuleFor(s => s.IsDeleted, f => false)
                     .RuleFor(a => a.Note, f => f.Lorem.Sentence());
-                var list = fakers.Generate(count); 
+                var list = fakers.Generate(count);
 
                 context.Set<Travel>().AddRange(list); // Thêm vào cơ sở dữ liệu
                 context.SaveChanges(); // Lưu thay đổi
@@ -66,7 +66,7 @@ namespace KoiOrderingSystemInJapan.Data
                     .RuleFor(s => s.UpdatedDate, f => f.Date.Recent())
                     .RuleFor(s => s.IsDeleted, f => false)
                     .RuleFor(a => a.Note, f => f.Lorem.Sentence());
-                var list = fakers.Generate(count); 
+                var list = fakers.Generate(count);
 
                 context.Set<Farm>().AddRange(list); // Thêm vào cơ sở dữ liệu
                 context.SaveChanges(); // Lưu thay đổi
@@ -92,7 +92,7 @@ namespace KoiOrderingSystemInJapan.Data
                     .RuleFor(s => s.UpdatedDate, f => f.Date.Recent())
                     .RuleFor(s => s.IsDeleted, f => false)
                     .RuleFor(a => a.Note, f => f.Lorem.Sentence());
-                var list = fakers.Generate(count); 
+                var list = fakers.Generate(count);
 
                 context.Set<TravelFarm>().AddRange(list); // Thêm vào cơ sở dữ liệu
                 context.SaveChanges(); // Lưu thay đổi
@@ -121,7 +121,7 @@ namespace KoiOrderingSystemInJapan.Data
                     .RuleFor(s => s.UpdatedDate, f => f.Date.Recent())
                     .RuleFor(s => s.IsDeleted, f => false)
                     .RuleFor(s => s.Note, f => f.Lorem.Sentence(1));
-                var list = fakers.Generate(count); 
+                var list = fakers.Generate(count);
 
                 context.Set<User>().AddRange(list); // Thêm vào cơ sở dữ liệu
                 context.SaveChanges(); // Lưu thay đổi
@@ -143,7 +143,7 @@ namespace KoiOrderingSystemInJapan.Data
                     .RuleFor(s => s.UpdatedDate, f => f.Date.Recent())
                     .RuleFor(s => s.IsDeleted, f => false)
                     .RuleFor(a => a.Note, f => f.Lorem.Sentence());
-                var list = fakers.Generate(count); 
+                var list = fakers.Generate(count);
 
                 context.Set<Service>().AddRange(list); // Thêm vào cơ sở dữ liệu
                 context.SaveChanges(); // Lưu thay đổi
@@ -152,7 +152,7 @@ namespace KoiOrderingSystemInJapan.Data
 
         public static void GenerateBookingRequest(DbContext context, int count)
         {
-            
+
             if (!context.Set<BookingRequest>().Any())
             {
                 // Lấy danh sách các Id đã tồn tại
@@ -174,7 +174,7 @@ namespace KoiOrderingSystemInJapan.Data
                     .RuleFor(s => s.UpdatedDate, f => f.Date.Recent())
                     .RuleFor(s => s.IsDeleted, f => false)
                     .RuleFor(a => a.Note, f => f.Lorem.Sentence());
-                var list = fakers.Generate(count); 
+                var list = fakers.Generate(count);
 
                 context.Set<BookingRequest>().AddRange(list); // Thêm vào cơ sở dữ liệu
                 context.SaveChanges(); // Lưu thay đổi
@@ -263,7 +263,7 @@ namespace KoiOrderingSystemInJapan.Data
                     .RuleFor(s => s.UpdatedBy, f => "tsql@gmail.com")
                     .RuleFor(s => s.UpdatedDate, f => f.Date.Recent())
                     .RuleFor(s => s.IsDeleted, f => false);
-                var list = fakers.Generate(count); 
+                var list = fakers.Generate(count);
 
                 context.Set<Category>().AddRange(list); // Thêm vào cơ sở dữ liệu
                 context.SaveChanges(); // Lưu thay đổi
@@ -330,7 +330,7 @@ namespace KoiOrderingSystemInJapan.Data
                     .RuleFor(s => s.Origin, f => f.Address.Country())
                     .RuleFor(s => s.DateSold, f => f.Date.Between(new DateTime(2024, 8, 1), DateTime.Now))
                     .RuleFor(s => s.Dob, f => f.Date.Between(new DateTime(2020, 1, 1), new DateTime(2024, 5, 1)));
-                var list = fakers.Generate(count); 
+                var list = fakers.Generate(count);
                 context.Set<KoiFish>().AddRange(list); // Thêm vào cơ sở dữ liệu
                 context.SaveChanges(); // Lưu thay đổi
             }
@@ -360,7 +360,7 @@ namespace KoiOrderingSystemInJapan.Data
                 context.SaveChanges(); // Lưu thay đổi
             }
         }
-        
+
         public static void GenerateInvoice(DbContext context, int count)
         {
             if (!context.Set<Invoice>().Any())
@@ -374,7 +374,7 @@ namespace KoiOrderingSystemInJapan.Data
                     .RuleFor(s => s.UpdatedBy, f => "tsql@gmail.com")
                     .RuleFor(s => s.UpdatedDate, f => f.Date.Recent())
                     .RuleFor(s => s.IsDeleted, f => false);
-                var list = fakers.Generate(count); 
+                var list = fakers.Generate(count);
 
                 context.Set<Invoice>().AddRange(list); // Thêm vào cơ sở dữ liệu
                 context.SaveChanges(); // Lưu thay đổi
@@ -403,7 +403,7 @@ namespace KoiOrderingSystemInJapan.Data
                     .RuleFor(s => s.UpdatedDate, f => f.Date.Recent())
                     .RuleFor(s => s.IsDeleted, f => false)
                     .RuleFor(s => s.Note, f => f.Lorem.Sentence(1));
-                var list = fakers.Generate(count); 
+                var list = fakers.Generate(count);
 
                 context.Set<ServiceOrder>().AddRange(list); // Thêm vào cơ sở dữ liệu
                 context.SaveChanges(); // Lưu thay đổi
@@ -412,7 +412,7 @@ namespace KoiOrderingSystemInJapan.Data
 
         public static void GenerateKoiOrder(DbContext context, int count)
         {
-            
+
             if (!context.Set<KoiOrder>().Any())
             {
                 // Lấy danh sách các Id đã tồn tại
@@ -433,7 +433,7 @@ namespace KoiOrderingSystemInJapan.Data
                     .RuleFor(s => s.UpdatedDate, f => f.Date.Recent())
                     .RuleFor(s => s.IsDeleted, f => false)
                     .RuleFor(s => s.Note, f => f.Lorem.Sentence(1));
-                var list = fakers.Generate(count); 
+                var list = fakers.Generate(count);
 
                 context.Set<KoiOrder>().AddRange(list); // Thêm vào cơ sở dữ liệu
                 context.SaveChanges(); // Lưu thay đổi
@@ -461,7 +461,7 @@ namespace KoiOrderingSystemInJapan.Data
                     .RuleFor(s => s.UpdatedDate, f => f.Date.Recent())
                     .RuleFor(s => s.IsDeleted, f => false)
                     .RuleFor(s => s.Note, f => f.Lorem.Sentence(1));
-                var list = fakers.Generate(count); 
+                var list = fakers.Generate(count);
 
                 context.Set<OrderDetail>().AddRange(list); // Thêm vào cơ sở dữ liệu
                 context.SaveChanges(); // Lưu thay đổi
@@ -470,7 +470,7 @@ namespace KoiOrderingSystemInJapan.Data
 
         public static void GenerateDelivery(DbContext context, int count)
         {
-            
+
             if (!context.Set<Delivery>().Any())
             {
                 // Lấy danh sách các Id đã tồn tại
@@ -495,7 +495,7 @@ namespace KoiOrderingSystemInJapan.Data
                     .RuleFor(s => s.UpdatedDate, f => f.Date.Recent())
                     .RuleFor(s => s.IsDeleted, f => false)
                     .RuleFor(s => s.Note, f => f.Lorem.Sentence(1));
-                var list = fakers.Generate(count); 
+                var list = fakers.Generate(count);
 
                 context.Set<Delivery>().AddRange(list); // Thêm vào cơ sở dữ liệu
                 context.SaveChanges(); // Lưu thay đổi
@@ -504,7 +504,7 @@ namespace KoiOrderingSystemInJapan.Data
 
         public static void GenerateDeliveryDetail(DbContext context, int count)
         {
-            
+
             if (!context.Set<DeliveryDetail>().Any())
             {
                 // Lấy danh sách các Id đã tồn tại
@@ -521,7 +521,7 @@ namespace KoiOrderingSystemInJapan.Data
                     .RuleFor(s => s.UpdatedDate, f => f.Date.Recent())
                     .RuleFor(s => s.IsDeleted, f => false)
                     .RuleFor(s => s.Note, f => f.Lorem.Sentence(1));
-                var list = fakers.Generate(count); 
+                var list = fakers.Generate(count);
 
                 context.Set<DeliveryDetail>().AddRange(list); // Thêm vào cơ sở dữ liệu
                 context.SaveChanges(); // Lưu thay đổi

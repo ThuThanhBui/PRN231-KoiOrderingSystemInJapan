@@ -7,7 +7,7 @@
         public decimal? TotalPrice { get; set; }
         public List<OrderItemDetail> OrderDetailList { get; set; }
     }
-    
+
     public class OrderItemDetail
     {
         public Guid? KoiFishId { get; set; }

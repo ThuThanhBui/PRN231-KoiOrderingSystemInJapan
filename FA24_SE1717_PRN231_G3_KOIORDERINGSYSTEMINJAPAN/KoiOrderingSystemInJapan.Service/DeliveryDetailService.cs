@@ -2,11 +2,6 @@
 using KoiOrderingSystemInJapan.Data;
 using KoiOrderingSystemInJapan.Data.Models;
 using KoiOrderingSystemInJapan.Service.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KoiOrderingSystemInJapan.Service
 {
@@ -24,7 +19,8 @@ namespace KoiOrderingSystemInJapan.Service
     {
         private readonly UnitOfWork _unitOfWork;
 
-        public DeliveryDetailService() {
+        public DeliveryDetailService()
+        {
             _unitOfWork ??= new UnitOfWork();
         }
         public Task<IBusinessResult> Create(DeliveryDetail delivery)
