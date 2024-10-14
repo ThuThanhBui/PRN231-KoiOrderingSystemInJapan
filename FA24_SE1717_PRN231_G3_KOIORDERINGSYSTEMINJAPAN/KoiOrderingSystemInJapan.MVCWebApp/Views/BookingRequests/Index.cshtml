@@ -1,0 +1,60 @@
+﻿@model IEnumerable<KoiOrderingSystemInJapan.Data.Models.BookingRequest>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Customer Email</th>
+            <th scope="col">Travel Name</th>
+            <th scope="col">Quantity Service</th>
+            <th scope="col">NumberOfPerson</th>
+            <th scope="col">Status</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody class="tblBookingRequests">
+    </tbody>
+</table>
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            getData();
+        })
+
+        function getData() {
+            $.ajax({
+                url: "https://localhost:7298/api/BookingRequests",
+                type:"Get",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    var html = "";
+                    $.each(result.data, function (key, item) {
+                        html += '<tr>';
+                        html += '<th scope="row">' + key + '</th>'
+                        html += '<td scope="row">' + item.customer.email +'</td>'
+                        html += '<td scope="row">' + item.travel.name +'</td>'
+                        html += '<td scope="row">' + item.quantityService + '</td>'
+                        html += '<td scope="row">' + item.numberOfPerson + '</td>'
+                        html += '<td scope="row">' + item.status + '</td>'
+                        html += '<td scope="row">' + '<a href="/BookingRequests/Details/'+ item.id + '">Details</a>' + '</td>'
+                    })
+                    $('.tblBookingRequests').html(html);
+                },
+                error: function (xhr, error) {
+                    alert(xhr.statusText);
+                }
+            })
+        }
+    </script>
+}

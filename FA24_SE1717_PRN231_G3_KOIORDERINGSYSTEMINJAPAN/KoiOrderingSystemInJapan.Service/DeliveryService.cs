@@ -2,11 +2,6 @@
 using KoiOrderingSystemInJapan.Data;
 using KoiOrderingSystemInJapan.Data.Models;
 using KoiOrderingSystemInJapan.Service.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KoiOrderingSystemInJapan.Service
 {
@@ -21,8 +16,9 @@ namespace KoiOrderingSystemInJapan.Service
     }
     public class DeliveryService : IDeliveryService
     {
-         private readonly UnitOfWork _unitOfWork;
-        public DeliveryService() {
+        private readonly UnitOfWork _unitOfWork;
+        public DeliveryService()
+        {
             _unitOfWork ??= new UnitOfWork();
         }
 
@@ -36,12 +32,12 @@ namespace KoiOrderingSystemInJapan.Service
             try
             {
                 var delivery = await _unitOfWork.Delivery.GetByIdAsync(id);
-                if(delivery!= null)
+                if (delivery != null)
                 {
                     var result = await _unitOfWork.Delivery.RemoveAsync(delivery);
                     if (result)
                     {
-                        return new BusinessResult(Const.SUCCESS_DELETE_CODE,Const.SUCCESS_DELETE_MSG, result);
+                        return new BusinessResult(Const.SUCCESS_DELETE_CODE, Const.SUCCESS_DELETE_MSG, result);
                     }
                     else
                     {
@@ -50,21 +46,22 @@ namespace KoiOrderingSystemInJapan.Service
                 }
                 else
                 {
-                    return new BusinessResult(Const.WARNING_NO_DATA_CODE,Const.WARNING_NO_DATA_MSG);
+                    return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG);
                 }
 
-            }catch (Exception ex) 
-            { 
-            return new BusinessResult(Const.ERROR_EXCEPTION,ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXCEPTION, ex.Message);
             }
         }
 
         public async Task<IBusinessResult> GetAll()
         {
             var result = await _unitOfWork.Delivery.GetAllAsync();
-            if(result != null)
+            if (result != null)
             {
-                return new BusinessResult(Const.SUCCESS_READ_CODE,Const.SUCCESS_READ_MSG, result);
+                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result);
             }
             else
             {

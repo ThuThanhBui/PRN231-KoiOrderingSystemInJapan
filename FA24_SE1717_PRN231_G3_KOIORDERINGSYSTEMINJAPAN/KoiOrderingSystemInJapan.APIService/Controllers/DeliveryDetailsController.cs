@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using KoiOrderingSystemInJapan.Data.Models;
+﻿using KoiOrderingSystemInJapan.Data.Models;
 using KoiOrderingSystemInJapan.Service;
 using KoiOrderingSystemInJapan.Service.Base;
+using Microsoft.AspNetCore.Mvc;
 
 namespace KoiOrderingSystemInJapan.APIService.Controllers
 {
@@ -15,7 +9,7 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
     [ApiController]
     public class DeliveryDetailsController : ControllerBase
     {
-      
+
         private readonly DeliveryDetailService _deliverydetailSerivce;
 
         public DeliveryDetailsController()
@@ -40,9 +34,9 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
         // PUT: api/DeliveryDetails/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IBusinessResult> PutDeliveryDetail( DeliveryDetail deliveryDetail)
+        public async Task<IBusinessResult> PutDeliveryDetail(DeliveryDetail deliveryDetail)
         {
-           
+
             return await _deliverydetailSerivce.Save(deliveryDetail);
         }
 
@@ -61,6 +55,6 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
             return await _deliverydetailSerivce.DeleteById(id);
         }
 
-     
+
     }
 }

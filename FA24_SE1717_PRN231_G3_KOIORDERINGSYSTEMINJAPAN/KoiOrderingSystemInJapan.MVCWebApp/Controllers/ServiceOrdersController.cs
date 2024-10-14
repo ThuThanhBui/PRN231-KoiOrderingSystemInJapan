@@ -17,24 +17,25 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
         // GET: ServiceOrders
         public async Task<IActionResult> Index()
         {
-            using (var httpClient = new HttpClient())
-            {
-                using (var response = await httpClient.GetAsync(Const.APIEndPoint + "ServiceOrders"))
-                {
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var content = await response.Content.ReadAsStringAsync();
-                        var result = JsonConvert.DeserializeObject<BusinessResult>(content);
-                        if (result != null)
-                        {
-                            var data = JsonConvert.DeserializeObject<List<ServiceOrder>>(result.Data.ToString());
-                            return View(data);
+            //using (var httpClient = new HttpClient())
+            //{
+            //    using (var response = await httpClient.GetAsync(Const.APIEndPoint + "ServiceOrders"))
+            //    {
+            //        if (response.IsSuccessStatusCode)
+            //        {
+            //            var content = await response.Content.ReadAsStringAsync();
+            //            var result = JsonConvert.DeserializeObject<BusinessResult>(content);
+            //            if (result != null)
+            //            {
+            //                var data = JsonConvert.DeserializeObject<List<ServiceOrder>>(result.Data.ToString());
+            //                return View(data);
 
-                        }
-                    }
-                }
-            }
-            return View(new List<ServiceOrder>());
+            //            }
+            //        }
+            //    }
+            //}
+            //return View(new List<ServiceOrder>());
+            return View();
         }
 
         // GET: ServiceOrders/Details/5
@@ -64,7 +65,7 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
         //// GET: ServiceOrders/Create
         //public IActionResult Create()
         //{
-        //    ViewData["CustomerServiceId"] = new SelectList(_context.CustomerServices, "Id", "Id");
+        //    ViewData["BookingRequestId"] = new SelectList(_context.BookingRequests, "Id", "Id");
         //    ViewData["InvoiceId"] = new SelectList(_context.Invoices, "Id", "Id");
         //    return View();
         //}
@@ -74,7 +75,7 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
         //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         //[HttpPost]
         //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("Id,CustomerServiceId,InvoiceId,Quantity,TotalPrice,CreatedBy,CreatedDate,UpdatedBy,UpdatedDate,IsDeleted")] ServiceOrder serviceOrder)
+        //public async Task<IActionResult> Create([Bind("Id,BookingRequestId,InvoiceId,Quantity,TotalPrice,CreatedBy,CreatedDate,UpdatedBy,UpdatedDate,IsDeleted")] ServiceOrder serviceOrder)
         //{
         //    if (ModelState.IsValid)
         //    {
@@ -83,7 +84,7 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
         //        await _context.SaveChangesAsync();
         //        return RedirectToAction(nameof(Index));
         //    }
-        //    ViewData["CustomerServiceId"] = new SelectList(_context.CustomerServices, "Id", "Id", serviceOrder.CustomerServiceId);
+        //    ViewData["BookingRequestId"] = new SelectList(_context.BookingRequests, "Id", "Id", serviceOrder.BookingRequestId);
         //    ViewData["InvoiceId"] = new SelectList(_context.Invoices, "Id", "Id", serviceOrder.InvoiceId);
         //    return View(serviceOrder);
         //}
@@ -101,7 +102,7 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
         //    {
         //        return NotFound();
         //    }
-        //    ViewData["CustomerServiceId"] = new SelectList(_context.CustomerServices, "Id", "Id", serviceOrder.CustomerServiceId);
+        //    ViewData["BookingRequestId"] = new SelectList(_context.BookingRequests, "Id", "Id", serviceOrder.BookingRequestId);
         //    ViewData["InvoiceId"] = new SelectList(_context.Invoices, "Id", "Id", serviceOrder.InvoiceId);
         //    return View(serviceOrder);
         //}
@@ -111,7 +112,7 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
         //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         //[HttpPost]
         //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(Guid id, [Bind("Id,CustomerServiceId,InvoiceId,Quantity,TotalPrice,CreatedBy,CreatedDate,UpdatedBy,UpdatedDate,IsDeleted")] ServiceOrder serviceOrder)
+        //public async Task<IActionResult> Edit(Guid id, [Bind("Id,BookingRequestId,InvoiceId,Quantity,TotalPrice,CreatedBy,CreatedDate,UpdatedBy,UpdatedDate,IsDeleted")] ServiceOrder serviceOrder)
         //{
         //    if (id != serviceOrder.Id)
         //    {
@@ -138,7 +139,7 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
         //        }
         //        return RedirectToAction(nameof(Index));
         //    }
-        //    ViewData["CustomerServiceId"] = new SelectList(_context.CustomerServices, "Id", "Id", serviceOrder.CustomerServiceId);
+        //    ViewData["BookingRequestId"] = new SelectList(_context.BookingRequests, "Id", "Id", serviceOrder.BookingRequestId);
         //    ViewData["InvoiceId"] = new SelectList(_context.Invoices, "Id", "Id", serviceOrder.InvoiceId);
         //    return View(serviceOrder);
         //}
@@ -152,7 +153,7 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
         //    }
 
         //    var serviceOrder = await _context.ServiceOrders
-        //        .Include(s => s.CustomerService)
+        //        .Include(s => s.BookingRequest)
         //        .Include(s => s.Invoice)
         //        .FirstOrDefaultAsync(m => m.Id == id);
         //    if (serviceOrder == null)

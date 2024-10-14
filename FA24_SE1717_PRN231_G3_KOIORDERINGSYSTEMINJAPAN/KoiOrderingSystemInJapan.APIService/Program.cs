@@ -1,4 +1,5 @@
-﻿using KoiOrderingSystemInJapan.Data.Context;
+﻿using KoiOrderingSystemInJapan.Data;
+using KoiOrderingSystemInJapan.Data.Context;
 using KoiOrderingSystemInJapan.Data.Request.Payment;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +19,10 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -40,11 +45,11 @@ var app = builder.Build();
 
 app.UseCors("AllowSpecificOrigin");
 
-//using (var scope = app.Services.CreateScope())
-//{
-//    var context = scope.ServiceProvider.GetRequiredService<KoiOrderingSystemInJapanContext>();
-//    DummyData.SeedDatabase(context);
-//}
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<KoiOrderingSystemInJapanContext>();
+    DummyData.SeedDatabase(context);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -133,7 +133,7 @@ namespace KoiOrderingSystemInJapan.Service
                 {
                     Id = Guid.NewGuid(),
                     InvoiceId = null,
-                    CustomerServiceId = request.CustomerServiceId,
+                    BookingRequestId = request.BookingRequestId,
                     Quantity = request.Quantity,
                     TotalPrice = request.TotalPrice,
                     Invoice = new Invoice
@@ -155,7 +155,6 @@ namespace KoiOrderingSystemInJapan.Service
                     OrderId = serviceOrderEntity.Id,
                     OrderType = "ServiceOrder",
                     Price = (decimal)serviceOrderEntity.TotalPrice,
-                    UserId = Guid.Parse("CEE6AF68-AD06-A429-AC1F-4DB478DF913F")
                 };
                 var result = await _paymentService.CreatePaymentAsync(momoRequest);
                 return new BusinessResult(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG, result);
