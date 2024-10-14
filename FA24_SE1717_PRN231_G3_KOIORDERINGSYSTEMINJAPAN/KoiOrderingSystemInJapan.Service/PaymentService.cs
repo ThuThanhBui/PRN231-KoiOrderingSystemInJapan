@@ -33,7 +33,7 @@ namespace KoiOrderingSystemInJapan.Service
         public async Task<MomoCreatePaymentResponseModel> CreatePaymentAsync(RequestCreateOrderModel order)
         {
             var requestId = "MMO" + DateTime.Now.ToString("yyyyMMddHHmmssfff");
-            var orderInfo = "Thanh toán " + order.OrderType;
+            var orderInfo = order.OrderType;
             CollectionLinkRequest request = new CollectionLinkRequest();
             request.orderInfo = orderInfo;
             request.partnerCode = "MOMO";
