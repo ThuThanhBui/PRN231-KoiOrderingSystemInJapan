@@ -1,8 +1,15 @@
-﻿using KoiOrderingSystemInJapan.Data.Context;
-using KoiOrderingSystemInJapan.Data.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using KoiOrderingSystemInJapan.Data.Context;
+using KoiOrderingSystemInJapan.Data.Models;
+using KoiOrderingSystemInJapan.Common;
+using KoiOrderingSystemInJapan.Service.Base;
+using Newtonsoft.Json;
 
 namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
 {
@@ -10,16 +17,32 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
     {
         private readonly KoiOrderingSystemInJapanContext _context;
 
-        public DeliveryDetailsController(KoiOrderingSystemInJapanContext context)
-        {
-            _context = context;
+        public DeliveryDetailsController()
+        { 
         }
+          
 
         // GET: DeliveryDetails
         public async Task<IActionResult> Index()
         {
-            var koiOrderingSystemInJapanContext = _context.DeliveryDetails.Include(d => d.Delivery);
-            return View(await koiOrderingSystemInJapanContext.ToListAsync());
+                using (var httpClient = new HttpClient())
+                {
+                    using (var response = await httpClient.GetAsync(Const.APIEndPoint + "DeliveryDetails"))
+                    {
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var content = await response.Content.ReadAsStringAsync();
+                            var result = JsonConvert.DeserializeObject<BusinessResult>(content);
+
+                            if (result != null && result.Data != null)
+                            {
+                                var data = JsonConvert.DeserializeObject<List<Delivery>>(result.Data.ToString());
+                                return View(data);
+                            }
+                        }
+                    }
+                }
+                return View(new List<Delivery>());
         }
 
         // GET: DeliveryDetails/Details/5
@@ -30,21 +53,29 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
                 return NotFound();
             }
 
-            var deliveryDetail = await _context.DeliveryDetails
-                .Include(d => d.Delivery)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (deliveryDetail == null)
+            using (var httpClient = new HttpClient())
             {
-                return NotFound();
-            }
+                using (var response = await httpClient.GetAsync(Const.APIEndPoint + "DeliveryDetails/" + id))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var content = await response.Content.ReadAsStringAsync();
+                        var result = JsonConvert.DeserializeObject<BusinessResult>(content);
+                        if (result != null)
+                        {
+                            var data = JsonConvert.DeserializeObject<Invoice>(result.Data.ToString());
 
-            return View(deliveryDetail);
+                            return View(data);
+                        }
+                    }
+                }
+            }
+            return NotFound();
         }
 
-        // GET: DeliveryDetails/Create
+        // GET: DeliveryDetails/Create 
         public IActionResult Create()
         {
-            ViewData["DeliveryId"] = new SelectList(_context.Deliveries, "Id", "Id");
             return View();
         }
 

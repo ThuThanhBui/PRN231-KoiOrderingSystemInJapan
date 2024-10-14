@@ -217,7 +217,7 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
                 .HasForeignKey<KoiOrder>(d => d.InvoiceId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
-
+         
         modelBuilder.Entity<OrderDetail>(entity =>
         {
             entity.HasKey(e => e.Id);
