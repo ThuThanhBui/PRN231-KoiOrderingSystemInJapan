@@ -15,6 +15,8 @@ namespace KoiOrderingSystemInJapan.Data
         private KoiOrderRepository koiOrderRepository;
         private BookingRequestRepository bookingRequestRepository;
         private ServiceRepository serviceRepository;
+        private KoiFishRepository fishRepository;
+        private CategoryRepository categoryRepository;
         public UnitOfWork()
         {
             context ??= new KoiOrderingSystemInJapanContext();
@@ -66,7 +68,14 @@ namespace KoiOrderingSystemInJapan.Data
         {
             get { return serviceRepository ??= new ServiceRepository(context); }
         }
-
+        public KoiFishRepository KoiFish
+        {
+            get { return fishRepository ??= new KoiFishRepository(context); }
+        }
+        public CategoryRepository Category
+        {
+            get { return categoryRepository ??= new CategoryRepository(context); }
+        }
         ////TO-DO CODE HERE/////////////////
 
         #region Set transaction isolation levels
