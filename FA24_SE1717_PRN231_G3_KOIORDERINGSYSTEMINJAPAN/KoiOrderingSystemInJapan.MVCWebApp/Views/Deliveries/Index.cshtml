@@ -41,13 +41,13 @@
 
         function loadDeliveries() {
             $.ajax({
-                url: '@Url.Action("GetDeliveries", "Delivery")', // Change to your actual API endpoint
+                url: "https://localhost:7298/api/Deliveries", // Change to your actual API endpoint
                 type: "GET",
                 contentType: "application/json;charset=utf-8",
                 dataType: "json",
                 success: function (result) {
                     var html = '';
-                    $.each(result, function (key, item) {
+                    $.each(result.data, function (key, item) {
                         html += '<tr>';
                         html += '<td>' + item.code + '</td>';
                         html += '<td>' + item.name + '</td>';
@@ -62,7 +62,7 @@
                         html += '<td>' + item.isDeleted + '</td>';
                         html += '<td>' + (item.deliveryStaff ? item.deliveryStaff.id : '') + '</td>';
                         html += '<td>' + (item.koiOrder ? item.koiOrder.id : '') + '</td>';
-                        html += '<td><a href="/Delivery/Edit/' + item.id + '">Edit</a> | <a href="/Delivery/Details/' + item.id + '">Details</a> | <a href="/Delivery/Delete/' + item.id + '">Delete</a></td>';
+                        html += '<td>  <a href="/Deliveries/Details/' + item.id + '">Details </a></td>';
                         html += '</tr>';
                     });
                     $('.tblDeliveries').html(html);
