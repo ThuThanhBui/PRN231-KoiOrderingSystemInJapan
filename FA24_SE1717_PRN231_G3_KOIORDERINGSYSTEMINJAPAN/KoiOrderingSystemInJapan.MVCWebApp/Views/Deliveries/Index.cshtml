@@ -12,96 +12,65 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Code)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Phone)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Address)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalAmount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PaymentReceived)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedBy)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UpdatedBy)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UpdatedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsDeleted)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DeliveryStaff)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.KoiOrder)
-            </th>
+            <th>Code</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Address</th>
+            <th>Total Amount</th>
+            <th>Payment Received</th>
+            <th>Created By</th>
+            <th>Created Date</th>
+            <th>Updated By</th>
+            <th>Updated Date</th>
+            <th>Is Deleted</th>
+            <th>Delivery Staff</th>
+            <th>Koi Order</th>
             <th></th>
         </tr>
     </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Code)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalAmount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PaymentReceived)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedBy)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UpdatedBy)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UpdatedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsDeleted)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DeliveryStaff.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.KoiOrder.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+    <tbody class="tblDeliveries">
+        <!-- AJAX-loaded content will go here -->
     </tbody>
 </table>
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function(){
+            loadDeliveries();
+        });
+
+        function loadDeliveries() {
+            $.ajax({
+                url: '@Url.Action("GetDeliveries", "Delivery")', // Change to your actual API endpoint
+                type: "GET",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    var html = '';
+                    $.each(result, function (key, item) {
+                        html += '<tr>';
+                        html += '<td>' + item.code + '</td>';
+                        html += '<td>' + item.name + '</td>';
+                        html += '<td>' + item.phone + '</td>';
+                        html += '<td>' + item.address + '</td>';
+                        html += '<td>' + item.totalAmount + '</td>';
+                        html += '<td>' + item.paymentReceived + '</td>';
+                        html += '<td>' + item.createdBy + '</td>';
+                        html += '<td>' + item.createdDate + '</td>';
+                        html += '<td>' + item.updatedBy + '</td>';
+                        html += '<td>' + item.updatedDate + '</td>';
+                        html += '<td>' + item.isDeleted + '</td>';
+                        html += '<td>' + (item.deliveryStaff ? item.deliveryStaff.id : '') + '</td>';
+                        html += '<td>' + (item.koiOrder ? item.koiOrder.id : '') + '</td>';
+                        html += '<td><a href="/Delivery/Edit/' + item.id + '">Edit</a> | <a href="/Delivery/Details/' + item.id + '">Details</a> | <a href="/Delivery/Delete/' + item.id + '">Delete</a></td>';
+                        html += '</tr>';
+                    });
+                    $('.tblDeliveries').html(html);
+                },
+                error: function (xhr, error) {
+                    alert(xhr.statusText);
+                }
+            });
+        }
+    </script>
+}

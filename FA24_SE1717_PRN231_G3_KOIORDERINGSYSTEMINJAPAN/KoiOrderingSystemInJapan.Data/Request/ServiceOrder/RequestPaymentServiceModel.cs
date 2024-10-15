@@ -2,7 +2,7 @@
 {
     public class RequestPaymentServiceModel
     {
-        public Guid CustomerServiceId { get; set; }
+        public Guid BookingRequestId { get; set; }
         public int Quantity { get; set; }
         public decimal TotalPrice { get; set; }
     }

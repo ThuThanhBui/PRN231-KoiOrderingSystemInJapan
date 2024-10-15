@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace KoiOrderingSystemInJapan.Data
+﻿namespace KoiOrderingSystemInJapan.Data
 {
     public class Enum
     {
@@ -15,7 +9,7 @@ namespace KoiOrderingSystemInJapan.Data
             Rejected
         }
 
-        public enum CustomerServiceStatus
+        public enum BookingRequestStatus
         {
             Pending,
             Approved,

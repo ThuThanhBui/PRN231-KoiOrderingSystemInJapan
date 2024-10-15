@@ -1,16 +1,9 @@
-﻿using Azure.Core;
-using KoiOrderingSystemInJapan.Common;
+﻿using KoiOrderingSystemInJapan.Common;
 using KoiOrderingSystemInJapan.Data;
 using KoiOrderingSystemInJapan.Data.Models;
 using KoiOrderingSystemInJapan.Data.Request.KoiOrder;
 using KoiOrderingSystemInJapan.Data.Request.Payment;
-using KoiOrderingSystemInJapan.Data.Request.ServiceOrder;
 using KoiOrderingSystemInJapan.Service.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KoiOrderingSystemInJapan.Service
 {
@@ -165,7 +158,7 @@ namespace KoiOrderingSystemInJapan.Service
                     Price = (decimal)koiOrder.TotalPrice,
                 };
                 var result = await _paymentService.CreatePaymentAsync(momorequest);
-               
+
                 return new BusinessResult(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG, result);
             }
             catch (Exception ex)

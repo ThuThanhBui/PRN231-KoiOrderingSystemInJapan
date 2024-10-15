@@ -19,7 +19,7 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[CustomerService]",
+         "Name": "[dbo].[BookingRequest]",
          "ObjectType": 0
       },
       {
@@ -63,7 +63,7 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[ServiceCustomerService]",
+         "Name": "[dbo].[ServiceBookingRequest]",
          "ObjectType": 0
       },
       {
