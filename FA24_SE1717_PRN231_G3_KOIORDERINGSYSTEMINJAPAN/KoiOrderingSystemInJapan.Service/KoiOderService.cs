@@ -166,5 +166,31 @@ namespace KoiOrderingSystemInJapan.Service
                 return new BusinessResult(Const.ERROR_EXCEPTION, ex.Message);
             }
         }
+
+        public async Task<IBusinessResult> UpdateOrder(RequestUpdateKoiOrderModel model)
+        {
+            var foundKoiOrder = await this.GetById(model.Id);
+            if (foundKoiOrder.Status == -1)
+            {
+                return new BusinessResult(Const.FAIL_READ_CODE, Const.FAIL_READ_MSG, new KoiOrder());
+            }
+            var updateKoiOrder = (KoiOrder)foundKoiOrder.Data;
+            updateKoiOrder.Note = model.NoteStatus;
+            var updateResult = await this.Save(updateKoiOrder);
+            if (updateResult.Status == -1)
+            {
+                return updateResult;
+            }
+            var foundOrderDetails = await _unitOfWork.OrderDetail.GetByOrderId(model.Id);
+
+            List<OrderDetail> orderDetailList = new List<OrderDetail>();
+            foreach (var orderDetail in foundOrderDetails)
+            {
+                orderDetail.Note = model.NoteStatus;
+                orderDetailList.Add(orderDetail);
+            }
+            await _unitOfWork.OrderDetail.UpdateRange(orderDetailList);
+            return new BusinessResult(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG, foundKoiOrder);
+        }
     }
 }

@@ -77,5 +77,44 @@ else
     <script>
         // You can also access model data within JavaScript if needed
         const resultCode = '@Model.ResultCode';
+        const orderInfo = '@Model.OrderInfo';
+        const orderId = '@Model.OrderId'
+        if (orderInfo === "KoiOrder") {
+            if (resultCode == 0) {
+                var orderForm = {
+                    id: orderId,
+                    noteStatus: "Success"
+                };
+                $.ajax({
+                    url: "https://localhost:7298/api/KoiOrders/update_koiOrder",
+                    type: "POST",
+                    processData: false,
+                    contentType: "application/json",
+                    data: JSON.stringify(orderForm),
+                    success: function (result) {
+                        console.log(result)
+                        alert(result.data.message);
+                    },
+                })
+            } else {
+                var orderForm = {
+                    id: orderId,
+                    noteStatus: "Fail"
+                };
+                $.ajax({
+                    url: "https://localhost:7298/api/KoiOrders/update_koiOrder",
+                    type: "POST",
+                    processData: false,
+                    contentType: "application/json",
+                    data: JSON.stringify(orderForm),
+                    success: function (result) {
+                        console.log(result)
+                        alert("Payment fail");
+                    },
+                })
+            }
+        } else {
+
+        }
     </script>
 }
