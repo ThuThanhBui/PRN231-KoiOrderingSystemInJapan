@@ -16,6 +16,7 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
         {
         }
 
+        #region Queries
         // GET: BookingRequests
         public async Task<IActionResult> Index()
         {
@@ -109,6 +110,8 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
             return new BookingRequest();
         }
 
+        #endregion
+
         // GET: BookingRequests/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
@@ -201,7 +204,7 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,CustomerId,TravelId")] BookingRequest bookingRequest)
+        public async Task<IActionResult> Edit(Guid id, BookingRequest bookingRequest)
         {
             if (id != bookingRequest.Id)
             {
@@ -211,7 +214,7 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
             {
                 using (var httpClient = new HttpClient())
                 {
-                    using (var response = await httpClient.PostAsJsonAsync(Const.APIEndPoint + "BookingRequests/", bookingRequest))
+                    using (var response = await httpClient.PutAsJsonAsync(Const.APIEndPoint + "BookingRequests/" + id, bookingRequest))
                     {
                         if (response.IsSuccessStatusCode)
                         {
@@ -226,7 +229,6 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
                 }
             }
             return View(bookingRequest);
-            return RedirectToAction(nameof(Index));
         }
 
         // GET: BookingRequests/Delete/5

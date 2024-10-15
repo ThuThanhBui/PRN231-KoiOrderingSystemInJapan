@@ -1,5 +1,6 @@
 ﻿using KoiOrderingSystemInJapan.Common;
 using KoiOrderingSystemInJapan.Data;
+using KoiOrderingSystemInJapan.Data.Models;
 using KoiOrderingSystemInJapan.Service.Base;
 using ServiceEntity = KoiOrderingSystemInJapan.Data.Models;
 namespace KoiOrderingSystemInJapan.Service
@@ -96,7 +97,8 @@ namespace KoiOrderingSystemInJapan.Service
                 }
                 else
                 {
-                    result = await _unitOfWork.Service.UpdateAsync(service);
+                    _unitOfWork.Service.Context().Entry(serviceTmp).CurrentValues.SetValues(service);
+                    result = await _unitOfWork.Service.UpdateAsync(serviceTmp);
                     if (result > 0)
                     {
                         return new BusinessResult(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG, result);
