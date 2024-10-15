@@ -1,6 +1,6 @@
 ﻿using KoiOrderingSystemInJapan.Data;
 using KoiOrderingSystemInJapan.Data.Context;
-using KoiOrderingSystemInJapan.Data.Request.Payment;
+using KoiOrderingSystemInJapan.Data.Request.Payments;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

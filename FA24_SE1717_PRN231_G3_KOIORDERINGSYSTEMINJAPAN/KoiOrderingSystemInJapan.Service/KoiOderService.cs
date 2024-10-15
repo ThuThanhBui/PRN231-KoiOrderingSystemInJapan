@@ -1,8 +1,8 @@
 ﻿using KoiOrderingSystemInJapan.Common;
 using KoiOrderingSystemInJapan.Data;
 using KoiOrderingSystemInJapan.Data.Models;
-using KoiOrderingSystemInJapan.Data.Request.KoiOrder;
-using KoiOrderingSystemInJapan.Data.Request.Payment;
+using KoiOrderingSystemInJapan.Data.Request.KoiOrders;
+using KoiOrderingSystemInJapan.Data.Request.Payments;
 using KoiOrderingSystemInJapan.Service.Base;
 
 namespace KoiOrderingSystemInJapan.Service

@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Configuration;
-using static KoiOrderingSystemInJapan.Data.Enum;
 
 namespace KoiOrderingSystemInJapan.Data.Context;
 
@@ -83,7 +82,7 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
         modelBuilder.Entity<BookingRequest>(entity =>
         {
-            var converterBookingRequestStatus = new EnumToStringConverter<Enum.BookingRequestStatus>();
+            var converterBookingRequestStatus = new EnumToStringConverter<ConstEnum.BookingRequestStatus>();
 
             entity.HasKey(e => e.Id);
 
@@ -179,7 +178,7 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
         modelBuilder.Entity<KoiFish>(entity =>
         {
-            var converterGender = new EnumToStringConverter<Gender>();
+            var converterGender = new EnumToStringConverter<ConstEnum.Gender>();
 
             entity.HasKey(e => e.Id);
 
@@ -238,7 +237,7 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
         modelBuilder.Entity<Sale>(entity =>
         {
-            var converterStatusSale = new EnumToStringConverter<StatusSale>();
+            var converterStatusSale = new EnumToStringConverter<ConstEnum.StatusSale>();
 
             entity.HasKey(e => e.Id);
 
@@ -313,8 +312,8 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            var converterRole = new EnumToStringConverter<Role>();
-            var converterGender = new EnumToStringConverter<Gender>();
+            var converterRole = new EnumToStringConverter<ConstEnum.Role>();
+            var converterGender = new EnumToStringConverter<ConstEnum.Gender>();
 
             entity.HasKey(e => e.Id);
 
