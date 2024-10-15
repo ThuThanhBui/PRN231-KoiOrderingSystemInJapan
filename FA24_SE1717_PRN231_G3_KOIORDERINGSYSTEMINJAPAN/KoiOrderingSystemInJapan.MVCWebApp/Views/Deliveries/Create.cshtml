@@ -87,5 +87,15 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            loadData();
+        });
+
+        $ajax({
+            url:  ,
+            type: "GET",
+        })
+    </script>
+
 }

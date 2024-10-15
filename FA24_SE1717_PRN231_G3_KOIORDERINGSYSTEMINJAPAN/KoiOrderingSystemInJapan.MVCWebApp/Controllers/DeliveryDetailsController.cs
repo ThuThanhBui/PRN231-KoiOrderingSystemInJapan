@@ -36,7 +36,7 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
 
                             if (result != null && result.Data != null)
                             {
-                                var data = JsonConvert.DeserializeObject<List<Delivery>>(result.Data.ToString());
+                                var data = JsonConvert.DeserializeObject<List<DeliveryDetail>>(result.Data.ToString());
                                 return View(data);
                             }
                         }
@@ -63,7 +63,7 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
                         var result = JsonConvert.DeserializeObject<BusinessResult>(content);
                         if (result != null)
                         {
-                            var data = JsonConvert.DeserializeObject<Invoice>(result.Data.ToString());
+                            var data = JsonConvert.DeserializeObject<DeliveryDetail>(result.Data.ToString());
 
                             return View(data);
                         }

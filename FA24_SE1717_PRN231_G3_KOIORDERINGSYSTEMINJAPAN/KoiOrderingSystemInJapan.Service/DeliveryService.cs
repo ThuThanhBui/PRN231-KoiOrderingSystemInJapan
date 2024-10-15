@@ -58,7 +58,7 @@ namespace KoiOrderingSystemInJapan.Service
 
         public async Task<IBusinessResult> GetAll()
         {
-            var result = await _unitOfWork.Delivery.GetAllAsync();
+            var result = await _unitOfWork.Delivery.GetAll();
             if (result != null)
             {
                 return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result);
