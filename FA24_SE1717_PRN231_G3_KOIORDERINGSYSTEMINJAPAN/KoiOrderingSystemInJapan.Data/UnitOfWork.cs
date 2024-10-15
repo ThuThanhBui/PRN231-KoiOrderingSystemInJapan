@@ -15,6 +15,7 @@ namespace KoiOrderingSystemInJapan.Data
         private KoiOrderRepository koiOrderRepository;
         private BookingRequestRepository bookingRequestRepository;
         private ServiceRepository serviceRepository;
+        private OrderDetailRepository orderDetailRepository;
         public UnitOfWork()
         {
             context ??= new KoiOrderingSystemInJapanContext();
@@ -65,6 +66,11 @@ namespace KoiOrderingSystemInJapan.Data
         public ServiceRepository Service
         {
             get { return serviceRepository ??= new ServiceRepository(context); }
+        }
+
+        public OrderDetailRepository OrderDetail
+        {
+            get { return orderDetailRepository ??= new OrderDetailRepository(context); }
         }
 
         ////TO-DO CODE HERE/////////////////
