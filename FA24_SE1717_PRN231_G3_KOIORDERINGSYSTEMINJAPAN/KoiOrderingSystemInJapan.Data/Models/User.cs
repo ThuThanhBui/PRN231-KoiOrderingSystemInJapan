@@ -14,9 +14,9 @@ public partial class User
 
     public string? Address { get; set; }
 
-    public Enum.Gender? Gender { get; set; }
+    public ConstEnum.Gender? Gender { get; set; }
 
-    public Enum.Role? Role { get; set; }
+    public ConstEnum.Role? Role { get; set; }
 
     public string? Username { get; set; }
 

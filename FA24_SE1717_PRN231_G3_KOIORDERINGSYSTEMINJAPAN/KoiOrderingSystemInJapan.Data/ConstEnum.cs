@@ -1,6 +1,6 @@
 ﻿namespace KoiOrderingSystemInJapan.Data
 {
-    public class Enum
+    public class ConstEnum
     {
         public enum StatusSale
         {

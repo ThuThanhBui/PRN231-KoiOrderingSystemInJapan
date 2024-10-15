@@ -1,4 +1,4 @@
-﻿using KoiOrderingSystemInJapan.Data.Request.Payment;
+﻿using KoiOrderingSystemInJapan.Data.Request.Payments;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers

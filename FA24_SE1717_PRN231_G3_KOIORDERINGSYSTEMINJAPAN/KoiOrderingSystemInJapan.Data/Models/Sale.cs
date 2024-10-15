@@ -12,11 +12,11 @@ public partial class Sale
 
     public decimal? TotalPrice { get; set; }
 
-    public Enum.StatusSale? Status { get; set; }
+    public ConstEnum.StatusSale? Status { get; set; }
 
     public DateTime? ResponseDate { get; set; }
 
-    public string? ResponseBy { get; set; } //manager name
+    public string? ResponseBy { get; set; }
 
     public string? CreatedBy { get; set; }
 

@@ -12,7 +12,7 @@ public partial class BookingRequest
 
     public int? NumberOfPerson { get; set; }
 
-    public Enum.BookingRequestStatus? Status { get; set; }
+    public ConstEnum.BookingRequestStatus? Status { get; set; }
 
     public string? CreatedBy { get; set; }
 

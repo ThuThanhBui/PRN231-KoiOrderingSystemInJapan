@@ -47,7 +47,9 @@
                         html += '<td scope="row">' + item.quantityService + '</td>'
                         html += '<td scope="row">' + item.numberOfPerson + '</td>'
                         html += '<td scope="row">' + item.status + '</td>'
+                        html += '<td scope="row">' + '<a href="/BookingRequests/Edit/'+ item.id + '">Edit</a>' + '</td>'
                         html += '<td scope="row">' + '<a href="/BookingRequests/Details/'+ item.id + '">Details</a>' + '</td>'
+                        html += '<td scope="row">' + '<a href="/BookingRequests/Delete/'+ item.id + '">Delete</a>' + '</td>'
                     })
                     $('.tblBookingRequests').html(html);
                 },

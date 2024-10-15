@@ -15,12 +15,17 @@
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="CustomerId" class="control-label"></label>
-                <select asp-for="CustomerId" class="form-control" asp-items="ViewBag.CustomerId"></select>
+                <select asp-for="CustomerId" class="form-control" asp-items="ViewBag.CustomerId" required>
+                    <option value="">-- Chọn khách hàng --</option>
+                </select>
                 <span asp-validation-for="CustomerId" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="TravelId" class="control-label"></label>
-                <select asp-for="TravelId" class="form-control" asp-items="ViewBag.TravelId"></select>
+                <select asp-for="TravelId" class="form-control" asp-items="ViewBag.TravelId" required>
+                    <option value="">-- Chọn chuyến đi --</option>
+                </select>
                 <span asp-validation-for="TravelId" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -35,7 +40,9 @@
             </div>
             <div class="form-group">
                 <label asp-for="Status" class="control-label"></label>
-                <input asp-for="Status" class="form-control" />
+                <select asp-for="Status" class="form-control" asp-items="ViewBag.StatusList">
+                    <option value="">-- Select Status --</option>
+                </select>
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
             <div class="form-group">
