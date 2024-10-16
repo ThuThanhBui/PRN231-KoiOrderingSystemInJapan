@@ -17,24 +17,24 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
         // GET: Invoices
         public async Task<IActionResult> Index()
         {
-            using (var httpClient = new HttpClient())
-            {
-                using (var response = await httpClient.GetAsync(Const.APIEndPoint + "Invoices"))
-                {
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var content = await response.Content.ReadAsStringAsync();
-                        var result = JsonConvert.DeserializeObject<BusinessResult>(content);
-                        if (result != null)
-                        {
-                            var data = JsonConvert.DeserializeObject<List<Invoice>>(result.Data.ToString());
-                            return View(data);
+            //using (var httpClient = new HttpClient())
+            //{
+            //    using (var response = await httpClient.GetAsync(Const.APIEndPoint + "Invoices"))
+            //    {
+            //        if (response.IsSuccessStatusCode)
+            //        {
+            //            var content = await response.Content.ReadAsStringAsync();
+            //            var result = JsonConvert.DeserializeObject<BusinessResult>(content);
+            //            if (result != null)
+            //            {
+            //                var data = JsonConvert.DeserializeObject<List<Invoice>>(result.Data.ToString());
+            //                return View(data);
 
-                        }
-                    }
-                }
-            }
-            return View(new List<Invoice>());
+            //            }
+            //        }
+            //    }
+            //}
+            return View();
         }
 
         // GET: Invoices/Details/5

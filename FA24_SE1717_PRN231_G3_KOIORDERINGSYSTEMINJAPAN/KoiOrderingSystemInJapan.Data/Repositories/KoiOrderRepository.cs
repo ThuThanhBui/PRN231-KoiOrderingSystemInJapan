@@ -23,7 +23,6 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
                 .Include(y => y.Customer)
                 .Include(h => h.Deliveries)
                 .FirstOrDefaultAsync(x => x.Id == id);
-
         }
     }
 }
