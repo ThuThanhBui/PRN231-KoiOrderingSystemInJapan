@@ -12,6 +12,11 @@ namespace KoiOrderingSystemInJapan.Data.Base
             _context ??= new KoiOrderingSystemInJapanContext();
         }
 
+        public KoiOrderingSystemInJapanContext Context()
+        {
+            return _context;
+        }
+
         public GenericRepository(KoiOrderingSystemInJapanContext context)
         {
             _context = context;

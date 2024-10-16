@@ -1,4 +1,4 @@
-﻿using KoiOrderingSystemInJapan.Data.Request.Payment;
+﻿using KoiOrderingSystemInJapan.Data.Request.Payments;
 using Newtonsoft.Json;
 using RestSharp;
 using System.Security.Cryptography;
@@ -32,7 +32,7 @@ namespace KoiOrderingSystemInJapan.Service
 
         public async Task<MomoCreatePaymentResponseModel> CreatePaymentAsync(RequestCreateOrderModel order)
         {
-            var requestId = "MMO" + DateTime.Now.ToString("yyyyMMddHHmmssfff");
+            var requestId = "MMO" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + order.OrderId.ToString();
             var orderInfo = order.OrderType;
             CollectionLinkRequest request = new CollectionLinkRequest();
             request.orderInfo = orderInfo;

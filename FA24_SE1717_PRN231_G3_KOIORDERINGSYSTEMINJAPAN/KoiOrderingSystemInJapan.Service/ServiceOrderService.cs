@@ -1,8 +1,8 @@
 ﻿using KoiOrderingSystemInJapan.Common;
 using KoiOrderingSystemInJapan.Data;
 using KoiOrderingSystemInJapan.Data.Models;
-using KoiOrderingSystemInJapan.Data.Request.Payment;
-using KoiOrderingSystemInJapan.Data.Request.ServiceOrder;
+using KoiOrderingSystemInJapan.Data.Request.Payments;
+using KoiOrderingSystemInJapan.Data.Request.ServiceOrders;
 using KoiOrderingSystemInJapan.Service.Base;
 
 namespace KoiOrderingSystemInJapan.Service
@@ -151,10 +151,10 @@ namespace KoiOrderingSystemInJapan.Service
                 }
                 var momoRequest = new RequestCreateOrderModel
                 {
-                    Buy_date = DateTime.Now,
-                    OrderId = serviceOrderEntity.Id,
-                    OrderType = "ServiceOrder",
-                    Price = (decimal)serviceOrderEntity.TotalPrice,
+                   Buy_date = DateTime.Now,
+                   OrderId = serviceOrderEntity.Id,
+                   OrderType = "ServiceOrder",
+                   Price = (decimal)serviceOrderEntity.TotalPrice,
                 };
                 var result = await _paymentService.CreatePaymentAsync(momoRequest);
                 return new BusinessResult(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG, result);

@@ -1,5 +1,5 @@
 ﻿using KoiOrderingSystemInJapan.Data.Models;
-using KoiOrderingSystemInJapan.Data.Request.KoiOrder;
+using KoiOrderingSystemInJapan.Data.Request.KoiOrders;
 using KoiOrderingSystemInJapan.Service;
 using KoiOrderingSystemInJapan.Service.Base;
 using Microsoft.AspNetCore.Mvc;
@@ -43,11 +43,16 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
         {
             return await _koiOrderService.CreatePayment(request);
         }
-
+        [HttpPost("update_koiOrder")]
+        public async Task<IBusinessResult> UpdateKoiOrder(RequestUpdateKoiOrderModel model)
+        {
+            return await _koiOrderService.UpdateOrder(model);
+        }
         [HttpDelete("{id}")]
         public async Task<IBusinessResult> DeleteInvoice(Guid id)
         {
             return await _koiOrderService.DeleteById(id);
         }
+
     }
 }

@@ -48,24 +48,25 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
         // GET: Deliveries/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
-            using (var httpClient = new HttpClient())
-            {
-                using (var response = await httpClient.GetAsync(Const.APIEndPoint + "Deliveries/" + id))
-                {
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var content = await response.Content.ReadAsStringAsync();
-                        var result = JsonConvert.DeserializeObject<BusinessResult>(content);
+            /*   using (var httpClient = new HttpClient())
+               {
+                   using (var response = await httpClient.GetAsync(Const.APIEndPoint + "Deliveries/" + id))
+                   {
+                       if (response.IsSuccessStatusCode)
+                       {
+                           var content = await response.Content.ReadAsStringAsync();
+                           var result = JsonConvert.DeserializeObject<BusinessResult>(content);
 
-                        if (result != null && result.Data != null)
-                        {
-                            var data = JsonConvert.DeserializeObject<List<Delivery>>(result.Data.ToString());
-                            return View(data);
-                        }
-                    }
-                }
-            }
-            return View(new Delivery());
+                           if (result != null && result.Data != null)
+                           {
+                               var data = JsonConvert.DeserializeObject<List<Delivery>>(result.Data.ToString());
+                               return View(data);
+                           }
+                       }
+                   }
+               }
+               return View(new Delivery());*/
+            return View(id);
         }
 
         // GET: Deliveries/Create

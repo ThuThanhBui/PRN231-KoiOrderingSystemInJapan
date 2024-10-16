@@ -4,7 +4,7 @@ public partial class KoiFish
 {
     public Guid Id { get; set; }
 
-    public DateTime? Dob { get; set; }
+    public DateTime? Dob {  get; set; }
 
     public Guid? CategoryId { get; set; }
 
@@ -18,7 +18,7 @@ public partial class KoiFish
 
     public DateTime? DateSold { get; set; }//ngày bán
 
-    public Enum.Gender? Gender { get; set; }
+    public ConstEnum.Gender? Gender { get; set; }
 
     public string? CreatedBy { get; set; }
 
