@@ -26,6 +26,12 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
             return await _koiOrderService.GetById(id);
         }
 
+        [HttpGet("get_with_detail/{id}")]
+        public async Task<IBusinessResult> GetByIdWithOrderDetail(Guid id)
+        {
+            return await _koiOrderService.GetByIdWithOrderDetail(id);
+        }
+
         [HttpPut("{id}")]
         public async Task<IBusinessResult> PutInvoice(KoiOrder koiOrder)
         {
