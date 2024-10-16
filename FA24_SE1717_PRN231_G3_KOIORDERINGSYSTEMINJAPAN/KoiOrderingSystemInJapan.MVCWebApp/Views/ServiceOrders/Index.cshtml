@@ -1,62 +1,236 @@
-﻿@{
-    ViewData["Title"] = "Index";
-}
+﻿<div class="row">
+    <div class="col-md-10">
+        <h3 class="display-8">Service Order List</h3>
+    </div>
+    <div class="col-md-2 text-end">
+        <button type="button" class="btn btn-primary" onclick="addServiceOrder();">
+            Add New
+        </button>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr class="card-header">
+                    <th class="card-title text-center">Booking Request</th>
+                    <th class="card-title text-center">Invoice</th>
+                    <th class="card-title text-center">Quantity</th>
+                    <th class="card-title text-center">Total Price</th>
+                    <th class="card-title text-center">Is Deleted</th>
+                    <th class="card-title text-center">Note</th>
+                    <th class="card-title"></th>
+                </tr>
+            </thead>
+            <tbody class="tblServiceOrders"></tbody>
+        </table>
+    </div>
+</div>
 
-<h1>View Customer Service Order</h1>
+<div class="modal" id="serviceOrderModalAdd" tabindex="-1" aria-labelledby="serviceOrderModalLabelAdd" aria-hidden="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "frmServiceOrder" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title" id="serviceOrderModalLabelAdd">Service Order</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-6">
+                        <label>Quantity</label>
+                        <input type="number" id="QuantityAdd" name="Quantity" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label>Total Price</label>
+                        <input type="number" id="TotalPriceAdd" name="TotalPrice" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label>Note</label>
+                        <input type="text" id="NoteAdd" name="Note" class="form-control" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btSaveAddServiceOrder" type="button" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>
-                #
-            </th>
-            <th>
-                Customer Service Id
-            </th>
-            <th>
-                Invoice Id
-            </th>
-            <th>
-                Quantity
-            </th>
-            <th>
-                Total Price
-            </th>
-        </tr>
-    </thead>
-    <tbody class="tblServiceOrder">
-    </tbody>
-</table>
-
+<div class="modal" id="serviceOrderModalUpdate" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Service Order</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="serviceOrderId" />
+                <div class="mb-3">
+                    <label for="Quantity" class="form-label">Quantity</label>
+                    <input type="number" id="QuantityUpdate" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label for="TotalPrice" class="form-label">Total Price</label>
+                    <input type="number" id="TotalPriceUpdate" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label for="Note" class="form-label">Note</label>
+                    <textarea id="NoteUpdate" class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btSaveUpdateServiceOrder" type="button" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 @section scripts {
     <script type="text/javascript">
         $(document).ready(function () {
-            getData();
-        })
+            loadServiceOrders();
+        });
 
-        function getData() {
+        function loadServiceOrders() {
             $.ajax({
-                url: "https://localhost:7298/api/ServiceOrders",
-                type: "Get",
+                url: 'https://localhost:7298/api/ServiceOrders',
+                type: "GET",
                 contentType: "application/json;charset=utf-8",
                 dataType: "json",
                 success: function (result) {
-                    var html = "";
-                    console.log(result.data)
+                    var html = '';
                     $.each(result.data, function (key, item) {
                         html += '<tr>';
-                        html += '<th scope="row">' + key + '</th>';
-                        html += '<th scope="row">' + item.customerServiceId + '</th>';
-                        html += '<td scope="row">' + item.invoiceId + '</td>';
-                        html += '<td scope="row">' + item.quantity + '</td>';
-                        html += '<td scope="row">' + item.totalPrice + '</td>';
-                    })
-                    $('.tblServiceOrder').html(html);
+                        html += '<td>' + (item.bookingRequestId ?? 'N/A') + '</td>';
+                        html += '<td>' + (item.invoiceId ?? 'N/A') + '</td>';
+                        html += '<td>' + (item.quantity ?? 'N/A') + '</td>';
+                        html += '<td>' + item.totalPrice + '</td>';
+                        html += '<td>' + item.isDeleted + '</td>';
+                        html += '<td>' + item.note + '</td>';
+                        // Thêm nút Update và Delete
+                        html += `<td>
+                                <button class="btn btn-warning btn-sm me-2" onclick="getUpdateServiceOrder('${item.id}')">Update</button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteServiceOrder('${item.id}')">Delete</button></td>`;
+                        html += '</tr>';
+                    });
+                    $('.tblServiceOrders').html(html);
                 },
                 error: function (xhr, error) {
                     alert(xhr.statusText);
                 }
-            })
+            });
+        }
+
+        function addServiceOrder() {
+            $("#serviceOrderModalLabelAdd").html("Add New Service Order");
+            $('#serviceOrderModalAdd').modal('show');
+        }
+
+        $("#btSaveAddServiceOrder").click(function () {
+            const serviceOrder = {
+                quantity: $("#QuantityAdd").val(),
+                totalPrice: $("#TotalPriceAdd").val(),
+                note: $("#NoteAdd").val(),
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: 'https://localhost:7298/api/ServiceOrders',
+                contentType: "application/json;charset=utf-8",
+                data: JSON.stringify(serviceOrder),
+                success: function (result) {
+                    if (result.status >= 1) {
+                        $('#serviceOrderModalAdd').modal('hide');
+                        loadServiceOrders();
+                    }
+                    alert(result.message);
+                },
+                error: function (xhr, error) {
+                    console.log(xhr);
+                    alert('Error occurred while saving.');
+                }
+            });
+        });
+
+        function getUpdateServiceOrder(id) {
+            $.ajax({
+                url: `https://localhost:7298/api/ServiceOrders/${id}`,
+                type: "GET",
+                success: function (item) {
+                    // Kiểm tra xem item có dữ liệu hay không
+                    console.log(item);
+                    if (item.data) {
+                        $("#serviceOrderId").val(item.data.id);
+                        $("#QuantityUpdate").val(item.data.quantity);
+                        $("#TotalPriceUpdate").val(item.data.totalPrice);
+                        $("#NoteUpdate").val(item.data.note);
+
+                        // Mở modal cập nhật
+                        $('#serviceOrderModalUpdate').modal('show');
+                    } else {
+                        alert("Service order not found.");
+                    }
+                },
+                error: function (xhr, error) {
+                    console.log(xhr);
+                    alert("Failed to load service order.");
+                }
+            });
+        }
+
+        $("#btSaveUpdateServiceOrder").click(function () {
+            var serviceOrder = {
+                id: $("#serviceOrderId").val(),
+                quantity: $("#QuantityUpdate").val(),
+                totalPrice: $("#TotalPriceUpdate").val(),
+                note: $("#NoteUpdate").val()
+            };
+
+            $.ajax({
+                type: 'PUT',
+                url: `https://localhost:7298/api/ServiceOrders/${serviceOrder.id}`,
+                data: JSON.stringify(serviceOrder),
+                contentType: "application/json;charset=utf-8",
+                success: function (result) {
+                    alert("Service order updated successfully.");
+                    $('#serviceOrderModalUpdate').modal('hide');
+                    loadServiceOrders();
+                },
+                error: function (xhr, error) {
+                    console.log(xhr);
+                    alert("Failed to update service order.");
+                }
+            });
+        });
+
+        function deleteServiceOrder(id) {
+            if (confirm("Are you sure you want to delete this service order?")) {
+                $.ajax({
+                    url: `https://localhost:7298/api/ServiceOrders/${id}`,
+                    type: "DELETE",
+                    success: function (result) {
+                        alert("Service order deleted successfully.");
+                        loadServiceOrders(); // Tải lại danh sách sau khi xóa
+                    },
+                    error: function (xhr, error) {
+                        console.log(xhr);
+                        alert("Failed to delete the service order.");
+                    }
+                });
+            }
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
         }
     </script>
 }

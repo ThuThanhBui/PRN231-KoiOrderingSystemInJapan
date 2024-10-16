@@ -24,12 +24,20 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
         }
 
         // GET: api/Sales/5
-        [HttpGet("{id}")]
+        [HttpGet("get-by-id/{id}")]
         public async Task<IBusinessResult> GetSale(Guid id)
         {
             return await saleService.GetById(id);
 
         }
+
+        // GET: api/Sales/
+        //[HttpGet("{status}")]
+        //public async Task<IBusinessResult> GetSaleByStatus(String Status)
+        //{
+        //    return await saleService.GetById(id);
+
+        //}
 
         // PUT: api/Sales/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -37,8 +45,6 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
         public async Task<IBusinessResult> PutSale(Sale sale)
         {
             return await saleService.Save(sale);
-
-
         }
 
         // POST: api/Sales
@@ -47,7 +53,6 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
         public async Task<IBusinessResult> PostSale(Sale sale)
         {
             return await saleService.Save(sale);
-
         }
 
         // DELETE: api/Sales/5
@@ -55,7 +60,6 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
         public async Task<IBusinessResult> DeleteSale(Guid id)
         {
             return await saleService.DeleteById(id);
-
         }
 
     }

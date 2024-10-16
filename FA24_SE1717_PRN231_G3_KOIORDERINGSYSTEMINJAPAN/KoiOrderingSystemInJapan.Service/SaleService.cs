@@ -93,7 +93,7 @@ namespace KoiOrderingSystemInJapan.Service
             {
                 int result = -1;
 
-                var e = unitOfWork.User.GetById(sale.Id);
+                var e = unitOfWork.Sale.GetById(sale.Id);
 
                 if (e != null)
                 {

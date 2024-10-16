@@ -1,10 +1,10 @@
 ﻿<div class="row">
     <div class="col-md-10">
-        <h3 class="display-8">Sale Management</h3>
+        <h3 class="display-8">Sale List</h3>
     </div>
     <div class="col-md-2 text-end">
         <button type="button" class="btn btn-primary" onclick="add();">
-            Add New Sale
+            Add New
         </button>
     </div>
 </div>
@@ -14,12 +14,14 @@
             <thead>
                 <tr class="card-header">
                     <th class="card-title text-center">BookingRequestId</th>
-                    <th class="card-title text-center">Proposal Details</th>
-                    <th class="card-title text-center">Total Price</th>
+                    <th class="card-title text-center">Sale staff</th>
+                    <th class="card-title text-center">Proposal details</th>
+                    <th class="card-title text-center">Total price</th>
                     <th class="card-title text-center">Status</th>
-                    <th class="card-title text-center">Response Date</th>
-                    <th class="card-title text-center">Response By</th>
-                    <th class="card-title text-center">Sale Staff</th>
+                    <th class="card-title text-center">Response date</th>
+                    <th class="card-title text-center">Response by</th>
+                    <th class="card-title text-center">Is deleted</th>
+                    <th class="card-title text-center">Note</th>
                 </tr>
             </thead>
             <tbody class="tblSales">
@@ -27,57 +29,48 @@
         </table>
     </div>
 </div>
-<div class="modal" id="saleModal" tabindex="-1" aria-labelledby="saleModelLabel" aria-hidden="false">
+
+<div class="modal" id="saleModalAdd" tabindex="-1" aria-labelledby="saleModelLabelAdd" aria-hidden="false">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             @using (Html.BeginForm(null, null, FormMethod.Post, new { name = "frm", id = "frm" }))
             {
                 @Html.AntiForgeryToken()
                 <div class="modal-header">
-                    <h5 class="modal-title" id="saleModalLabel">User</h5>
+                    <h5 class="modal-title" id="saleModalLabel">Sale</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                        <input type="hidden" id="Id" />
-                    <div class="form-group row">
-                        <div class="col-md-6">
-                            <label for="1">Customer Service</label>
-                            <input type="text" id="BookingRequestId" name="BookingRequestId" class="form-control" />
-                        </div>
-                        <div class="col-md-6">
-                            <label for="1">Proposal Details</label>
-                            <input type="text" id="ProposalDetails" name="ProposalDetails" class="form-control" />
-                        </div>
-                        <div class="col-md-6">
-                            <label for="1">Total Price</label>
-                            <input type="text" id="TotalPrice" name="TotalPrice" class="form-control" />
-                        </div>
-                        
+                    <div class="col-md-6">
+                        <label for="1">Sale staff</label>
+                        <input type="text" id="saleStaff" name="saleStaff" class="form-control" />
                     </div>
-                    <div class="form-group row">
-                        <div class="col-md-6">
-                            <label for="1">Status</label>
-                            <input type="text" id="Status" name="Status" class="form-control" />
-                        </div>
-                        <div class="col-md-6">
-                            <label for="1">Response By</label>
-                            <input type="text" id="ResponseBy" name="ResponseBy" class="form-control" />
-                        </div>
-                        <div class="col-md-6">
-                            <label for="1">Response Date</label>
-                            <input type="text" id="ResponseDate" name="ResponseDate" class="form-control" />
-                        </div>
+                    <div class="col-md-6">
+                        <label for="1">Proposal details</label>
+                        <input type="text" id="proposalDetails" name="proposalDetails" class="form-control" />
                     </div>
-                    <div class="form-group row">
-                        <div class="col-md-6">
-                            <label for="1">Sale Staff</label>
-                            <input type="text" id="SaleStaffId" name="SaleStaffId" class="form-control" />
-                        </div>
+                    <div class="col-md-6">
+                        <label for="1">Total price</label>
+                        <input type="text" id="totalPrice" name="totalPrice" class="form-control" />
                     </div>
-
+                    <div class="col-md-6">
+                        <label for="1">Status</label>
+                        <input type="text" id="status" name="status" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="1">Response date</label>
+                        <input type="text" id="responseDate" name="responseDate" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="1"> Response by</label>
+                        <input type="text" id="responseBy" name="responseBy" class="form-control" />
+                    </div>
+                    <div class="col-md-6"><label for="1">Note</label>
+                        <input type="text" id="note" name="note" class="form-control" />
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button id="btSave" type="button" class="btn btn-primary">Save</button>
+                    <button id="btSaveAddSale" type="button" class="btn btn-primary">Save</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             }
@@ -85,6 +78,50 @@
     </div>
 </div>
 
+<div class="modal" id="saleModalUpdate" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Sale</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-6">
+                    <label for="1">Sale staff</label>
+                    <input type="text" id="saleStaff" name="saleStaff" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label for="1">Proposal details</label>
+                    <input type="text" id="proposalDetails" name="proposalDetails" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label for="1">Total price</label>
+                    <input type="text" id="totalPrice" name="totalPrice" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label for="1">Status</label>
+                    <input type="text" id="status" name="status" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label for="1">Response date</label>
+                    <input type="text" id="responseDate" name="responseDate" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label for="1"> Response by</label>
+                    <input type="text" id="responseBy" name="responseBy" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label for="1">Note</label>
+                    <input type="text" id="note" name="note" class="form-control" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btSaveUpdateSale" type="button" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 @section scripts {
     <script type="text/javascript">
         $(document).ready(function () {
@@ -99,15 +136,22 @@
                 dataType: "json",
                 success: function (result) {
                     var html = '';
+                    console.log(result.data);
                     $.each(result.data, function (key, item) {
                         html += '<tr>';
-                        html += '<td>' + item.customerServiceId + '</td>';
+                        html += '<td>' + item.bookingRequestId + '</td>';
+                        html += '<td>' + item.saleStaff.firstname + " " + item.saleStaff.lastname + '</td>';
                         html += '<td>' + item.proposalDetails + '</td>';
                         html += '<td>' + item.totalPrice + '</td>';
                         html += '<td>' + item.status + '</td>';
-                        html += '<td>' + item.responseDate + '</td>';
-                        html += '<td>' + item.responseByNavigation.firstname + ' ' + item.responseByNavigation.firstname '</td>';
-                        html += '<td>' + item.saleStaff.firstname + ' ' + item.saleStaff.lastname + '</td>';
+                        html += '<td>' + formatDate(item.responseDate) + '</td>';
+                        html += '<td>' + item.responseBy + '</td>';
+                        html += '<td>' + item.isDeleted + '</td>';
+                        html += '<td>' + item.note + '</td>';
+                        // Thêm nút Update và Delete
+                        html += `<td>
+                                    <button class="btn btn-warning btn-sm me-2" onclick="getUpdateSale('${item.id}')">Update</button>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteSale('${item.id}')">Delete</button></td>`;
                         html += '</tr>';
                     });
                     $('.tblSales').html(html);
@@ -118,36 +162,120 @@
             });
         }
 
-        $("#btSave").click(function () {
-            var formData = new FormData();
-            formData.append("CurrencyCode", $("#CurrencyCode").val());
-            formData.append("CurrencyName", $("#CurrencyName").val());
-            formData.append("NationCode", $("#NationCode").val());
+        function add() {
+            $("#saleModalLabelAdd").html("Add New");
+            $('#saleModal').modal('show');
+        }
 
-            console.log(formData);
+        $("#btSaveAddSale").click(function () {
+            const sale = {
+                ProposalDetails: $("#proposalDetails").val(),
+                TotalPrice: $("#totalPrice").val(),
+                Status: $("#status").val(),
+                ResponseDate: $("#responseDate").val(),
+                ResponseBy: $("#responseBy").val(),
+                Note: $("#note").val(),
+            };
 
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("Save", "Currencies")',
-                processData: false,
-                contentType: false,
-                data: formData,
+                url: 'https://localhost:7298/api/Sales',
+                contentType: "application/json;charset=utf-8",
+                data: JSON.stringify(sale),
                 success: function (result) {
                     if (result.status >= 1) {
-                        $('#currencyModal').modal('hide');
-                        loadData();
+                        $('#saleModalAdd').modal('hide');
+                        loadServiceOrders();
                     }
                     alert(result.message);
                 },
                 error: function (xhr, error) {
                     console.log(xhr);
+                    alert('Error occurred while saving.');
                 }
-            })
+            });
         });
 
-        function add() {
-            $("#saleModalLabel").html("Add New Sale");
-            $('#saleModal').modal('show');
+        function getUpdateSale(id) {
+            $.ajax({
+                url: `https://localhost:7298/api/Sales/${id}`,
+                type: "GET",
+                success: function (item) {
+                    if (item.data) {
+                        $("#saleId").val(item.data.id);
+                        $("#proposalDetails").val(item.data.proposalDetails);
+                        $("#totalPrice").val(item.data.totalPrice);
+                        $("#responseDate").val(item.data.responseDate);
+                        $("#responseBy").val(item.data.responseBy);
+                        $("#status").val(item.data.status);
+                        $("#note").val(item.data.note);
+
+                        // Mở modal cập nhật
+                        $('#saleModalUpdate').modal('show');
+                    } else {
+                        alert("Sale not found.");
+                    }
+                },
+                error: function (xhr, error) {
+                    console.log(xhr);
+                    alert("Failed to load sale.");
+                }
+            });
+        }
+
+        $("#btSaveUpdateSale").click(function () {
+            var sale = {
+                ProposalDetails: $("#proposalDetails").val(),
+                TotalPrice: $("#totalPrice").val(),
+                Status: $("#status").val(),
+                ResponseDate: $("#responseDate").val(),
+                ResponseBy: $("#responseBy").val(),
+                Note: $("#note").val(),
+            };
+
+            $.ajax({
+                type: 'PUT',
+                url: `https://localhost:7298/api/Sales/${sale.id}`,
+                data: JSON.stringify(sale),
+                contentType: "application/json;charset=utf-8",
+                success: function (result) {
+                    alert("Sale updated successfully.");
+                    $('#saleModal').modal('hide');
+                    loadServiceOrders();
+                },
+                error: function (xhr, error) {
+                    console.log(xhr);
+                    alert("Failed to update sale.");
+                }
+            });
+        });
+
+        function deleteSale(id) {
+            if (confirm("Are you sure you want to delete this sale?")) {
+                $.ajax({
+                    url: `https://localhost:7298/api/Sales/${id}`,
+                    type: "DELETE",
+                    success: function (result) {
+                        alert("Sale deleted successfully.");
+                        loadData(); // Tải lại danh sách sau khi xóa
+                    },
+                    error: function (xhr, error) {
+                        console.log(xhr);
+                        alert("Failed to delete the sale.");
+                    }
+                });
+            }
+        }
+
+
+        // Hàm định dạng ngày thành dd/MM/yyyy
+        function formatDate(dateString) {
+            if (!dateString) return ''; // Kiểm tra nếu không có ngày
+            const date = new Date(dateString);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
         }
     </script>
 }
