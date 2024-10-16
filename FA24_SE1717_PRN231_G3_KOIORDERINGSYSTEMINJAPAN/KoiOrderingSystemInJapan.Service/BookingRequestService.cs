@@ -102,7 +102,8 @@ namespace KoiOrderingSystemInJapan.Service
                 }
                 else
                 {
-                    result = await _unitOfWork.BookingRequest.UpdateAsync(bookingRequest);
+                    _unitOfWork.BookingRequest.Context().Entry(bookingRequestTmp).CurrentValues.SetValues(bookingRequest);
+                    result = await _unitOfWork.BookingRequest.UpdateAsync(bookingRequestTmp);
                     if (result > 0)
                     {
                         return new BusinessResult(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG, result);

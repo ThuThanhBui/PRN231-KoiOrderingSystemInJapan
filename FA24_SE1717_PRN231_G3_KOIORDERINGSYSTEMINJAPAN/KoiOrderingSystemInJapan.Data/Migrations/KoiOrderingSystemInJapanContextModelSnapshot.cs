@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-
+#nullable disable
 
 namespace KoiOrderingSystemInJapan.Data.Migrations
 {
@@ -21,42 +21,6 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("KoiOrderingSystemInJapan.Data.Models.Category", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWId()");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Img")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Note")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Category", (string)null);
-                });
 
             modelBuilder.Entity("KoiOrderingSystemInJapan.Data.Models.BookingRequest", b =>
                 {
@@ -105,6 +69,39 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                     b.HasIndex("TravelId");
 
                     b.ToTable("BookingRequest", (string)null);
+                });
+
+            modelBuilder.Entity("KoiOrderingSystemInJapan.Data.Models.Category", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWId()");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Category", (string)null);
                 });
 
             modelBuilder.Entity("KoiOrderingSystemInJapan.Data.Models.Delivery", b =>
@@ -356,6 +353,9 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                     b.Property<string>("Origin")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Picture")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal?>("Price")
                         .HasColumnType("decimal(10, 2)");
 
@@ -473,14 +473,14 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWId()");
 
+                    b.Property<Guid?>("BookingRequestId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("BookingRequestId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -569,14 +569,14 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWId()");
 
+                    b.Property<Guid?>("BookingRequestId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("BookingRequestId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("InvoiceId")
                         .HasColumnType("uniqueidentifier");
@@ -971,13 +971,6 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                     b.Navigation("Travel");
                 });
 
-            modelBuilder.Entity("KoiOrderingSystemInJapan.Data.Models.Category", b =>
-                {
-                    b.Navigation("FarmCategories");
-
-                    b.Navigation("KoiFishes");
-                });
-
             modelBuilder.Entity("KoiOrderingSystemInJapan.Data.Models.BookingRequest", b =>
                 {
                     b.Navigation("Sale");
@@ -985,6 +978,13 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                     b.Navigation("ServiceOrders");
 
                     b.Navigation("ServiceXBookingRequest");
+                });
+
+            modelBuilder.Entity("KoiOrderingSystemInJapan.Data.Models.Category", b =>
+                {
+                    b.Navigation("FarmCategories");
+
+                    b.Navigation("KoiFishes");
                 });
 
             modelBuilder.Entity("KoiOrderingSystemInJapan.Data.Models.Delivery", b =>

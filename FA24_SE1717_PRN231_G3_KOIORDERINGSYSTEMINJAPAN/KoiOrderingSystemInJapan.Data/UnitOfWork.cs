@@ -15,6 +15,9 @@ namespace KoiOrderingSystemInJapan.Data
         private KoiOrderRepository koiOrderRepository;
         private BookingRequestRepository bookingRequestRepository;
         private ServiceRepository serviceRepository;
+        public TravelRepository travelRepository;
+        public FarmRepository farmRepository;
+        private OrderDetailRepository orderDetailRepository;
         private KoiFishRepository fishRepository;
         private CategoryRepository categoryRepository;
         public UnitOfWork()
@@ -68,6 +71,22 @@ namespace KoiOrderingSystemInJapan.Data
         {
             get { return serviceRepository ??= new ServiceRepository(context); }
         }
+
+        public TravelRepository Travel
+        {
+            get { return travelRepository ??= new TravelRepository(context); }
+        }
+
+        public FarmRepository Farm
+        {
+            get {return farmRepository ??= new FarmRepository(context); }
+        }
+
+        public OrderDetailRepository OrderDetail
+        {
+            get { return orderDetailRepository ??= new OrderDetailRepository(context); }
+        }
+
         public KoiFishRepository KoiFish
         {
             get { return fishRepository ??= new KoiFishRepository(context); }

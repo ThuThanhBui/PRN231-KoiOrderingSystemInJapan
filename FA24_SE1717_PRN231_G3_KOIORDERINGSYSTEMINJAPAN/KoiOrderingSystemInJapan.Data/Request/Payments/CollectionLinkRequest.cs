@@ -1,4 +1,4 @@
-﻿namespace KoiOrderingSystemInJapan.Data.Request.Payment
+﻿namespace KoiOrderingSystemInJapan.Data.Request.Payments
 {
     public class CollectionLinkRequest
     {

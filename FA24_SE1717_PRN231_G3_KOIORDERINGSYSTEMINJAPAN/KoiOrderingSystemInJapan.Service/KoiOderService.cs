@@ -1,8 +1,8 @@
 ﻿using KoiOrderingSystemInJapan.Common;
 using KoiOrderingSystemInJapan.Data;
 using KoiOrderingSystemInJapan.Data.Models;
-using KoiOrderingSystemInJapan.Data.Request.KoiOrder;
-using KoiOrderingSystemInJapan.Data.Request.Payment;
+using KoiOrderingSystemInJapan.Data.Request.KoiOrders;
+using KoiOrderingSystemInJapan.Data.Request.Payments;
 using KoiOrderingSystemInJapan.Service.Base;
 
 namespace KoiOrderingSystemInJapan.Service
@@ -14,6 +14,7 @@ namespace KoiOrderingSystemInJapan.Service
         Task<IBusinessResult> Save(KoiOrder koiOrder);
         Task<IBusinessResult> DeleteById(Guid id);
         Task<IBusinessResult> CreatePayment(RequestPaymentKoiOrderModel koiOrder);
+        Task<IBusinessResult> GetByIdWithOrderDetail(Guid id);
     }
     public class KoiOrderService : IKoiOrderService
     {
@@ -165,6 +166,45 @@ namespace KoiOrderingSystemInJapan.Service
             {
                 return new BusinessResult(Const.ERROR_EXCEPTION, ex.Message);
             }
+        }
+
+        public async Task<IBusinessResult> UpdateOrder(RequestUpdateKoiOrderModel model)
+        {
+            var foundKoiOrder = await this.GetById(model.Id);
+            if (foundKoiOrder.Status == -1)
+            {
+                return new BusinessResult(Const.FAIL_READ_CODE, Const.FAIL_READ_MSG, new KoiOrder());
+            }
+            var updateKoiOrder = (KoiOrder)foundKoiOrder.Data;
+            updateKoiOrder.Note = model.NoteStatus;
+            var updateResult = await this.Save(updateKoiOrder);
+            if (updateResult.Status == -1)
+            {
+                return updateResult;
+            }
+            var foundOrderDetails = await _unitOfWork.OrderDetail.GetByOrderId(model.Id);
+
+            List<OrderDetail> orderDetailList = new List<OrderDetail>();
+            foreach (var orderDetail in foundOrderDetails)
+            {
+                orderDetail.Note = model.NoteStatus;
+                orderDetailList.Add(orderDetail);
+            }
+            await _unitOfWork.OrderDetail.UpdateRange(orderDetailList);
+            return new BusinessResult(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG, foundKoiOrder);
+        }
+
+        public async Task<IBusinessResult> GetByIdWithOrderDetail(Guid id)
+        {
+            var koiOrder = _unitOfWork.KoiOrder.GetById(id);
+            if(koiOrder == null)
+            {
+                return new BusinessResult(Const.FAIL_READ_CODE, Const.FAIL_READ_MSG, new KoiOrder());
+            }
+            var orderDetail = await _unitOfWork.OrderDetail.GetByOrderId(id);
+            koiOrder.OrderDetails = orderDetail;
+
+            return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, koiOrder);
         }
     }
 }

@@ -6,65 +6,68 @@
 
 <h1>Invoices</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table table-hover">
     <thead>
         <tr>
             <th scope="col">
-                @Html.DisplayNameFor(model => model.PaymentAmount)
+                Payment Amount
             </th>
             <th scope="col">
-                @Html.DisplayNameFor(model => model.PaymentDate)
+                Payment Date
             </th>
             <th scope="col">
-                @Html.DisplayNameFor(model => model.CreatedBy)
+                CreatedBy
             </th>
             <th scope="col">
-                @Html.DisplayNameFor(model => model.CreatedDate)
+                CreatedDate
             </th>
             <th scope="col">
-                @Html.DisplayNameFor(model => model.UpdatedBy)
+                UpdatedBy
             </th>
             <th scope="col">
-                @Html.DisplayNameFor(model => model.UpdatedDate)
+                UpdatedDate
             </th>
             <th scope="col">
-                @Html.DisplayNameFor(model => model.IsDeleted)
+                IsDeleted
+            </th>
+            <th scope="col">
+                Details
             </th>
         </tr>
     </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td  scope="row">
-                @Html.DisplayFor(modelItem => item.PaymentAmount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PaymentDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedBy)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UpdatedBy)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UpdatedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsDeleted)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+    <tbody class="tblInvoice">
     </tbody>
 </table>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            getData();
+        });
+        function getData() {
+            $.ajax({
+                url: "https://localhost:7298/api/Invoices",
+                type: "GET",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    console.log(result);
+                    var html = "";
+                    $.each(result.data, function (key, item) {
+                        html += '<tr>';
+                        html += '<td>' + item.paymentAmount + '</td>';
+                        html += '<td>' + item.paymentDate + '</td>';
+                        html += '<td>' + item.createdBy + '</td>';
+                        html += '<td>' + item.createdDate + '</td>';
+                        html += '<td>' + item.updatedBy + '</td>';
+                        html += '<td>' + item.updatedDate + '</td>';
+                        html += '<td>' + item.isDeleted ? "Deleted" : "Existed" + '</td>';
+                        html += '<td>' + '<a href="/Invoices/Details/' + item.id + '">Details</a>' + '</td>';
+                        html += '</tr>';
+                    });
+                    $(".tblInvoice").html(html);
+                }
+            })
+        }
+    </script>
+}

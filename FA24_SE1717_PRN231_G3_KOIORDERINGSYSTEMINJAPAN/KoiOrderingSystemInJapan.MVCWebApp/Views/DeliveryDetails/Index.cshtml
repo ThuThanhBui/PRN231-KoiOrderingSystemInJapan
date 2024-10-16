@@ -13,65 +13,83 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                Number
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+               Id
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CreatedBy)
+             DeliveryId
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CreatedDate)
+             Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UpdatedBy)
+             Description
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UpdatedDate)
+             CreatedBy
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IsDeleted)
+               CreatedDate
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Delivery)
+               UpdatedBy
+            </th>
+            <th>
+                UpdatedDate
+            </th>
+            <th>
+                IsDeleted
+            </th>
+            <th>
+                Note
             </th>
             <th></th>
         </tr>
     </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedBy)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UpdatedBy)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UpdatedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsDeleted)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Delivery.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+    <tbody class="tblDeliveryDetail">
     </tbody>
 </table>
+
+
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            getData();
+        })
+
+        function getData() {
+            $.ajax({
+                url: "https://localhost:7298/api/DeliveryDetails",
+                type: "Get",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    var html = "";
+                    $.each(result.data, function (key, item) {
+
+                        console.log(item);
+                        html += '<tr>';
+                        html += '<th scope="row">' + key + '</th>'
+                        html += '<td scope="row">' + item.id + '</td>'
+                        html += '<td scope="row">' + item.deliveryId + '</td>'
+                        html += '<td scope="row">' + item.name + '</td>'
+                        html += '<td scope="row">' + item.description + '</td>'
+                        html += '<td scope="row">' + item.createdBy + '</td>'
+                        html += '<td scope="row">' + item.createdDate + '</td>'
+                        html += '<td scope="row">' + item.updatedBy + '</td>'
+                        html += '<td scope="row">' + item.updatedDate + '</td>'
+                        html += '<td scope="row">' + item.isDeleted + '</td>'
+                        html += '<td scope="row">' + item.note + '</td>'
+                        html += '<td scope="row">' + '<a href="/DeliveryDetails/Details/' + item.id + '">Details</a>' + '</td>'
+                    })
+                    $('.tblDeliveryDetail').html(html);
+                },
+                error: function (xhr, error) {
+                    alert(xhr.statusText);
+                }
+            })
+        }
+    </script>
+}
