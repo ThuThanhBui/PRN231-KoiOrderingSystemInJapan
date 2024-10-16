@@ -18,6 +18,7 @@ namespace KoiOrderingSystemInJapan.Data
         public TravelRepository travelRepository;
         public FarmRepository farmRepository;
         private OrderDetailRepository orderDetailRepository;
+        private CategoryRepository categoryRepository;
         public UnitOfWork()
         {
             context ??= new KoiOrderingSystemInJapanContext();
@@ -83,6 +84,11 @@ namespace KoiOrderingSystemInJapan.Data
         public OrderDetailRepository OrderDetail
         {
             get { return orderDetailRepository ??= new OrderDetailRepository(context); }
+        }
+
+        public CategoryRepository Category
+        {
+            get { return categoryRepository ??= new CategoryRepository(context); }
         }
 
         ////TO-DO CODE HERE/////////////////
