@@ -41,10 +41,16 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
 
         // PUT: api/Sales/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+        [HttpPut]
         public async Task<IBusinessResult> PutSale(Sale sale)
         {
             return await saleService.Save(sale);
+        }
+
+        [HttpPut("update-isdeleted/{id}")]
+        public async Task<IBusinessResult> PutSaleDelete(Guid id)
+        {
+            return await saleService.UpdateIsDeleted(id);
         }
 
         // POST: api/Sales

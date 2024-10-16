@@ -27,6 +27,88 @@
     </div>
 </div>
 
+<!--Modal detail-->
+<div class="modal fade" id="serviceOrderModalView" tabindex="-1" aria-labelledby="serviceOrderModalViewLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="serviceOrderModalViewLabel">Service Order Details</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label><strong>Quantity:</strong></label>
+                        <p id="quantityDetail"></p>
+                    </div>
+                    <div class="col-md-6">
+                        <label><strong>Total Price:</strong></label>
+                        <p id="totalPriceDetail"></p>
+                    </div>
+                    <div class="col-md-6">
+                        <label><strong>Created By:</strong></label>
+                        <p id="createdByDetail"></p>
+                    </div>
+                    <div class="col-md-6">
+                        <label><strong>Created Date:</strong></label>
+                        <p id="createdDateDetail"></p>
+                    </div>
+                    <div class="col-md-6">
+                        <label><strong>Updated By:</strong></label>
+                        <p id="updatedByDetail"></p>
+                    </div>
+                    <div class="col-md-6">
+                        <label><strong>Updated Date:</strong></label>
+                        <p id="updatedDateDetail"></p>
+                    </div>
+                    <div class="col-md-6">
+                        <label><strong>Note:</strong></label>
+                        <p id="noteDetail"></p>
+                    </div>
+                    <div class="col-md-6">
+                        <label><strong>Deleted:</strong></label>
+                        <p id="isDeletedDetail"></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <label><strong>Booking Request Information</strong></label>
+                    <div class="col-md-6">
+                        <label><strong>Customer Name:</strong></label>
+                        <p id="customerNameDetail"></p>
+                    </div>
+                    <div class="col-md-6">
+                        <label><strong>Travel Name:</strong></label>
+                        <p id="travelNameDetail"></p>
+                    </div>
+                    <div class="col-md-6">
+                        <label><strong>Quantity Service:</strong></label>
+                        <p id="quantityServiceDetail"></p>
+                    </div>
+                    <div class="col-md-6">
+                        <label><strong>Number of People:</strong></label>
+                        <p id="numberOfPersonDetail"></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <label><strong>Invoic Infomation</strong></label>
+                    <div class="col-md-6">
+                        <label><strong>Payment amount: </strong></label>
+                        <p id="paymentAmountDetail"></p>
+                    </div>
+                    <div class="col-md-6">
+                        <label><strong>Payment date: </strong></label>
+                        <p id="paymentDateDetail"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal add-->
 <div class="modal" id="serviceOrderModalAdd" tabindex="-1" aria-labelledby="serviceOrderModalLabelAdd" aria-hidden="false">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -38,17 +120,22 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <input type="hidden" id="bookingRequestIdAdd" />
+                    <label for="bookingRequest">Booking request</label>
+                    <div id="bookingRequestCardsAdd" class="row overflow-auto" style="max-height: 200px; overflow-y: auto; padding: 10px; border: 1px solid #dee2e6; border-radius: 5px;">
+                        <!-- Các card sẽ được thêm động từ JavaScript -->
+                    </div>
                     <div class="col-md-6">
                         <label>Quantity</label>
-                        <input type="number" id="QuantityAdd" name="Quantity" class="form-control" />
+                        <input type="number" id="quantityAdd" name="Quantity" class="form-control" />
                     </div>
                     <div class="col-md-6">
                         <label>Total Price</label>
-                        <input type="number" id="TotalPriceAdd" name="TotalPrice" class="form-control" />
+                        <input type="number" id="totalPriceAdd" name="TotalPrice" class="form-control" />
                     </div>
                     <div class="col-md-6">
                         <label>Note</label>
-                        <input type="text" id="NoteAdd" name="Note" class="form-control" />
+                        <input type="text" id="noteAdd" name="Note" class="form-control" />
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -60,6 +147,7 @@
     </div>
 </div>
 
+<!--Modal update-->
 <div class="modal" id="serviceOrderModalUpdate" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -69,17 +157,22 @@
             </div>
             <div class="modal-body">
                 <input type="hidden" id="serviceOrderId" />
+                <input type="hidden" id="bookingRequestIdUpdate" />
+                <label for="bookingRequest">Booking request</label>
+                <div id="bookingRequestCardsUpdate" class="row overflow-auto" style="max-height: 200px; overflow-y: auto; padding: 10px; border: 1px solid #dee2e6; border-radius: 5px;">
+                    <!-- Các card sẽ được thêm động từ JavaScript -->
+                </div>
                 <div class="mb-3">
                     <label for="Quantity" class="form-label">Quantity</label>
-                    <input type="number" id="QuantityUpdate" class="form-control" />
+                    <input type="number" id="quantityUpdate" class="form-control" />
                 </div>
                 <div class="mb-3">
                     <label for="TotalPrice" class="form-label">Total Price</label>
-                    <input type="number" id="TotalPriceUpdate" class="form-control" />
+                    <input type="number" id="totalPriceUpdate" class="form-control" />
                 </div>
                 <div class="mb-3">
                     <label for="Note" class="form-label">Note</label>
-                    <textarea id="NoteUpdate" class="form-control"></textarea>
+                    <textarea id="noteUpdate" class="form-control"></textarea>
                 </div>
             </div>
             <div class="modal-footer">
@@ -113,8 +206,9 @@
                         html += '<td>' + item.note + '</td>';
                         // Thêm nút Update và Delete
                         html += `<td>
-                                <button class="btn btn-warning btn-sm me-2" onclick="getUpdateServiceOrder('${item.id}')">Update</button>
-                                <button class="btn btn-danger btn-sm" onclick="deleteServiceOrder('${item.id}')">Delete</button></td>`;
+                                    <button class="btn btn-info btn-sm me-2" onclick="viewDetail('${item.id}')">View Detail</button>
+                                    <button class="btn btn-warning btn-sm me-2" onclick="getUpdateServiceOrder('${item.id}')">Update</button>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteServiceOrder('${item.id}')">Delete</button></td>`;
                         html += '</tr>';
                     });
                     $('.tblServiceOrders').html(html);
@@ -125,16 +219,75 @@
             });
         }
 
+        function viewDetail(id) {
+            $.ajax({
+                url: `https://localhost:7298/api/ServiceOrders/${id}`,
+                type: "GET",
+                success: function (result) {
+                    if (result.data) {
+                        const serviceOrder = result.data;
+                        const booking = serviceOrder.bookingRequest;
+                        const invoice = serviceOrder.invoice;
+
+                        // Gán dữ liệu của ServiceOrder vào các thẻ trong modal
+                        $("#totalPriceDetail").text(serviceOrder.totalPrice ?? "N/A");
+                        $("#quantityDetail").text(serviceOrder.quantity ?? "N/A");
+                        $("#createdByDetail").text(serviceOrder.createdBy ?? "N/A");
+                        $("#createdDateDetail").text(formatDate(serviceOrder.createdDate));
+                        $("#updatedByDetail").text(serviceOrder.updatedBy ?? "N/A");
+                        $("#updatedDateDetail").text(formatDate(serviceOrder.updatedDate));
+                        $("#noteDetail").text(serviceOrder.note ?? "N/A");
+                        $("#isDeletedDetail").text(serviceOrder.isDeleted ? "Yes" : "No");
+
+                        // Gán dữ liệu của BookingRequest vào các thẻ trong modal
+                        if (booking) {
+                            $("#customerNameDetail").text(`${booking.customer.firstname} ${booking.customer.lastname}`);
+                            $("#travelNameDetail").text(booking.travel.name);
+                            $("#quantityServiceDetail").text(booking.quantityService);
+                            $("#numberOfPersonDetail").text(booking.numberOfPerson);
+                        } else {
+                            $("#customerNameDetail").text("N/A");
+                            $("#travelNameDetail").text("N/A");
+                            $("#quantityServiceDetail").text("N/A");
+                            $("#numberOfPersonDetail").text("N/A");
+                        }
+
+                        // Gán dữ liệu của Invoice vào các thẻ trong modal
+                        if (invoice) {
+                            $("#paymentAmountDetail").text(invoice.paymentAmount);
+                            $("#paymentDateDetail").text(formatDate(invoice.paymentDate));
+                        } else{
+                            $("#paymentAmountDetail").text("N/A");
+                            $("#paymentDateDetail").text("N/A");
+                        }
+
+                        // Hiển thị modal
+                        $('#serviceOrderModalView').modal('show');
+                    } else {
+                        alert("Service order not found.");
+                    }
+                },
+                error: function (xhr, error) {
+                    console.error("Error fetching service order details:", xhr);
+                    alert("Failed to load service order details.");
+                }
+            });
+        }
+
+        //nhan btn add
         function addServiceOrder() {
             $("#serviceOrderModalLabelAdd").html("Add New Service Order");
             $('#serviceOrderModalAdd').modal('show');
+            loadBookingRequestsAdd();
         }
 
+        //save add
         $("#btSaveAddServiceOrder").click(function () {
             const serviceOrder = {
-                quantity: $("#QuantityAdd").val(),
-                totalPrice: $("#TotalPriceAdd").val(),
-                note: $("#NoteAdd").val(),
+                BookingRequestId: $("#bookingRequestIdAdd").val(),
+                Quantity: $("#quantityAdd").val(),
+                TotalPrice: $("#totalPriceAdd").val(),
+                Note: $("#noteAdd").val(),
             };
 
             $.ajax({
@@ -146,6 +299,10 @@
                     if (result.status >= 1) {
                         $('#serviceOrderModalAdd').modal('hide');
                         loadServiceOrders();
+                        $("#bookingRequestIdAdd").val('');
+                        $("#quantityAdd").val('');
+                        $("#totalPriceAdd").val('');
+                        $("#noteAdd").val('');
                     }
                     alert(result.message);
                 },
@@ -156,6 +313,7 @@
             });
         });
 
+        //nhan btn update
         function getUpdateServiceOrder(id) {
             $.ajax({
                 url: `https://localhost:7298/api/ServiceOrders/${id}`,
@@ -164,13 +322,15 @@
                     // Kiểm tra xem item có dữ liệu hay không
                     console.log(item);
                     if (item.data) {
+                        $("#bookingRequestIdUpdate").val(item.data.bookingRequestId);
                         $("#serviceOrderId").val(item.data.id);
-                        $("#QuantityUpdate").val(item.data.quantity);
-                        $("#TotalPriceUpdate").val(item.data.totalPrice);
-                        $("#NoteUpdate").val(item.data.note);
+                        $("#quantityUpdate").val(item.data.quantity);
+                        $("#totalPriceUpdate").val(item.data.totalPrice);
+                        $("#noteUpdate").val(item.data.note);
 
                         // Mở modal cập nhật
                         $('#serviceOrderModalUpdate').modal('show');
+                        loadBookingRequestsUpdate();
                     } else {
                         alert("Service order not found.");
                     }
@@ -182,12 +342,14 @@
             });
         }
 
+        //save update
         $("#btSaveUpdateServiceOrder").click(function () {
             var serviceOrder = {
-                id: $("#serviceOrderId").val(),
-                quantity: $("#QuantityUpdate").val(),
-                totalPrice: $("#TotalPriceUpdate").val(),
-                note: $("#NoteUpdate").val()
+                Id: $("#serviceOrderId").val(),
+                BookingRequestId: $("#bookingRequestIdUpdate").val(),
+                Quantity: $("#quantityUpdate").val(),
+                TotalPrice: $("#totalPriceUpdate").val(),
+                Note: $("#noteUpdate").val()
             };
 
             $.ajax({
@@ -207,11 +369,12 @@
             });
         });
 
+        //delete => updateIsDeleted
         function deleteServiceOrder(id) {
             if (confirm("Are you sure you want to delete this service order?")) {
                 $.ajax({
-                    url: `https://localhost:7298/api/ServiceOrders/${id}`,
-                    type: "DELETE",
+                    url: `https://localhost:7298/api/ServiceOrders/update-isdeleted/${id}`,
+                    type: "PUT",
                     success: function (result) {
                         alert("Service order deleted successfully.");
                         loadServiceOrders(); // Tải lại danh sách sau khi xóa
@@ -222,6 +385,84 @@
                     }
                 });
             }
+        }
+
+        //load booking request add
+        function loadBookingRequestsAdd() {
+            $.ajax({
+                type: 'GET',
+                url: 'https://localhost:7298/api/BookingRequests',
+                contentType: "application/json;charset=utf-8",
+                success: function (rs) {
+                    const cardsContainer = $("#bookingRequestCardsAdd");
+                    cardsContainer.empty(); // Xóa nội dung cũ
+                    rs.data.forEach(bookingRequest => {
+                        const card = `
+                                    <div class="col-md-4">
+                                        <div class="card mb-3" data-id="${bookingRequest.id}" style="cursor: pointer;">
+                                            <div class="card-body">
+                                                <p class="card-text">Customer: ${bookingRequest.customer.firstname} ${bookingRequest.customer.lastname}</p>
+                                                <p class="card-text">Travel: ${bookingRequest.travel.name}</p>
+                                                <p class="card-text">Quantity: ${bookingRequest.quantityService}</p>
+                                                <p class="card-text">Number of Persons: ${bookingRequest.numberOfPerson}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                        `;
+                        cardsContainer.append(card);
+                    });
+
+                    // Thêm sự kiện click cho mỗi card
+                    $(".card").click(function () {
+                        const selectedId = $(this).data("id");
+                        $("#bookingRequestIdAdd").val(selectedId);
+                        console.log(selectedId)
+                    });
+                },
+                error: function (xhr, error) {
+                    console.log(xhr);
+                    alert('Error occurred while loading booking requests.');
+                }
+            });
+        }
+
+        //load booking request update
+        function loadBookingRequestsUpdate() {
+            $.ajax({
+                type: 'GET',
+                url: 'https://localhost:7298/api/BookingRequests',
+                contentType: "application/json;charset=utf-8",
+                success: function (rs) {
+                    const cardsContainer = $("#bookingRequestCardsUpdate");
+                    cardsContainer.empty(); // Xóa nội dung cũ
+                    rs.data.forEach(bookingRequest => {
+                        const card = `
+                            <div class="col-md-4">
+                                <div class="card mb-3" data-id="${bookingRequest.id}" style="cursor: pointer;">
+                                    <div class="card-body">
+                                        <p class="card-text">Customer: ${bookingRequest.customer.firstname} ${bookingRequest.customer.lastname}</p>
+                                        <p class="card-text">Travel: ${bookingRequest.travelName}</p>
+                                        <p class="card-text">Quantity: ${bookingRequest.quantityService}</p>
+                                        <p class="card-text">Number of Persons: ${bookingRequest.numberOfPerson}</p>
+                                    </div>
+                                </div>
+                            </div>
+                                                `;
+                        cardsContainer.append(card);
+                    });
+
+                    // Thêm sự kiện click cho mỗi card
+                    $(".card").click(function () {
+                        const selectedId = $(this).data("id");
+                        $("#bookingRequestIdUpdate").val(selectedId);
+                        console.log(selectedId)
+                    });
+                },
+                error: function (xhr, error) {
+                    console.log(xhr);
+                    alert('Error occurred while loading booking requests.');
+                }
+            });
         }
 
         function formatDate(dateString) {

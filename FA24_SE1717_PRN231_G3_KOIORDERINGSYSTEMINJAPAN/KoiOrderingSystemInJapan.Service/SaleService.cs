@@ -11,6 +11,7 @@ namespace KoiOrderingSystemInJapan.Service
         Task<IBusinessResult> GetById(Guid id);
         Task<IBusinessResult> Create(Sale sale);
         Task<IBusinessResult> Update(Sale sale);
+        Task<IBusinessResult> UpdateIsDeleted(Guid id);
         Task<IBusinessResult> Save(Sale sale);
         Task<IBusinessResult> DeleteById(Guid id);
     }
@@ -73,7 +74,7 @@ namespace KoiOrderingSystemInJapan.Service
         {
             try
             {
-                var e = await unitOfWork.Sale.GetByIdAsync(id);
+                var e = await unitOfWork.Sale.GetByIdIncludeAsync(id);
 
                 if (e == null)
                 {
@@ -92,33 +93,31 @@ namespace KoiOrderingSystemInJapan.Service
             try
             {
                 int result = -1;
+                var saleTmp = unitOfWork.Sale.GetById(sale.Id);
 
-                var e = unitOfWork.Sale.GetById(sale.Id);
-
-                if (e != null)
+                if (saleTmp == null)
                 {
-                    result = await unitOfWork.Sale.UpdateAsync(sale);
-
+                    result = await unitOfWork.Sale.CreateAsync(sale);
                     if (result > 0)
                     {
-                        return new BusinessResult(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG);
+                        return new BusinessResult(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG, sale);
                     }
                     else
                     {
-                        return new BusinessResult(Const.FAIL_UPDATE_CODE, Const.FAIL_UPDATE_MSG);
+                        return new BusinessResult(Const.FAIL_CREATE_CODE, Const.FAIL_CREATE_MSG, new Sale());
                     }
                 }
                 else
                 {
-                    result = await unitOfWork.Sale.CreateAsync(sale);
-
+                    unitOfWork.Sale.Context().Entry(saleTmp).CurrentValues.SetValues(sale);
+                    result = await unitOfWork.Sale.UpdateAsync(saleTmp);
                     if (result > 0)
                     {
-                        return new BusinessResult(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG);
+                        return new BusinessResult(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG, sale);
                     }
                     else
                     {
-                        return new BusinessResult(Const.FAIL_CREATE_CODE, Const.FAIL_CREATE_MSG);
+                        return new BusinessResult(Const.FAIL_CREATE_CODE, Const.FAIL_CREATE_MSG, new Sale());
                     }
                 }
             }
@@ -127,10 +126,40 @@ namespace KoiOrderingSystemInJapan.Service
                 return new BusinessResult(Const.ERROR_EXCEPTION, ex.Message);
             }
         }
-
         public Task<IBusinessResult> Update(Sale sale)
         {
             throw new NotImplementedException();
         }
+
+        public async Task<IBusinessResult> UpdateIsDeleted(Guid id)
+        {
+            try
+            {
+                var e = await unitOfWork.Sale.GetByIdAsync(id);
+
+                if (e == null)
+                {
+                    return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG);
+                }
+                else
+                {
+                    bool rs = await unitOfWork.Sale.UpdateIsDeleted(e);
+
+                    if (rs)
+                    {
+                        return new BusinessResult(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG);
+                    }
+                    else
+                    {
+                        return new BusinessResult(Const.FAIL_UPDATE_CODE, Const.FAIL_UPDATE_MSG);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXCEPTION, ex.Message);
+            }
+        }
     }
 }
+    

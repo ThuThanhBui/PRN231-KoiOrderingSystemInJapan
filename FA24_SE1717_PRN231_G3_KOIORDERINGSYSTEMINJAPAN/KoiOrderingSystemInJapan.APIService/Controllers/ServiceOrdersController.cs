@@ -40,6 +40,12 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
             return await _serviceOrderSerivce.Save(serviceOrder);
         }
 
+        [HttpPut("update-isdeleted/{id}")]
+        public async Task<IBusinessResult> UpdateIsDeleted(Guid id)
+        {
+            return await _serviceOrderSerivce.UpdateIsDeleted(id);
+        }
+
         // POST: api/ServiceOrders
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]

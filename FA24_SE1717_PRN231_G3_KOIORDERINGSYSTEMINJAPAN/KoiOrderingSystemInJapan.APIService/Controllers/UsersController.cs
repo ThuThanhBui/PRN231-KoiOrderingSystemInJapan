@@ -32,6 +32,14 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
             return user;
         }
 
+        [HttpGet("get-by-role/{roleNum}")]
+        public async Task<IBusinessResult> GetUser(int roleNum)
+        {
+            var user = await _userService.GetByRole(roleNum);
+
+            return user;
+        }
+
         // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
