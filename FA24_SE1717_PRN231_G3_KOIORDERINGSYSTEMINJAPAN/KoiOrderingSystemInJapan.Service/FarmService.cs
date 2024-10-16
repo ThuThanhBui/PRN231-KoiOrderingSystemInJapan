@@ -2,89 +2,118 @@
 using KoiOrderingSystemInJapan.Data;
 using KoiOrderingSystemInJapan.Data.Models;
 using KoiOrderingSystemInJapan.Service.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KoiOrderingSystemInJapan.Service
 {
     public interface IFarmService
     {
         Task<IBusinessResult> GetAll();
-        Task<IBusinessResult> GetByName(string name);
         Task<IBusinessResult> GetById(Guid id);
-        Task<IBusinessResult> Create(Farm farm);
-        Task<IBusinessResult> Update(Farm farm);
-        Task<IBusinessResult> DeleteById(Guid id);
         Task<IBusinessResult> Save(Farm farm);
-
-
+        Task<IBusinessResult> DeleteById(Guid id);
     }
     public class FarmService : IFarmService
     {
-
-        private readonly UnitOfWork unitOfWork;
-
-        public FarmService() { unitOfWork ??= new UnitOfWork(); }
-
-        public Task<IBusinessResult> Create(Farm farm)
+        private readonly UnitOfWork _unitOfWork;
+        public FarmService()
         {
-            throw new NotImplementedException();
+            _unitOfWork ??= new UnitOfWork();
         }
-
-        public Task<IBusinessResult> DeleteById(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IBusinessResult> GetAll()
-        {
-            var farms = await unitOfWork.Farm.GetAllAsync();
-            if (farms == null) 
-            {
-                return new BusinessResult(Const.WARNING_NO_DATA_CODE,Const.WARNING_NO_DATA_MSG,new List<Farm>());
-            } else
-            {
-                return new BusinessResult(Const.SUCCESS_READ_CODE,Const.SUCCESS_READ_MSG,farms);
-            }
-        }
-
-        public async Task<IBusinessResult> GetById(Guid id)
+        public async Task<IBusinessResult> DeleteById(Guid code)
         {
             try
             {
-                var f = await unitOfWork.Farm.GetByIdAsync(id);
-
-                if (f == null)
+                var farm = await _unitOfWork.Farm.GetByIdAsync(code);
+                if (farm == null)
                 {
                     return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, new Farm());
                 }
                 else
                 {
-                    return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, f);
+                    var result = await _unitOfWork.Farm.RemoveAsync(farm);
+                    if (result)
+                    {
+                        return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, farm);
+                    }
+                    else
+                    {
+                        return new BusinessResult(Const.FAIL_DELETE_CODE, Const.FAIL_DELETE_MSG, farm);
+                    }
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 return new BusinessResult(Const.ERROR_EXCEPTION, ex.Message);
             }
         }
 
-        public Task<IBusinessResult> GetByName(string name)
+        public async Task<IBusinessResult> GetAll()
         {
-            throw new NotImplementedException();
+            #region Business rule
+
+            #endregion
+            var farm = await _unitOfWork.Farm.GetAllAsync();
+            if (farm == null)
+            {
+                return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, new List<Farm>());
+            }
+            else
+            {
+                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, farm);
+            }
         }
 
-        public Task<IBusinessResult> Save(Farm farm)
+        public async Task<IBusinessResult> GetById(Guid code)
         {
-            throw new NotImplementedException();
+            var farm = await _unitOfWork.Farm.GetByIdAsync(code);
+            if (farm == null)
+            {
+                return new BusinessResult(Const.FAIL_READ_CODE, Const.FAIL_READ_MSG, new Farm());
+            }
+            else
+            {
+                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, farm);
+            }
         }
 
-        public Task<IBusinessResult> Update(Farm farm)
+        public async Task<IBusinessResult> Save(Farm farm)
         {
-            throw new NotImplementedException();
+            try
+            {
+                int result = -1;
+                var farmTmp = _unitOfWork.Farm.GetById(farm.Id);
+
+                if (farmTmp == null)
+                {
+                    result = await _unitOfWork.Farm.CreateAsync(farm);
+                    if (result > 0)
+                    {
+                        return new BusinessResult(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG, result);
+                    }
+                    else
+                    {
+                        return new BusinessResult(Const.FAIL_CREATE_CODE, Const.FAIL_CREATE_MSG, new Farm());
+                    }
+                }
+                else
+                {
+                    _unitOfWork.BookingRequest.Context().Entry(farmTmp).CurrentValues.SetValues(farm);
+                    result = await _unitOfWork.Farm.UpdateAsync(farmTmp);
+                    if (result > 0)
+                    {
+                        return new BusinessResult(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG, result);
+                    }
+                    else
+                    {
+                        return new BusinessResult(Const.FAIL_CREATE_CODE, Const.FAIL_CREATE_MSG, new Farm());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXCEPTION, ex.Message);
+            }
         }
+
     }
 }
