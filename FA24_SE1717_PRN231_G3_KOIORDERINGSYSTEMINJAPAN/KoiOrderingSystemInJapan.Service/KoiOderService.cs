@@ -14,6 +14,7 @@ namespace KoiOrderingSystemInJapan.Service
         Task<IBusinessResult> Save(KoiOrder koiOrder);
         Task<IBusinessResult> DeleteById(Guid id);
         Task<IBusinessResult> CreatePayment(RequestPaymentKoiOrderModel koiOrder);
+        Task<IBusinessResult> GetByIdWithOrderDetail(Guid id);
     }
     public class KoiOrderService : IKoiOrderService
     {
@@ -191,6 +192,19 @@ namespace KoiOrderingSystemInJapan.Service
             }
             await _unitOfWork.OrderDetail.UpdateRange(orderDetailList);
             return new BusinessResult(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG, foundKoiOrder);
+        }
+
+        public async Task<IBusinessResult> GetByIdWithOrderDetail(Guid id)
+        {
+            var koiOrder = _unitOfWork.KoiOrder.GetById(id);
+            if(koiOrder == null)
+            {
+                return new BusinessResult(Const.FAIL_READ_CODE, Const.FAIL_READ_MSG, new KoiOrder());
+            }
+            var orderDetail = await _unitOfWork.OrderDetail.GetByOrderId(id);
+            koiOrder.OrderDetails = orderDetail;
+
+            return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, koiOrder);
         }
     }
 }
