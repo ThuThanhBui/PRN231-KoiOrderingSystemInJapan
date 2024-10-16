@@ -16,6 +16,9 @@
                 @Html.DisplayNameFor(model => model.Dob)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Picture)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Price)
             </th>
             <th>
@@ -52,7 +55,7 @@
                 @Html.DisplayNameFor(model => model.Note)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Category)
+                @Html.DisplayNameFor(model => model.Category.Name)
             </th>
             <th></th>
         </tr>
@@ -62,6 +65,9 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Dob)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Picture)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Price)

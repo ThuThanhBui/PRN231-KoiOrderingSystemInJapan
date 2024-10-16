@@ -25,33 +25,6 @@ namespace KoiOrderingSystemInJapan.Service
         {
             _unitOfWork ??= new UnitOfWork();
         }
-        public async Task<IBusinessResult> DeleteById(Guid code)
-        {
-            try
-            {
-                var bookingRequest = await _unitOfWork.Category.GetByIdAsync(code);
-                if (bookingRequest == null)
-                {
-                    return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, new Category());
-        }
-                else
-        {
-                    var result = await _unitOfWork.Category.RemoveAsync(bookingRequest);
-                    if (result)
-                    {
-                        return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, bookingRequest);
-        }
-                    else
-                    {
-                        return new BusinessResult(Const.FAIL_DELETE_CODE, Const.FAIL_DELETE_MSG, bookingRequest);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                return new BusinessResult(Const.ERROR_EXCEPTION, ex.Message);
-            }
-        }
 
         public async Task<IBusinessResult> GetAll()
         {

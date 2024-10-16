@@ -8,17 +8,17 @@ using Newtonsoft.Json;
 
 namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
 {
-    public class KoiFishsController : Controller
+    public class KoiFishesController : Controller
     {
         private readonly KoiOrderingSystemInJapanContext _context;
-        public KoiFishsController() { }
+        public KoiFishesController() { }
 
-        // GET: KoiFishs
+        // GET: KoiFishes
         public async Task<IActionResult> Index()
         {
             using (var httpClient = new HttpClient())
             {
-                using (var response = await httpClient.GetAsync(Const.APIEndPoint + "KoiFishs"))
+                using (var response = await httpClient.GetAsync(Const.APIEndPoint + "KoiFishes"))
                 {
                     if (response.IsSuccessStatusCode)
                     {
@@ -35,12 +35,12 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
             }
             return View(new List<KoiFish>());
         }
-        // GET: KoiFishs/Details/5
+        // GET: KoiFishes/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
             using (var httpClient = new HttpClient())
             {
-                using (var response = await httpClient.GetAsync(Const.APIEndPoint + "KoiFishs/" + id))
+                using (var response = await httpClient.GetAsync(Const.APIEndPoint + "KoiFishes/" + id))
                 {
                     if (response.IsSuccessStatusCode)
                     {
@@ -57,13 +57,13 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
             }
             return View(new KoiFish());
         }
-        // GET: KoiFishs/Create
+        // GET: KoiFishes/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: KoiFishs/Create
+        // POST: KoiFishes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -75,7 +75,7 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
             {
                 using (var httpClient = new HttpClient())
                 {
-                    using (var response = await httpClient.PostAsJsonAsync(Const.APIEndPoint + "KoiFishs/", fish))
+                    using (var response = await httpClient.PostAsJsonAsync(Const.APIEndPoint + "KoiFishes/", fish))
                     {
                         if (response.IsSuccessStatusCode)
                         {
@@ -139,7 +139,7 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
-        // GET: KoiFishs/Delete/5
+        // GET: KoiFishes/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)

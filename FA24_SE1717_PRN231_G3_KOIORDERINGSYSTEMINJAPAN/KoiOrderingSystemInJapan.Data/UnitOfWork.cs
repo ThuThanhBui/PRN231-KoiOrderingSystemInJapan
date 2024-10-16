@@ -18,7 +18,7 @@ namespace KoiOrderingSystemInJapan.Data
         public TravelRepository travelRepository;
         public FarmRepository farmRepository;
         private OrderDetailRepository orderDetailRepository;
-        private KoiFishRepository fishRepository;
+        private KoiFishRepository koifishRepository;
         private CategoryRepository categoryRepository;
         public UnitOfWork()
         {
@@ -89,7 +89,7 @@ namespace KoiOrderingSystemInJapan.Data
 
         public KoiFishRepository KoiFish
         {
-            get { return fishRepository ??= new KoiFishRepository(context); }
+            get { return koifishRepository ??= new KoiFishRepository(context); }
         }
         public CategoryRepository Category
         {
