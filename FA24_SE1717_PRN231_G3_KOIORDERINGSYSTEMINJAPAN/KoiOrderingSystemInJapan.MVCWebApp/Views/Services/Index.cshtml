@@ -44,7 +44,9 @@
                         html += '<td scope="row">' + item.serviceName + '</td>'
                         html += '<td scope="row">' + item.description + '</td>'
                         html += '<td scope="row">' + item.price + '</td>'
-                        html += '<td scope="row">' + '<a href="/Services/Details/' + item.id + '">Details</a>' + '</td>'
+                        html += '<td scope="row">' + '<a href="/Services/Edit/'+ item.id + '">Edit</a>' + '</td>'
+                        html += '<td scope="row">' + '<a href="/Services/Details/'+ item.id + '">Details</a>' + '</td>'
+                        html += '<td scope="row">' + '<a href="/Services/Delete/'+ item.id + '">Delete</a>' + '</td>'
                     })
                     $('.tblServices').html(html);
                 },

@@ -2,20 +2,20 @@
 using KoiOrderingSystemInJapan.Data;
 using KoiOrderingSystemInJapan.Data.Models;
 using KoiOrderingSystemInJapan.Service.Base;
-using ServiceEntity = KoiOrderingSystemInJapan.Data.Models;
+
 namespace KoiOrderingSystemInJapan.Service
 {
-    public interface IServiceService
+    public interface IFarmService
     {
         Task<IBusinessResult> GetAll();
         Task<IBusinessResult> GetById(Guid id);
-        Task<IBusinessResult> Save(ServiceEntity.Service service);
+        Task<IBusinessResult> Save(Farm farm);
         Task<IBusinessResult> DeleteById(Guid id);
     }
-    public class ServiceService : IServiceService
+    public class FarmService : IFarmService
     {
         private readonly UnitOfWork _unitOfWork;
-        public ServiceService()
+        public FarmService()
         {
             _unitOfWork ??= new UnitOfWork();
         }
@@ -23,21 +23,21 @@ namespace KoiOrderingSystemInJapan.Service
         {
             try
             {
-                var service = await _unitOfWork.Service.GetByIdAsync(code);
-                if (service == null)
+                var farm = await _unitOfWork.Farm.GetByIdAsync(code);
+                if (farm == null)
                 {
-                    return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, new ServiceEntity.Service());
+                    return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, new Farm());
                 }
                 else
                 {
-                    var result = await _unitOfWork.Service.RemoveAsync(service);
+                    var result = await _unitOfWork.Farm.RemoveAsync(farm);
                     if (result)
                     {
-                        return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, service);
+                        return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, farm);
                     }
                     else
                     {
-                        return new BusinessResult(Const.FAIL_DELETE_CODE, Const.FAIL_DELETE_MSG, service);
+                        return new BusinessResult(Const.FAIL_DELETE_CODE, Const.FAIL_DELETE_MSG, farm);
                     }
                 }
             }
@@ -52,60 +52,60 @@ namespace KoiOrderingSystemInJapan.Service
             #region Business rule
 
             #endregion
-            var service = await _unitOfWork.Service.GetAllAsync();
-            if (service == null)
+            var farm = await _unitOfWork.Farm.GetAllAsync();
+            if (farm == null)
             {
-                return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, new List<ServiceEntity.Service>());
+                return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, new List<Farm>());
             }
             else
             {
-                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, service);
+                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, farm);
             }
         }
 
         public async Task<IBusinessResult> GetById(Guid code)
         {
-            var service = await _unitOfWork.Service.GetByIdAsync(code);
-            if (service == null)
+            var farm = await _unitOfWork.Farm.GetByIdAsync(code);
+            if (farm == null)
             {
-                return new BusinessResult(Const.FAIL_READ_CODE, Const.FAIL_READ_MSG, new ServiceEntity.Service());
+                return new BusinessResult(Const.FAIL_READ_CODE, Const.FAIL_READ_MSG, new Farm());
             }
             else
             {
-                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, service);
+                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, farm);
             }
         }
 
-        public async Task<IBusinessResult> Save(ServiceEntity.Service service)
+        public async Task<IBusinessResult> Save(Farm farm)
         {
             try
             {
                 int result = -1;
-                var serviceTmp = _unitOfWork.Service.GetById(service.Id);
+                var farmTmp = _unitOfWork.Farm.GetById(farm.Id);
 
-                if (serviceTmp == null)
+                if (farmTmp == null)
                 {
-                    result = await _unitOfWork.Service.CreateAsync(service);
+                    result = await _unitOfWork.Farm.CreateAsync(farm);
                     if (result > 0)
                     {
                         return new BusinessResult(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG, result);
                     }
                     else
                     {
-                        return new BusinessResult(Const.FAIL_CREATE_CODE, Const.FAIL_CREATE_MSG, new ServiceEntity.Service());
+                        return new BusinessResult(Const.FAIL_CREATE_CODE, Const.FAIL_CREATE_MSG, new Farm());
                     }
                 }
                 else
                 {
-                    _unitOfWork.Service.Context().Entry(serviceTmp).CurrentValues.SetValues(service);
-                    result = await _unitOfWork.Service.UpdateAsync(serviceTmp);
+                    _unitOfWork.BookingRequest.Context().Entry(farmTmp).CurrentValues.SetValues(farm);
+                    result = await _unitOfWork.Farm.UpdateAsync(farmTmp);
                     if (result > 0)
                     {
                         return new BusinessResult(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG, result);
                     }
                     else
                     {
-                        return new BusinessResult(Const.FAIL_CREATE_CODE, Const.FAIL_CREATE_MSG, new ServiceEntity.Service());
+                        return new BusinessResult(Const.FAIL_CREATE_CODE, Const.FAIL_CREATE_MSG, new Farm());
                     }
                 }
             }

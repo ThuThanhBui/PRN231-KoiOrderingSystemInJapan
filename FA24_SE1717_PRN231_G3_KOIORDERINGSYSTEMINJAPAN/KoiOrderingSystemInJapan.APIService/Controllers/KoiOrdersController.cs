@@ -1,5 +1,5 @@
 ﻿using KoiOrderingSystemInJapan.Data.Models;
-using KoiOrderingSystemInJapan.Data.Request.KoiOrder;
+using KoiOrderingSystemInJapan.Data.Request.KoiOrders;
 using KoiOrderingSystemInJapan.Service;
 using KoiOrderingSystemInJapan.Service.Base;
 using Microsoft.AspNetCore.Mvc;

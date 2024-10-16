@@ -1,4 +1,4 @@
-﻿using KoiOrderingSystemInJapan.Data.Request.Payment;
+﻿using KoiOrderingSystemInJapan.Data.Request.Payments;
 using Newtonsoft.Json;
 using RestSharp;
 using System.Security.Cryptography;

@@ -109,8 +109,8 @@ namespace KoiOrderingSystemInJapan.Data
                     .RuleFor(a => a.Lastname, f => f.Name.LastName())
                     .RuleFor(a => a.Dob, f => DateOnly.FromDateTime(f.Date.Between(new DateTime(1990, 1, 1), DateTime.Now)))
                     .RuleFor(a => a.Address, f => f.Address.StreetAddress())
-                    .RuleFor(a => a.Role, f => f.PickRandom<Enum.Role>())
-                    .RuleFor(a => a.Gender, f => f.PickRandom<Enum.Gender>())
+                    .RuleFor(a => a.Role, f => f.PickRandom<ConstEnum.Role>())
+                    .RuleFor(a => a.Gender, f => f.PickRandom<ConstEnum.Gender>())
                     .RuleFor(a => a.Username, f => f.Internet.UserName())
                     .RuleFor(a => a.Password, f => f.Internet.Password())
                     .RuleFor(a => a.Phone, f => f.Phone.PhoneNumber())
@@ -156,7 +156,7 @@ namespace KoiOrderingSystemInJapan.Data
             if (!context.Set<BookingRequest>().Any())
             {
                 // Lấy danh sách các Id đã tồn tại
-                var userIds = context.Set<User>().Where(u => u.Role == Enum.Role.Customer).Select(u => u.Id).ToList();
+                var userIds = context.Set<User>().Where(u => u.Role == ConstEnum.Role.Customer).Select(u => u.Id).ToList();
 
                 // Lấy danh sách các Id đã tồn tại
                 var travelIds = context.Set<Travel>().Select(u => u.Id).ToList();
@@ -167,7 +167,7 @@ namespace KoiOrderingSystemInJapan.Data
                     .RuleFor(a => a.TravelId, f => f.PickRandom(travelIds))
                     .RuleFor(a => a.QuantityService, f => f.Random.Int(1, 10))
                     .RuleFor(a => a.NumberOfPerson, f => f.Random.Int(1, 10))
-                    .RuleFor(a => a.Status, f => f.PickRandom<Enum.BookingRequestStatus>())
+                    .RuleFor(a => a.Status, f => f.PickRandom<ConstEnum.BookingRequestStatus>())
                     .RuleFor(s => s.CreatedBy, f => "tsql@gmail.com")
                     .RuleFor(s => s.CreatedDate, f => f.Date.Past(2))
                     .RuleFor(s => s.UpdatedBy, f => "tsql@gmail.com")
@@ -211,9 +211,9 @@ namespace KoiOrderingSystemInJapan.Data
             if (!context.Set<Sale>().Any())
             {
                 // Lấy danh sách các Id đã tồn tại
-                var ssIds = context.Set<User>().Where(u => u.Role == Enum.Role.SaleStaff).Select(u => u.Id).ToList();
+                var ssIds = context.Set<User>().Where(u => u.Role == ConstEnum.Role.SaleStaff).Select(u => u.Id).ToList();
                 var csIds = context.Set<BookingRequest>().Select(u => u.Id).ToList();
-                var mIds = context.Set<User>().Where(u => u.Role == Enum.Role.Manager).Select(u => u.Firstname + " " + u.Lastname).ToList();
+                var mIds = context.Set<User>().Where(u => u.Role == ConstEnum.Role.Manager).Select(u => u.Firstname + " " + u.Lastname).ToList();
 
                 var usedBookingRequestIds = new HashSet<Guid>(); // Dùng HashSet để lưu trữ BookingRequestId đã sử dụng
 
@@ -235,7 +235,7 @@ namespace KoiOrderingSystemInJapan.Data
                     .RuleFor(a => a.ResponseBy, f => f.PickRandom(mIds))
                     .RuleFor(a => a.ProposalDetails, f => f.Lorem.Sentence())
                     .RuleFor(a => a.TotalPrice, f => f.Random.Decimal(200, 10000))
-                    .RuleFor(s => s.Status, f => f.PickRandom<Enum.StatusSale>())
+                    .RuleFor(s => s.Status, f => f.PickRandom<ConstEnum.StatusSale>())
                     .RuleFor(s => s.ResponseDate, f => f.Date.Past(2))
                     .RuleFor(s => s.CreatedBy, f => "tsql@gmail.com")
                     .RuleFor(s => s.CreatedDate, f => f.Date.Past(5))
@@ -318,7 +318,7 @@ namespace KoiOrderingSystemInJapan.Data
                 var fakers = new Faker<KoiFish>()
                     .RuleFor(a => a.Id, f => Guid.NewGuid())
                     .RuleFor(a => a.CategoryId, f => f.PickRandom(cIds))
-                    .RuleFor(a => a.Gender, f => f.PickRandom<Enum.Gender>())
+                    .RuleFor(a => a.Gender, f => f.PickRandom<ConstEnum.Gender>())
                     .RuleFor(a => a.Description, f => f.Lorem.Paragraph(3))
                     .RuleFor(a => a.Price, f => f.Random.Decimal(50, 10000))
                     .RuleFor(s => s.CreatedBy, f => "tsql@gmail.com")
@@ -416,7 +416,7 @@ namespace KoiOrderingSystemInJapan.Data
             if (!context.Set<KoiOrder>().Any())
             {
                 // Lấy danh sách các Id đã tồn tại
-                var cIds = context.Set<User>().Where(u => u.Role == Enum.Role.Customer).Select(u => u.Id).ToList();
+                var cIds = context.Set<User>().Where(u => u.Role == ConstEnum.Role.Customer).Select(u => u.Id).ToList();
 
                 // Lấy danh sách các Id đã tồn tại
                 var iIds = context.Set<Invoice>().Select(u => u.Id).ToList();
@@ -477,7 +477,7 @@ namespace KoiOrderingSystemInJapan.Data
                 var koIds = context.Set<KoiOrder>().Select(u => u.Id).ToList();
 
                 // Lấy danh sách các Id đã tồn tại
-                var dIds = context.Set<User>().Where(u => u.Role == Enum.Role.Deliver).Select(u => u.Id).ToList();
+                var dIds = context.Set<User>().Where(u => u.Role == ConstEnum.Role.Deliver).Select(u => u.Id).ToList();
 
                 var fakers = new Faker<Delivery>()
                     .RuleFor(a => a.Id, f => Guid.NewGuid())

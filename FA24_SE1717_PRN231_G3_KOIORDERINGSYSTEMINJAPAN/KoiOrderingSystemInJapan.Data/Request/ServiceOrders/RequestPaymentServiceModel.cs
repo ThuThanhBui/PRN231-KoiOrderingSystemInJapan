@@ -1,4 +1,4 @@
-﻿namespace KoiOrderingSystemInJapan.Data.Request.ServiceOrder
+﻿namespace KoiOrderingSystemInJapan.Data.Request.ServiceOrders
 {
     public class RequestPaymentServiceModel
     {
