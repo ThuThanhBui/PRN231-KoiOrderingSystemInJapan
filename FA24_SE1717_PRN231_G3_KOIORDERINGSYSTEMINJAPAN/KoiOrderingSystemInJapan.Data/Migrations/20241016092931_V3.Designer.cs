@@ -4,6 +4,7 @@ using KoiOrderingSystemInJapan.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KoiOrderingSystemInJapan.Data.Migrations
 {
     [DbContext(typeof(KoiOrderingSystemInJapanContext))]
-    partial class KoiOrderingSystemInJapanContextModelSnapshot : ModelSnapshot
+    [Migration("20241016092931_V3")]
+    partial class V3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
