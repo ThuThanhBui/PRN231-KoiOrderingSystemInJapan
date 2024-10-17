@@ -1,6 +1,8 @@
 ﻿using KoiOrderingSystemInJapan.Data.Models;
+using KoiOrderingSystemInJapan.Data.Request.Auths;
 using KoiOrderingSystemInJapan.Service;
 using KoiOrderingSystemInJapan.Service.Base;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KoiOrderingSystemInJapan.APIService.Controllers
@@ -11,9 +13,9 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
     {
         private readonly IUserService _userService;
 
-        public UsersController()
+        public UsersController(IConfiguration configuration)
         {
-            _userService ??= new UserService();
+            _userService ??= new UserService(configuration);
         }
 
         // GET: api/Users
@@ -61,6 +63,43 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
         public async Task<IBusinessResult> DeleteUser(Guid id)
         {
             return await _userService.DeleteById(id);
+        }
+
+
+        [AllowAnonymous]
+        [HttpPost("register")]
+        public async Task<IActionResult> Register(User request)
+        {
+            var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+            request.Password = passwordHash;
+
+            var msg = await _userService.AddUser(request);
+            return Ok(msg);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequestModel request)
+        {
+            var msg = await _userService.Login(request.UsernameOrEmail, request.Password);
+
+            return Ok(msg);
+        }
+
+        [HttpPost("decode-token")]
+
+        public IActionResult DecodeToken([FromBody] TokenRequest request)
+        {
+            try
+            {
+                var br = _userService.DecodeToken(request.Token);
+
+                return Ok(br);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
     }
 }

@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KoiOrderingSystemInJapan.Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KoiOrderingSystemInJapan.APIService", "KoiOrderingSystemInJapan.APIService\KoiOrderingSystemInJapan.APIService.csproj", "{1AA6C4CF-275B-4D04-855B-41BC55F561F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KoiOrderingSystemInJapan.MVCWebApp", "KoiOrderingSystemInJapan.MVCWebApp\KoiOrderingSystemInJapan.MVCWebApp.csproj", "{64EBFAA7-372E-46E6-B8B4-FBD5C9F35646}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KoiOrderingSystemInJapan.MVCWebApp", "KoiOrderingSystemInJapan.MVCWebApp\KoiOrderingSystemInJapan.MVCWebApp.csproj", "{64EBFAA7-372E-46E6-B8B4-FBD5C9F35646}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
