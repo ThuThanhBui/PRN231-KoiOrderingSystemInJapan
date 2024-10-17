@@ -16,6 +16,7 @@ namespace KoiOrderingSystemInJapan.Service
     {
         Task<IBusinessResult> GetAll();
         Task<IBusinessResult> GetById(Guid id);
+        Task<IBusinessResult> GetByRole(int roleNum);
         Task<IBusinessResult> Create(User user);
         Task<IBusinessResult> Update(User user);
         Task<IBusinessResult> Save(User user);
@@ -93,6 +94,24 @@ namespace KoiOrderingSystemInJapan.Service
                 if (u == null)
                 {
                     return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, new User());
+                }
+                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, u);
+            }
+            catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXCEPTION, ex.Message);
+            }
+        }
+
+        public async Task<IBusinessResult> GetByRole(int role)
+        {
+            try
+            {
+                var u =  await unitOfWork.User.GetByRole(role);
+
+                if (u == null)
+                {
+                    return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, new List<User>());
                 }
                 return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, u);
             }

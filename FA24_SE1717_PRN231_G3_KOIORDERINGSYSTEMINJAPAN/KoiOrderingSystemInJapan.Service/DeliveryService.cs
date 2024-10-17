@@ -103,7 +103,7 @@ namespace KoiOrderingSystemInJapan.Service
                 }
                 else
                 {
-                    result = await _unitOfWork.Delivery.UpdateAsync(delivery);
+                    result = await _unitOfWork.Delivery.UpdateTesting(delivery);
                     if (result > 0)
                     {
                         return new BusinessResult(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG, result);

@@ -30,8 +30,6 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
         public async Task<IBusinessResult> GetServiceOrder(Guid id)
         {
             return await _serviceOrderSerivce.GetById(id);
-
-            return await _serviceOrderSerivce.GetById(id);
         }
 
         // PUT: api/ServiceOrders/5
@@ -40,8 +38,12 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
         public async Task<IBusinessResult> PutServiceOrder(ServiceOrder serviceOrder)
         {
             return await _serviceOrderSerivce.Save(serviceOrder);
+        }
 
-            return await _serviceOrderSerivce.Save(serviceOrder);
+        [HttpPut("update-isdeleted/{id}")]
+        public async Task<IBusinessResult> UpdateIsDeleted(Guid id)
+        {
+            return await _serviceOrderSerivce.UpdateIsDeleted(id);
         }
 
         // POST: api/ServiceOrders

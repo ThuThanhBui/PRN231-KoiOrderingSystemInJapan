@@ -13,9 +13,11 @@ namespace KoiOrderingSystemInJapan.Service
     public interface IBookingRequestService
     {
         Task<IBusinessResult> GetAll();
+        Task<IBusinessResult> GetBookingRequestsWithNoSale();
         Task<IBusinessResult> GetById(Guid id);
         Task<IBusinessResult> Save(BookingRequest bookingRequest);
         Task<IBusinessResult> DeleteById(Guid id);
+
     }
     public class BookingRequestService : IBookingRequestService
     {
@@ -58,6 +60,19 @@ namespace KoiOrderingSystemInJapan.Service
 
             #endregion
             var bookingRequest = await _unitOfWork.BookingRequest.GetAllAsync();
+            if (bookingRequest == null)
+            {
+                return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, new List<BookingRequest>());
+            }
+            else
+            {
+                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, bookingRequest);
+            }
+        }
+
+        public async Task<IBusinessResult> GetBookingRequestsWithNoSale()
+        {
+            var bookingRequest = await _unitOfWork.BookingRequest.GetBookingRequestsWithNoSale();
             if (bookingRequest == null)
             {
                 return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, new List<BookingRequest>());
