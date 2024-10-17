@@ -1,6 +1,8 @@
 ﻿using KoiOrderingSystemInJapan.Common;
+using KoiOrderingSystemInJapan.Data;
 using KoiOrderingSystemInJapan.Data.Models;
 using KoiOrderingSystemInJapan.Data.Request.Auths;
+using KoiOrderingSystemInJapan.MVCWebApp.Tools;
 using KoiOrderingSystemInJapan.Service.Base;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
@@ -98,7 +100,19 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Areas.Identity.Pages.Account
                                     SameSite = SameSiteMode.Strict, // Ngăn chặn gửi cookie từ một miền khác
                                     Expires = DateTimeOffset.UtcNow.AddDays(7) // Thời gian tồn tại của cookie
                                 });
-                                return RedirectToAction("Index", "Users");
+
+                                var user = await Helper.DecodedTokenAvailable(HttpContext, token);
+
+                                if (user != null && user.Role == ConstEnum.Role.Customer.ToString())
+                                {
+                                    // Nếu Role là "Customer", chuyển hướng về trang Home
+                                    return RedirectToAction("Index", "Home");
+                                }
+                                else
+                                {
+                                    // Nếu Role không phải "Customer", chuyển hướng về trang Users
+                                    return RedirectToAction("Index", "Users");
+                                }
                             }
                         }
                     }

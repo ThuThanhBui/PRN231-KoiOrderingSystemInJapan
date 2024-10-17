@@ -59,6 +59,46 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Tools
             return null;
         }
 
+        public static async Task<DecodedToken> DecodedTokenAvailable(HttpContext httpContext, string? token)
+        {
+            var tokenJson = new { Token = token};
+            var jsonContent = JsonConvert.SerializeObject(tokenJson);
+            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.PostAsync(Const.APIEndPoint + "Users/decode-token", content))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        var result = JsonConvert.DeserializeObject<BusinessResult>(responseContent);
+
+                        if (result != null && result.Data != null)
+                        {
+                            var data = JsonConvert.DeserializeObject<DecodedToken>(result.Data.ToString());
+
+                            // Kiểm tra thời gian hết hạn
+                            if (data != null && data.Exp.HasValue)
+                            {
+                                var expirationDateTime = DateTimeOffset.FromUnixTimeSeconds(data.Exp.Value);
+                                if (DateTimeOffset.UtcNow >= expirationDateTime)
+                                {
+                                    // Nếu token hết hạn, xoá cookie
+                                    httpContext.Response.Cookies.Delete("token");
+                                    return null;
+                                }
+                            }
+
+                            return data;
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
         public static async Task<DecodedToken> DecodedTokenAsync(HttpContext httpContext)
         {
             if (!httpContext.Request.Cookies.TryGetValue("token", out var token))
