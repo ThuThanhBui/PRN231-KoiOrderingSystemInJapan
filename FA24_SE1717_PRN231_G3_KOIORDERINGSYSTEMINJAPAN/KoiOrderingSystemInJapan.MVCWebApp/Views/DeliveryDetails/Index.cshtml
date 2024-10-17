@@ -82,7 +82,7 @@
                         html += '<td scope="row">' + item.updatedDate + '</td>'
                         html += '<td scope="row">' + item.isDeleted + '</td>'
                         html += '<td scope="row">' + item.note + '</td>'
-                        html += '<td scope="row">' + '<a href="/DeliveryDetails/Details/' + item.id + '">Details</a>' + '</td>'
+                        html += '<td scope="row">' + '<a href="/DeliveryDetails/Details/' + item.id + '">Details</a>' + '  ' + '<a href="/DeliveryDetails/Edit/' + item.id + '">Edit</a>' + '</td>'
                     })
                     $('.tblDeliveryDetail').html(html);
                 },

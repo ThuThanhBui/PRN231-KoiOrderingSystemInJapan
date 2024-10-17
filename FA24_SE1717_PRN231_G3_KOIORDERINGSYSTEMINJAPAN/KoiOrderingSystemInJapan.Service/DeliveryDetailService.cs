@@ -9,6 +9,7 @@ namespace KoiOrderingSystemInJapan.Service
     public interface IDeliveryDetailService
     {
         Task<IBusinessResult> GetAll();
+        Task<IBusinessResult> GetAllById(Guid id);
         Task<IBusinessResult> GetById(Guid id);
         Task<IBusinessResult> Create(DeliveryDetail user);
         Task<IBusinessResult> Update(DeliveryDetail user);
@@ -70,6 +71,19 @@ namespace KoiOrderingSystemInJapan.Service
             }
         }
 
+        public async Task<IBusinessResult> GetAllById(Guid id)
+        {
+            var deliverydetail = await _unitOfWork.DeliveryDetail.GetAllById(id);
+            if (deliverydetail == null)
+            {
+                return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, new List<User>());
+            }
+            else
+            {
+                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, deliverydetail);
+            }
+        }
+
         public async Task<IBusinessResult> GetById(Guid id)
         {
             try
@@ -109,7 +123,7 @@ namespace KoiOrderingSystemInJapan.Service
                 }
                 else
                 {
-                    result = await _unitOfWork.DeliveryDetail.UpdateAsync(detail);
+                    result = await _unitOfWork.DeliveryDetail.UpdateTesting(detail);
                     if (result > 0)
                     {
                         return new BusinessResult(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG, result);

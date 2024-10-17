@@ -10,69 +10,69 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form id="deliveryForm">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="KoiOrderId" class="control-label"></label>
-                <select asp-for="KoiOrderId" class ="form-control" asp-items="ViewBag.KoiOrderId"></select>
+                <select id="KoiOrderId" asp-for="KoiOrderId" class="form-control" asp-items="ViewBag.KoiOrderId"></select> 
             </div>
             <div class="form-group">
                 <label asp-for="DeliveryStaffId" class="control-label"></label>
-                <select asp-for="DeliveryStaffId" class ="form-control" asp-items="ViewBag.DeliveryStaffId"></select>
+                <select id="DeliveryStaffId" asp-for="DeliveryStaffId" class="form-control" asp-items="ViewBag.DeliveryStaffId"></select> 
             </div>
             <div class="form-group">
                 <label asp-for="Code" class="control-label"></label>
-                <input asp-for="Code" class="form-control" />
+                <input id="Code" asp-for="Code" class="form-control" /> 
                 <span asp-validation-for="Code" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+                <input id="Name" asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Phone" class="control-label"></label>
-                <input asp-for="Phone" class="form-control" />
+                <input id="Phone" asp-for="Phone" class="form-control" /> 
                 <span asp-validation-for="Phone" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Address" class="control-label"></label>
-                <input asp-for="Address" class="form-control" />
+                <input id="Address" asp-for="Address" class="form-control" />
                 <span asp-validation-for="Address" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="TotalAmount" class="control-label"></label>
-                <input asp-for="TotalAmount" class="form-control" />
+                <input id="TotalAmount" asp-for="TotalAmount" class="form-control" /> 
                 <span asp-validation-for="TotalAmount" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="PaymentReceived" class="control-label"></label>
-                <input asp-for="PaymentReceived" class="form-control" />
+                <input id="PaymentReceived" asp-for="PaymentReceived" class="form-control" />
                 <span asp-validation-for="PaymentReceived" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CreatedBy" class="control-label"></label>
-                <input asp-for="CreatedBy" class="form-control" />
+                <input id="CreatedBy" asp-for="CreatedBy" class="form-control" /> 
                 <span asp-validation-for="CreatedBy" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CreatedDate" class="control-label"></label>
-                <input asp-for="CreatedDate" class="form-control" />
+                <input id="CreatedDate" asp-for="CreatedDate" class="form-control" />
                 <span asp-validation-for="CreatedDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="UpdatedBy" class="control-label"></label>
-                <input asp-for="UpdatedBy" class="form-control" />
+                <input id="UpdatedBy" asp-for="UpdatedBy" class="form-control" /> 
                 <span asp-validation-for="UpdatedBy" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="UpdatedDate" class="control-label"></label>
-                <input asp-for="UpdatedDate" class="form-control" />
+                <input id="UpdatedDate" asp-for="UpdatedDate" class="form-control" /> 
                 <span asp-validation-for="UpdatedDate" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
+                    <input id="IsDeleted" class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
                 </label>
             </div>
             <div class="form-group">
@@ -89,13 +89,46 @@
 @section Scripts {
     <script type="text/javascript">
         $(document).ready(function () {
-            loadData();
+            $("#deliveryForm").on("submit", function (e) {
+                e.preventDefault(); // Prevent form from submitting normally
+
+                // Get form data and serialize it into a JSON object
+                var formData = {
+                    KoiOrderId: $("#KoiOrderId").val(),
+                    DeliveryStaffId: $("#DeliveryStaffId").val(),
+                    Code: $("#Code").val(),
+                    Name: $("#Name").val(),
+                    Phone: $("#Phone").val(),
+                    Address: $("#Address").val(),
+                    TotalAmount: $("#TotalAmount").val(),
+                    PaymentReceived: $("#PaymentReceived").val(),
+                    CreatedBy: $("#CreatedBy").val(),
+                    CreatedDate: $("#CreatedDate").val(),
+                    UpdatedBy: $("#UpdatedBy").val(),
+                    UpdatedDate: $("#UpdatedDate").val(),
+                    IsDeleted: $("#IsDeleted").prop('checked')
+                };
+
+                console.log(formData);
+                // AJAX POST request
+                $.ajax({
+                    type: "POST",
+                    url: 'https://localhost:7298/api/Deliveries',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    data: JSON.stringify(formData), // Send form data as JSON
+                    success: function (response) {
+                        console.log("API Response:", response);
+                        alert('Delivery created successfully!');
+                        window.location.href = "/Deliveries/Index"; // Redirect on success
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Error: ' + xhr.responseText);
+                    }
+                });
+            });
         });
-
-        $ajax({
-            url:  ,
-            type: "GET",
-        })
     </script>
-
 }
