@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 using KoiOrderingSystemInJapan.Service.Base;
 using Azure;
 using Microsoft.AspNetCore.Identity;
-using static KoiOrderingSystemInJapan.Data.Enum;
+/*using static KoiOrderingSystemInJapan.Data.Enum;*/
 
 namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
 {
@@ -24,6 +24,10 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
         public DeliveriesController()
         {
           
+        }
+        public async Task<IActionResult> DeliveryUser()
+        {
+            return View();
         }
 
         // GET: Deliveries
@@ -112,7 +116,7 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
                         if (result != null && result.Data != null)
                         {
                             var data = JsonConvert.DeserializeObject<List<User>>(result.Data.ToString());
-                            var deliveryStaff = data.Where(u => u.Role == Role.Deliver).ToList();
+                            var deliveryStaff = data.Where(u => u.Role == Data.ConstEnum.Role.Deliver).ToList();
                             if (deliveryStaff.Any())
                             {
                                 ViewBag.DeliveryStaffId = new SelectList(data, "Id", "Lastname");
