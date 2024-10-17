@@ -9,8 +9,8 @@
 <h4>DeliveryDetail</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
+    <div  class="col-md-4">
+        <form id="deliveryForm" >
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="DeliveryId" class="control-label"></label>
@@ -51,6 +51,7 @@
                     <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
                 </label>
             </div>
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -62,6 +63,50 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-@section Scripts {
+@* @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} *@
+
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#deliveryForm").on("submit", function (e) {
+                e.preventDefault(); // Prevent form from submitting normally
+
+                // Get form data and serialize it into a JSON object
+                var formData = {
+                    DeliveryId: $("#DeliveryId").val(),
+                    Name: $("#Name").val(),
+                    Description: $("#Description").val(),
+                    CreatedBy: $("#CreatedBy").val(),
+                    CreatedDate: $("#CreatedDate").val(),
+                    UpdatedBy: $("#UpdatedBy").val(),
+                    UpdatedDate: $("#UpdatedDate").val(),
+                    IsDeleted: $("#IsDeleted").prop('checked')
+                };
+
+                // AJAX POST request
+                $.ajax({
+                    type: "POST",
+                    url: 'https://localhost:7298/api/DeliveryDetails',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    data: JSON.stringify(formData), // Send form data as JSON
+                    success: function (response) {
+                        console.log(response)
+                        alert('DeliveryDetail created successfully!');
+                        window.location.href = "/DeliveryDetails/Index"; // Redirect on success
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Error: ' + error);
+                    }
+                });
+            });
+        });
+    </script>
 }
+
+

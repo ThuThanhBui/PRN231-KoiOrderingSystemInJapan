@@ -31,6 +31,13 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
             return await _deliverydetailSerivce.GetById(id);
         }
 
+        // GET: api/DeliveryDetails/5
+        [HttpGet("all/{id}")]
+        public async Task<IBusinessResult> GetAllDelieryDetailById(Guid id)
+        {
+            return await _deliverydetailSerivce.GetAllById(id);
+        }
+
         // PUT: api/DeliveryDetails/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
