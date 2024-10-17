@@ -7,10 +7,10 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class KoiFishsController : ControllerBase
+    public class KoiFishesController : ControllerBase
     {
         private readonly KoiFishService _fishService;
-        public KoiFishsController()
+        public KoiFishesController()
         {
             _fishService ??= new KoiFishService();
         }

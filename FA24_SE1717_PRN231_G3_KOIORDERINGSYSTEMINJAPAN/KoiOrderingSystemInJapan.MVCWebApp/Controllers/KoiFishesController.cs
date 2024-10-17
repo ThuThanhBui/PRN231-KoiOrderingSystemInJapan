@@ -1,6 +1,7 @@
 ﻿using KoiOrderingSystemInJapan.Common;
 using KoiOrderingSystemInJapan.Data.Context;
 using KoiOrderingSystemInJapan.Data.Models;
+using KoiOrderingSystemInJapan.MVCWebApp.Tools;
 using KoiOrderingSystemInJapan.Service.Base;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,39 +9,68 @@ using Newtonsoft.Json;
 
 namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
 {
-    public class KoiFishsController : Controller
+    public class KoiFishesController : Controller
     {
         private readonly KoiOrderingSystemInJapanContext _context;
-        public KoiFishsController() { }
 
-        // GET: KoiFishs
-        public async Task<IActionResult> Index()
+        public KoiFishesController(KoiOrderingSystemInJapanContext context)
         {
-            using (var httpClient = new HttpClient())
-            {
-                using (var response = await httpClient.GetAsync(Const.APIEndPoint + "KoiFishs"))
-                {
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var content = await response.Content.ReadAsStringAsync();
-                        var result = JsonConvert.DeserializeObject<BusinessResult>(content);
-
-                        if (result != null && result.Data != null)
-                        {
-                            var data = JsonConvert.DeserializeObject<List<KoiFish>>(result.Data.ToString());
-                            return View(data);
-                        }
-                    }
-                }
-            }
-            return View(new List<KoiFish>());
+            _context = context;
         }
-        // GET: KoiFishs/Details/5
+
+        // GET: KoiFishes
+        //public async Task<IActionResult> Index()
+        //{
+        //    using (var httpClient = new HttpClient())
+        //    {
+        //        using (var response = await httpClient.GetAsync(Const.APIEndPoint + "KoiFishes"))
+        //        {
+        //            if (response.IsSuccessStatusCode)
+        //            {
+        //                var content = await response.Content.ReadAsStringAsync();
+        //                var result = JsonConvert.DeserializeObject<BusinessResult>(content);
+
+        //                if (result != null && result.Data != null)
+        //                {
+        //                    var data = JsonConvert.DeserializeObject<List<KoiFish>>(result.Data.ToString());
+        //                    return View(data);
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return View(new List<KoiFish>());
+        //}
+
+        public IActionResult Index(string category)
+        {
+            if (string.IsNullOrEmpty(category))
+            {
+                // Nếu không có category được truyền, lấy tất cả cá koi
+                var allKoiFish = _context.KoiFishes.ToList();
+                return View(allKoiFish);
+            }
+            else
+            {
+                // Nếu có category, lấy các koi dựa trên category
+                var koiFishes = _context.KoiFishes.Include(k => k.Category).ToList(); // Lấy tất cả với category
+                var koiFishByCategory = koiFishes
+                    .Where(k => SlugHelper.ConvertToSlugName(k.Category.Name) == category && !k.Category.IsDeleted)
+                    .ToList();
+
+                if (koiFishByCategory == null || !koiFishByCategory.Any())
+                {
+                    return NotFound(); // Nếu không tìm thấy
+                }
+
+                return View(koiFishByCategory); // Trả dữ liệu về view
+            }
+        }
+        // GET: KoiFishes/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
             using (var httpClient = new HttpClient())
             {
-                using (var response = await httpClient.GetAsync(Const.APIEndPoint + "KoiFishs/" + id))
+                using (var response = await httpClient.GetAsync(Const.APIEndPoint + "KoiFishes/" + id))
                 {
                     if (response.IsSuccessStatusCode)
                     {
@@ -57,13 +87,13 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
             }
             return View(new KoiFish());
         }
-        // GET: KoiFishs/Create
+        // GET: KoiFishes/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: KoiFishs/Create
+        // POST: KoiFishes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -75,7 +105,7 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
             {
                 using (var httpClient = new HttpClient())
                 {
-                    using (var response = await httpClient.PostAsJsonAsync(Const.APIEndPoint + "KoiFishs/", fish))
+                    using (var response = await httpClient.PostAsJsonAsync(Const.APIEndPoint + "KoiFishes/", fish))
                     {
                         if (response.IsSuccessStatusCode)
                         {
@@ -139,7 +169,7 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
-        // GET: KoiFishs/Delete/5
+        // GET: KoiFishes/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)

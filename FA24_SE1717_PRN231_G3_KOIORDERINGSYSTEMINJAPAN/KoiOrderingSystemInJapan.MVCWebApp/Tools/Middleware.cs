@@ -1,19 +1,24 @@
 ﻿using KoiOrderingSystemInJapan.Common;
 using KoiOrderingSystemInJapan.Data.Models;
 using KoiOrderingSystemInJapan.Service.Base;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-
-namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
+namespace KoiOrderingSystemInJapan.MVCWebApp.Tools
 {
-    public class HomeController : Controller
+    // You may need to install the Microsoft.AspNetCore.Http.Abstractions package into your project
+    public class Middleware
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly RequestDelegate _next;
 
-        public HomeController(ILogger<HomeController> logger)
+        public Middleware(RequestDelegate next)
         {
-            _logger = logger;
+            _next = next;
+        }
+
+        public async Task Invoke(HttpContext httpContext)
+        {
+            var categories = await GetCategoriesAsync();
+            httpContext.Items["KoiCategories"] = categories;
+            await _next(httpContext);
         }
 
         private async Task<List<Category>> GetCategoriesAsync()
@@ -36,24 +41,16 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
             }
             return new List<Category>();
         }
-
-        public async Task<IActionResult> Index()
-        {
-            var categories = await GetCategoriesAsync();
-            ViewBag.KoiCategories = categories;
-
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        //[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        //public IActionResult Error()
-        //{
-        //    return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        //}
     }
+
+    // Extension method used to add the middleware to the HTTP request pipeline.
+    public static class MiddlewareExtensions
+    {
+        public static IApplicationBuilder UseMiddleware(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<Middleware>();
+        }
+    }
+
+
 }

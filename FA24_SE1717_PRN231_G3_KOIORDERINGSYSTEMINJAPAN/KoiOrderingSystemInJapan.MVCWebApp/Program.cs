@@ -1,4 +1,5 @@
 using KoiOrderingSystemInJapan.Data.Context;
+using KoiOrderingSystemInJapan.MVCWebApp.Tools;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseMiddleware<Middleware>();
 
 app.UseAuthorization();
 
