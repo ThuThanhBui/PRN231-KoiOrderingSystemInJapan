@@ -1,5 +1,6 @@
 ﻿using KoiOrderingSystemInJapan.Data.Context;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace KoiOrderingSystemInJapan.Data.Base
 {
@@ -24,6 +25,10 @@ namespace KoiOrderingSystemInJapan.Data.Base
         public async Task<List<T>> GetAllAsync()
         {
             return await _context.Set<T>().ToListAsync();
+        }
+        public async Task<List<T>> GetAllAsyncById(Expression<Func<T, bool>> predicate)
+        {
+            return await _context.Set<T>().Where(predicate).ToListAsync();
         }
         public void Create(T entity)
         {
