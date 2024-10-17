@@ -14,5 +14,16 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
         {
             return await _context.Users.ToListAsync();
         }
+
+        public async Task<User?> FindByEmailOrUsername(string keyword)
+        {
+            var queryable = _context.Set<User>().AsQueryable();
+
+            var user = await queryable.Where(e => e.Email!.ToLower().Trim() == keyword.ToLower().Trim()
+                                                  || e.Username!.ToLower().Trim() == keyword.ToLower().Trim())
+                .SingleOrDefaultAsync();
+
+            return user;
+        }
     }
 }

@@ -18,6 +18,9 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Tools
         {
             var categories = await GetCategoriesAsync();
             httpContext.Items["KoiCategories"] = categories;
+            // token có trên header hay ko?
+
+            // nếu có mà quyền Không phải guest, thì cấm vào trang , ngc lại thì /Home/...
             await _next(httpContext);
         }
 
