@@ -26,19 +26,25 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Tools
             // Kiểm tra token từ cookie
             if (httpContext.Request.Cookies.TryGetValue("token", out var token))
             {
-                httpContext.Items["IsLogin"] = true;
-
                 var user = await Helper.GetCurrentUserAsync(httpContext);
-                httpContext.Items["User"] = user;
-
-                // Kiểm tra quyền
                 if (user != null)
                 {
+                    httpContext.Items["IsLogin"] = true;
+                    httpContext.Items["User"] = user;
+
+                    // Kiểm tra quyền
                     httpContext.Items["IsGuest"] = user.Role == ConstEnum.Role.Customer;
+                }
+                else
+                {
+                    // Token không hợp lệ hoặc người dùng không tồn tại
+                    httpContext.Items["IsLogin"] = false;
+                    httpContext.Items["IsGuest"] = true;
                 }
             }
             else
             {
+                // Không có token, người dùng là khách
                 httpContext.Items["IsGuest"] = true;
                 httpContext.Items["IsLogin"] = false;
             }
