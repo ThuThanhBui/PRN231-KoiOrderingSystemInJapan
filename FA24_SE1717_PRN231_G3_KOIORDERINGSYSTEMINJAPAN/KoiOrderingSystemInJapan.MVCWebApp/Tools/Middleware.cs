@@ -1,4 +1,5 @@
 ﻿using KoiOrderingSystemInJapan.Common;
+using KoiOrderingSystemInJapan.Data;
 using KoiOrderingSystemInJapan.Data.Models;
 using KoiOrderingSystemInJapan.Data.Request.Auths;
 using KoiOrderingSystemInJapan.Service.Base;
@@ -21,33 +22,31 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Tools
         {
             var categories = await GetCategoriesAsync();
             httpContext.Items["KoiCategories"] = categories;
-            // token có trên header hay ko?
-            if (httpContext.Request.Headers.TryGetValue("Authorization", out var token))
+
+            // Kiểm tra token từ cookie
+            if (httpContext.Request.Cookies.TryGetValue("token", out var token))
             {
                 httpContext.Items["IsLogin"] = true;
+
+                var user = await Helper.GetCurrentUserAsync(httpContext);
+                httpContext.Items["User"] = user;
+
                 // Kiểm tra quyền
-                if (await Helper.IsUserGuestAsync(token))
+                if (user != null)
                 {
-                    httpContext.Items["IsGuest"] = true;
-                    await _next(httpContext);
-                }
-                else
-                {
-                    httpContext.Items["IsGuest"] = false;
-                    await _next(httpContext);
+                    httpContext.Items["IsGuest"] = user.Role == ConstEnum.Role.Customer;
                 }
             }
             else
             {
-                // Không có token, có thể chuyển hướng hoặc cho phép tiếp tục
                 httpContext.Items["IsGuest"] = true;
                 httpContext.Items["IsLogin"] = false;
-                await _next(httpContext);
             }
-            // nếu có mà quyền Không phải guest, thì cấm vào trang , ngc lại thì /Home/...
+
+            await _next(httpContext);
         }
 
-        
+
         private async Task<List<Category>> GetCategoriesAsync()
         {
             using (var httpClient = new HttpClient())

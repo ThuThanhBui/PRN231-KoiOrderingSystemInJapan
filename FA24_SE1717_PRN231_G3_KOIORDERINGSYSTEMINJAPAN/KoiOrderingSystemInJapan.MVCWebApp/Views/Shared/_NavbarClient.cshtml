@@ -2,6 +2,7 @@
 @using KoiOrderingSystemInJapan.MVCWebApp.Tools
 @{
     var categories = Context.Items["KoiCategories"] as List<Category>;
+    var user = Context.Items["User"] as User;
 }
 
 <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-black text-w border-bottom box-shadow mb-3">
@@ -39,9 +40,23 @@
                 </li>
             </ul>
             <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link text-light" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
-                </li>
+                @if (Context.Items["IsLogin"] is bool isLogin && isLogin == false)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link text-light" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <a id="manage" class="nav-link text-light" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Welcome, @user.Username</a>
+                    </li>
+                    <li class="nav-item">
+                        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                            <button id="logout" type="submit" class="nav-link btn btn-link text-light border-0">Logout</button>
+                        </form>
+                    </li>
+                }
             </ul>
         </div>
     </div>

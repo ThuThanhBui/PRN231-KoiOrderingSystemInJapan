@@ -1,7 +1,13 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using KoiOrderingSystemInJapan.Common;
+using KoiOrderingSystemInJapan.Data.Models;
+using KoiOrderingSystemInJapan.Data.Request.Auths;
+using KoiOrderingSystemInJapan.Service.Base;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
+using System.Text;
 
 namespace KoiOrderingSystemInJapan.MVCWebApp.Areas.Identity.Pages.Account
 {
@@ -31,7 +37,6 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
-            [EmailAddress]
             public string Email { get; set; }
 
             [Required]
@@ -62,6 +67,43 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             //returnUrl ??= Url.Content("~/");
+
+            if (ModelState.IsValid)
+            {
+                var loginRequest = new LoginRequestModel
+                {
+                    UsernameOrEmail = Input.Email,
+                    Password = Input.Password,
+                };
+                using (var httpClient = new HttpClient())
+                {
+                    var jsonContent = JsonConvert.SerializeObject(loginRequest);
+                    var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                    using (var response = await httpClient.PostAsync(Const.APIEndPoint + "Users/login", httpContent))
+                    {
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var content = await response.Content.ReadAsStringAsync();
+                            var result = JsonConvert.DeserializeObject<BusinessResult>(content);
+                            if (result != null)
+                            {
+                                var data = JsonConvert.DeserializeObject<LoginResponse>(result.Data.ToString());
+                                var token = data.Token;
+                                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                                HttpContext.Response.Cookies.Append("token", token, new CookieOptions
+                                {
+                                    HttpOnly = true, // Đảm bảo cookie không thể truy cập từ JavaScript
+                                    Secure = true,   // Chỉ gửi cookie qua HTTPS
+                                    SameSite = SameSiteMode.Strict, // Ngăn chặn gửi cookie từ một miền khác
+                                    Expires = DateTimeOffset.UtcNow.AddDays(7) // Thời gian tồn tại của cookie
+                                });
+                                return RedirectToAction("Index", "Users");
+                            }
+                        }
+                    }
+                }
+            }
 
             //if (ModelState.IsValid)
             //{

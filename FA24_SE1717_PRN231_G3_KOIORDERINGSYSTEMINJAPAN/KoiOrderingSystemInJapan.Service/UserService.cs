@@ -227,6 +227,7 @@ namespace KoiOrderingSystemInJapan.Service
             var username = await unitOfWork.User.FindByEmailOrUsername(user.Username);
             if (username == null)
             {
+                user.Role = ConstEnum.Role.Customer;
                 return await Save(user);
             }
             else

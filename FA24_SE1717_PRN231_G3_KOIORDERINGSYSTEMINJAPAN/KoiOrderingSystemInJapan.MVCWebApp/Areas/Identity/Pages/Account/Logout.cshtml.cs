@@ -3,6 +3,8 @@
 #nullable disable
 
 
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace KoiOrderingSystemInJapan.MVCWebApp.Areas.Identity.Pages.Account
@@ -33,5 +35,15 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Areas.Identity.Pages.Account
         //    //    return RedirectToPage();
         //    //}
         //}
+
+        public async Task<IActionResult> OnPost(string returnUrl = null)
+        {
+            // Xoá cookie token
+            Response.Cookies.Delete("token");
+
+
+            // Chuyển hướng về trang đã chỉ định hoặc trang chính
+            return LocalRedirect(returnUrl ?? Url.Content("~/"));
+        }
     }
 }
