@@ -2,11 +2,7 @@
 using KoiOrderingSystemInJapan.Data.Context;
 using KoiOrderingSystemInJapan.Data.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace KoiOrderingSystemInJapan.Data.Repositories
 {
@@ -19,9 +15,28 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
         public async Task<List<BookingRequest>> GetAllAsync()
         {
             return await _context.Set<BookingRequest>()
+                .Where(m => !m.IsDeleted)
                 .Include(m => m.Customer)
                 .Include(m => m.Travel)
                 .ToListAsync();
+        }
+
+        public async Task<BookingRequest> GetByIdAsync(Guid id)
+        {
+            return await _context.Set<BookingRequest>()
+                .Where(m => !m.IsDeleted)
+                .Include(m => m.Customer) 
+                .Include(m => m.Travel)  
+                .FirstOrDefaultAsync(b => b.Id == id); 
+        }
+
+        public async Task<List<BookingRequest>> GetBookingRequestsWithNoSale()
+        {
+            return await _context.Set<BookingRequest>()
+                .Where(m => !m.IsDeleted && m.Sale == null)
+                .Include(m => m.Customer)
+                .Include(m => m.Travel).ToListAsync();
+                ;
         }
     }
 }

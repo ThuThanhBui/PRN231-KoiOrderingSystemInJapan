@@ -1,8 +1,8 @@
 ﻿using KoiOrderingSystemInJapan.Common;
 using KoiOrderingSystemInJapan.Data;
 using KoiOrderingSystemInJapan.Data.Models;
-using KoiOrderingSystemInJapan.Data.Request.Payment;
-using KoiOrderingSystemInJapan.Data.Request.ServiceOrder;
+using KoiOrderingSystemInJapan.Data.Request.Payments;
+using KoiOrderingSystemInJapan.Data.Request.ServiceOrders;
 using KoiOrderingSystemInJapan.Service.Base;
 
 namespace KoiOrderingSystemInJapan.Service
@@ -13,6 +13,7 @@ namespace KoiOrderingSystemInJapan.Service
         Task<IBusinessResult> GetById(Guid id);
         Task<IBusinessResult> Create(ServiceOrder serviceOrder);
         Task<IBusinessResult> Update(ServiceOrder serviceOrder);
+        Task<IBusinessResult> UpdateIsDeleted(Guid id);
         Task<IBusinessResult> Save(ServiceOrder serviceOrder);
         Task<IBusinessResult> DeleteById(Guid id);
         Task<IBusinessResult> CreatePayment(RequestPaymentServiceModel serviceOrder);
@@ -96,22 +97,25 @@ namespace KoiOrderingSystemInJapan.Service
 
                 if (serviceOrderTmp == null)
                 {
+                    serviceOrder.CreatedDate = DateTime.Now;
                     result = await _unitOfWork.ServiceOrder.CreateAsync(serviceOrder);
                     if (result > 0)
                     {
-                        return new BusinessResult(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG, result);
+                        return new BusinessResult(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG, serviceOrder);
                     }
                     else
                     {
-                        return new BusinessResult(Const.FAIL_CREATE_CODE, Const.FAIL_CREATE_MSG, new Invoice());
+                        return new BusinessResult(Const.FAIL_CREATE_CODE, Const.FAIL_CREATE_MSG, new ServiceOrder());
                     }
                 }
                 else
                 {
-                    result = await _unitOfWork.ServiceOrder.UpdateAsync(serviceOrder);
+                    serviceOrder.UpdatedDate = DateTime.Now;
+                    _unitOfWork.Sale.Context().Entry(serviceOrderTmp).CurrentValues.SetValues(serviceOrder);
+                    result = await _unitOfWork.ServiceOrder.UpdateAsync(serviceOrderTmp);
                     if (result > 0)
                     {
-                        return new BusinessResult(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG, result);
+                        return new BusinessResult(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG, serviceOrder);
                     }
                     else
                     {
@@ -151,14 +155,44 @@ namespace KoiOrderingSystemInJapan.Service
                 }
                 var momoRequest = new RequestCreateOrderModel
                 {
-                    Buy_date = DateTime.Now,
-                    OrderId = serviceOrderEntity.Id,
-                    OrderType = "ServiceOrder",
-                    Price = (decimal)serviceOrderEntity.TotalPrice,
+                   Buy_date = DateTime.Now,
+                   OrderId = serviceOrderEntity.Id,
+                   OrderType = "ServiceOrder",
+                   Price = (decimal)serviceOrderEntity.TotalPrice,
                 };
                 var result = await _paymentService.CreatePaymentAsync(momoRequest);
                 return new BusinessResult(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG, result);
 
+            }
+            catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXCEPTION, ex.Message);
+            }
+        }
+
+        public async Task<IBusinessResult> UpdateIsDeleted(Guid id)
+        {
+            try
+            {
+                var e = await _unitOfWork.ServiceOrder.GetByIdAsync(id);
+
+                if (e == null)
+                {
+                    return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG);
+                }
+                else
+                {
+                    bool rs = await _unitOfWork.ServiceOrder.UpdateIsDeleted(e);
+
+                    if (rs)
+                    {
+                        return new BusinessResult(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG);
+                    }
+                    else
+                    {
+                        return new BusinessResult(Const.FAIL_UPDATE_CODE, Const.FAIL_UPDATE_MSG);
+                    }
+                }
             }
             catch (Exception ex)
             {

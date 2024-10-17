@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using KoiOrderingSystemInJapan.Common;
+using KoiOrderingSystemInJapan.Data;
+using KoiOrderingSystemInJapan.Data.Models;
+using KoiOrderingSystemInJapan.Service.Base;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using KoiOrderingSystemInJapan.Data.Context;
-using KoiOrderingSystemInJapan.Data.Models;
-using KoiOrderingSystemInJapan.Common;
-using KoiOrderingSystemInJapan.Service.Base;
 using Newtonsoft.Json;
 
 namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
@@ -21,8 +16,16 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
         {
         }
 
+        #region Queries
         // GET: BookingRequests
         public async Task<IActionResult> Index()
+        {
+            var data = await GetBookingRequestsAsync();
+
+            return View(data);
+        }
+
+        private async Task<List<BookingRequest>> GetBookingRequestsAsync()
         {
             using (var httpClient = new HttpClient())
             {
@@ -35,42 +38,109 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
                         if (result != null)
                         {
                             var data = JsonConvert.DeserializeObject<List<BookingRequest>>(result.Data.ToString());
-                            return View(data);
+                            return data;
+                        }
+                    }
+                }
+            }
+            return new List<BookingRequest>();
+        }
+
+        private async Task<List<User>> GetCustomersAsync()
+        {
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync(Const.APIEndPoint + "Users"))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var content = await response.Content.ReadAsStringAsync();
+                        var result = JsonConvert.DeserializeObject<BusinessResult>(content);
+                        if (result != null)
+                        {
+                            var data = JsonConvert.DeserializeObject<List<User>>(result.Data.ToString());
+                            return data;
+                        }
+                    }
+                }
+            }
+            return new List<User>();
+        }
+
+        private async Task<List<Travel>> GetTravelsAsync()
+        {
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync(Const.APIEndPoint + "Travels"))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var content = await response.Content.ReadAsStringAsync();
+                        var result = JsonConvert.DeserializeObject<BusinessResult>(content);
+                        if (result != null)
+                        {
+                            var data = JsonConvert.DeserializeObject<List<Travel>>(result.Data.ToString());
+                            return data;
+                        }
+                    }
+                }
+            }
+            return new List<Travel>();
+        }
+
+        private async Task<BookingRequest> GetBookingRequestByIdAsync(Guid id)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync(Const.APIEndPoint + "BookingRequests/" + id))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var content = await response.Content.ReadAsStringAsync();
+                        var result = JsonConvert.DeserializeObject<BusinessResult>(content);
+                        if (result != null)
+                        {
+                            var data = JsonConvert.DeserializeObject<BookingRequest>(result.Data.ToString());
+                            return data;
 
                         }
                     }
                 }
             }
-            return View(new List<BookingRequest>());
+            return new BookingRequest();
         }
+
+        #endregion
 
         // GET: BookingRequests/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
-            //using (var httpClient = new HttpClient())
-            //{
-            //    using (var response = await httpClient.GetAsync(Const.APIEndPoint + "BookingRequests/" + id))
-            //    {
-            //        if (response.IsSuccessStatusCode)
-            //        {
-            //            var content = await response.Content.ReadAsStringAsync();
-            //            var result = JsonConvert.DeserializeObject<BusinessResult>(content);
-            //            if (result != null)
-            //            {
-            //                var data = JsonConvert.DeserializeObject<BookingRequest>(result.Data.ToString());
-            //                return View(data);
+            if (id == null) return RedirectToAction(nameof(Index));
+            var data = await GetBookingRequestByIdAsync(id.Value);
 
-            //            }
-            //        }
-            //    }
-            //}
-            //return View(new BookingRequest());
-            return View(id);
+            return View(data);
         }
 
         // GET: BookingRequests/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var status = Enum.GetValues(typeof(ConstEnum.BookingRequestStatus))
+                     .Cast<ConstEnum.BookingRequestStatus>()
+                     .Select(s => new
+                     {
+                         Value = s.ToString(), // Giá trị được gửi về khi chọn
+                         Text = s.ToString()   // Tên hiển thị trong dropdown
+                     })
+                     .ToList();
+
+            ViewBag.StatusList = new SelectList(status, "Value", "Text");
+
+            var customers = await GetCustomersAsync();
+            ViewBag.CustomerId = new SelectList(customers, "Id", "Username");
+
+            var travels = await GetTravelsAsync();
+            ViewBag.TravelId = new SelectList(travels, "Id", "Name"); 
+
             return View();
         }
 
@@ -93,43 +163,40 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
                             var result = JsonConvert.DeserializeObject<BusinessResult>(content);
                             if (result != null && result.Status == Const.SUCCESS_CREATE_CODE)
                             {
-                            }
-                            else
-                            {
-                                return View(bookingRequest);
+                                return RedirectToAction(nameof(Index));
                             }
                         }
                     }
                 }
             }
-            return RedirectToAction(nameof(Index));
+            return View(bookingRequest);
         }
 
         // GET: BookingRequests/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            using (var httpClient = new HttpClient())
-            {
-                using (var response = await httpClient.GetAsync(Const.APIEndPoint + "BookingRequests/" + id))
-                {
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var content = await response.Content.ReadAsStringAsync();
-                        var result = JsonConvert.DeserializeObject<BusinessResult>(content);
-                        if (result != null)
-                        {
-                            var data = JsonConvert.DeserializeObject<BookingRequest>(result.Data.ToString());
+            if (id == null) return RedirectToAction(nameof(Index));
 
-                            return View(data);
-                        }
-                    }
-                }
-            }
-            return NotFound();
+            var data = await GetBookingRequestByIdAsync(id.Value);
+
+            var status = Enum.GetValues(typeof(ConstEnum.BookingRequestStatus))
+                     .Cast<ConstEnum.BookingRequestStatus>()
+                     .Select(s => new
+                     {
+                         Value = s.ToString(), // Giá trị được gửi về khi chọn
+                         Text = s.ToString()   // Tên hiển thị trong dropdown
+                     })
+                     .ToList();
+
+            ViewBag.StatusList = new SelectList(status, "Value", "Text", data.Status.ToString());
+
+            var customers = await GetCustomersAsync();
+            ViewBag.CustomerId = new SelectList(customers, "Id", "Username", data?.CustomerId); 
+
+            var travels = await GetTravelsAsync();
+            ViewBag.TravelId = new SelectList(travels, "Id", "Name", data?.TravelId); 
+
+            return View(data);
         }
 
         // POST: BookingRequests/Edit/5
@@ -137,7 +204,7 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,PaymentAmount,PaymentDate,CreatedBy,CreatedDate,UpdatedBy,UpdatedDate,IsDeleted")] BookingRequest bookingRequest)
+        public async Task<IActionResult> Edit(Guid id, BookingRequest bookingRequest)
         {
             if (id != bookingRequest.Id)
             {
@@ -147,7 +214,7 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
             {
                 using (var httpClient = new HttpClient())
                 {
-                    using (var response = await httpClient.PostAsJsonAsync(Const.APIEndPoint + "BookingRequests/", bookingRequest))
+                    using (var response = await httpClient.PutAsJsonAsync(Const.APIEndPoint + "BookingRequests/" + id, bookingRequest))
                     {
                         if (response.IsSuccessStatusCode)
                         {
@@ -155,54 +222,52 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
                             var result = JsonConvert.DeserializeObject<BusinessResult>(content);
                             if (result != null && result.Status == Const.SUCCESS_UPDATE_CODE)
                             {
-                            }
-                            else
-                            {
-                                return View(bookingRequest);
+                                return RedirectToAction(nameof(Index));
                             }
                         }
                     }
                 }
             }
-            return RedirectToAction(nameof(Index));
+            return View(bookingRequest);
         }
 
         // GET: BookingRequests/Delete/5
-        //public async Task<IActionResult> Delete(Guid? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        public async Task<IActionResult> Delete(Guid? id)
+        {
+            if (id == null) return RedirectToAction(nameof(Index));
+            var data = await GetBookingRequestByIdAsync(id.Value);
 
-        //    var bookingRequest = await _context.BookingRequests
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (bookingRequest == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(bookingRequest);
-        //}
+            return View(data);
+        }
 
         // POST: BookingRequests/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(Guid id)
-        //{
-        //    var bookingRequest = await _context.BookingRequests.FindAsync(id);
-        //    if (bookingRequest != null)
-        //    {
-        //        _context.BookingRequests.Remove(bookingRequest);
-        //    }
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        {
+            var bookingRequest = await GetBookingRequestByIdAsync(id);
+            if (bookingRequest != null)
+            {
+                // remove
+                using (var httpClient = new HttpClient())
+                {
+                    using (var response = await httpClient.DeleteAsync(Const.APIEndPoint + "BookingRequests/" + id))
+                    {
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var content = await response.Content.ReadAsStringAsync();
+                            var result = JsonConvert.DeserializeObject<BusinessResult>(content);
+                            if (result != null)
+                            {
+                                return RedirectToAction(nameof(Index));
+                            }
+                        }
+                    }
+                }
+            }
 
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
+            return View(bookingRequest);
+        }
 
-        //private bool BookingRequestExists(Guid id)
-        //{
-        //    return _context.BookingRequests.Any(e => e.Id == id);
-        //}
     }
 }

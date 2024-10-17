@@ -26,6 +26,13 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
         // GET: Services
         public async Task<IActionResult> Index()
         {
+            var data = await GetServicesAsync();
+
+            return View(data);
+        }
+
+        private async Task<List<ServiceEntity.Service>> GetServicesAsync()
+        {
             using (var httpClient = new HttpClient())
             {
                 using (var response = await httpClient.GetAsync(Const.APIEndPoint + "Services"))
@@ -37,37 +44,41 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
                         if (result != null)
                         {
                             var data = JsonConvert.DeserializeObject<List<ServiceEntity.Service>>(result.Data.ToString());
-                            return View(data);
+                            return data;
+                        }
+                    }
+                }
+            }
+            return new List<ServiceEntity.Service>();
+        }
+        private async Task<ServiceEntity.Service> GetServiceByIdAsync(Guid id)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync(Const.APIEndPoint + "Services/" + id))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var content = await response.Content.ReadAsStringAsync();
+                        var result = JsonConvert.DeserializeObject<BusinessResult>(content);
+                        if (result != null)
+                        {
+                            var data = JsonConvert.DeserializeObject<ServiceEntity.Service>(result.Data.ToString());
+                            return data;
 
                         }
                     }
                 }
             }
-            return View(new List<ServiceEntity.Service>());
+            return new ServiceEntity.Service();
         }
+
 
         // GET: Services/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
-            //using (var httpClient = new HttpClient())
-            //{
-            //    using (var response = await httpClient.GetAsync(Const.APIEndPoint + "Services/" + id))
-            //    {
-            //        if (response.IsSuccessStatusCode)
-            //        {
-            //            var content = await response.Content.ReadAsStringAsync();
-            //            var result = JsonConvert.DeserializeObject<BusinessResult>(content);
-            //            if (result != null)
-            //            {
-            //                var data = JsonConvert.DeserializeObject<Service>(result.Data.ToString());
-            //                return View(data);
-
-            //            }
-            //        }
-            //    }
-            //}
-            //return View(new Service());
-            return View(id);
+            var data = await GetServiceByIdAsync(id.Value);
+            return View(data);
         }
 
         // GET: Services/Create
@@ -95,43 +106,23 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
                             var result = JsonConvert.DeserializeObject<BusinessResult>(content);
                             if (result != null && result.Status == Const.SUCCESS_CREATE_CODE)
                             {
-                            }
-                            else
-                            {
-                                return View(service);
+                                return RedirectToAction(nameof(Index));
                             }
                         }
                     }
                 }
             }
-            return RedirectToAction(nameof(Index));
+            return View(service);
         }
 
         // GET: Services/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            using (var httpClient = new HttpClient())
-            {
-                using (var response = await httpClient.GetAsync(Const.APIEndPoint + "Services/" + id))
-                {
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var content = await response.Content.ReadAsStringAsync();
-                        var result = JsonConvert.DeserializeObject<BusinessResult>(content);
-                        if (result != null)
-                        {
-                            var data = JsonConvert.DeserializeObject<ServiceEntity.Service>(result.Data.ToString());
+            if (id == null) return RedirectToAction(nameof(Index));
 
-                            return View(data);
-                        }
-                    }
-                }
-            }
-            return NotFound();
+            var data = await GetServiceByIdAsync(id.Value);
+
+            return View(data);
         }
 
         // POST: Services/Edit/5
@@ -139,7 +130,7 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,PaymentAmount,PaymentDate,CreatedBy,CreatedDate,UpdatedBy,UpdatedDate,IsDeleted")] ServiceEntity.Service service)
+        public async Task<IActionResult> Edit(Guid id, ServiceEntity.Service service)
         {
             if (id != service.Id)
             {
@@ -149,7 +140,7 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
             {
                 using (var httpClient = new HttpClient())
                 {
-                    using (var response = await httpClient.PostAsJsonAsync(Const.APIEndPoint + "Services/", service))
+                    using (var response = await httpClient.PutAsJsonAsync(Const.APIEndPoint + "Services/" + id, service))
                     {
                         if (response.IsSuccessStatusCode)
                         {
@@ -157,54 +148,51 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
                             var result = JsonConvert.DeserializeObject<BusinessResult>(content);
                             if (result != null && result.Status == Const.SUCCESS_UPDATE_CODE)
                             {
-                            }
-                            else
-                            {
-                                return View(service);
+                                return RedirectToAction(nameof(Index));
                             }
                         }
                     }
                 }
             }
-            return RedirectToAction(nameof(Index));
+            return View(service);
         }
 
         // GET: Services/Delete/5
-        //public async Task<IActionResult> Delete(Guid? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        public async Task<IActionResult> Delete(Guid? id)
+        {
+            if (id == null) return RedirectToAction(nameof(Index));
+            var data = await GetServiceByIdAsync(id.Value);
 
-        //    var service = await _context.Services
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (service == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(service);
-        //}
+            return View(data);
+        }
 
         // POST: Services/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(Guid id)
-        //{
-        //    var service = await _context.Services.FindAsync(id);
-        //    if (service != null)
-        //    {
-        //        _context.Services.Remove(service);
-        //    }
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        {
+            var service = await GetServiceByIdAsync(id);
+            if (service != null)
+            {
+                // remove
+                using (var httpClient = new HttpClient())
+                {
+                    using (var response = await httpClient.DeleteAsync(Const.APIEndPoint + "Services/" + id))
+                    {
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var content = await response.Content.ReadAsStringAsync();
+                            var result = JsonConvert.DeserializeObject<BusinessResult>(content);
+                            if (result != null)
+                            {
+                                return RedirectToAction(nameof(Index));
+                            }
+                        }
+                    }
+                }
+            }
 
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
-
-        //private bool ServiceExists(Guid id)
-        //{
-        //    return _context.Services.Any(e => e.Id == id);
-        //}
+            return View(service);
+        }
     }
 }

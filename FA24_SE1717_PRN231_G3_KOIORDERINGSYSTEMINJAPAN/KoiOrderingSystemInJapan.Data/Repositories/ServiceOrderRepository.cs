@@ -12,7 +12,20 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
 
         public async Task<List<ServiceOrder>> GetAllAsync()
         {
-            return await _context.ServiceOrders.Include(e => e.Invoice).ToListAsync();
+            return await _context.ServiceOrders.Include(e => e.Invoice)
+                .Include(e => e.BookingRequest).ThenInclude(br => br.Customer)
+                .Include(e => e.BookingRequest).ThenInclude(br => br.Travel).ToListAsync();
+        }
+
+        public async Task<bool> UpdateIsDeleted(ServiceOrder serviceOrder)
+        {
+            serviceOrder.IsDeleted = true;
+            var rs = await _context.SaveChangesAsync();
+            if (rs > 0)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

@@ -1,4 +1,9 @@
+﻿using KoiOrderingSystemInJapan.Common;
+using KoiOrderingSystemInJapan.Data.Models;
+using KoiOrderingSystemInJapan.Service.Base;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
 {
@@ -11,8 +16,32 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        private async Task<List<Category>> GetCategoriesAsync()
         {
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync(Const.APIEndPoint + "Categories"))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var content = await response.Content.ReadAsStringAsync();
+                        var result = JsonConvert.DeserializeObject<BusinessResult>(content);
+                        if (result != null)
+                        {
+                            var data = JsonConvert.DeserializeObject<List<Category>>(result.Data.ToString());
+                            return data;
+                        }
+                    }
+                }
+            }
+            return new List<Category>();
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var categories = await GetCategoriesAsync();
+            ViewBag.KoiCategories = categories;
+
             return View();
         }
 

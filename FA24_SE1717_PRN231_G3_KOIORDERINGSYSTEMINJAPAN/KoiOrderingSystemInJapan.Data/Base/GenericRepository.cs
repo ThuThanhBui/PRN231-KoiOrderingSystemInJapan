@@ -13,6 +13,11 @@ namespace KoiOrderingSystemInJapan.Data.Base
             _context ??= new KoiOrderingSystemInJapanContext();
         }
 
+        public KoiOrderingSystemInJapanContext Context()
+        {
+            return _context;
+        }
+
         public GenericRepository(KoiOrderingSystemInJapanContext context)
         {
             _context = context;
@@ -53,7 +58,6 @@ namespace KoiOrderingSystemInJapan.Data.Base
         {
             var tracker = _context.Attach(entity);
             tracker.State = EntityState.Modified;
-
             return await _context.SaveChangesAsync();
         }
 
@@ -93,7 +97,9 @@ namespace KoiOrderingSystemInJapan.Data.Base
 
         public T GetById(Guid code)
         {
+            //return _context.Set<T>().AsNoTracking().Where(e => EF.Property<Guid>(e, "Id") == code).FirstOrDefault();
             return _context.Set<T>().Find(code);
+
         }
 
         public async Task<T> GetByIdAsync(Guid code)

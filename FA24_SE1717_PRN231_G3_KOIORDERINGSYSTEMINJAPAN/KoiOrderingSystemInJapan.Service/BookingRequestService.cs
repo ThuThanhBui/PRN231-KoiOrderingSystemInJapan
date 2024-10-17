@@ -13,9 +13,11 @@ namespace KoiOrderingSystemInJapan.Service
     public interface IBookingRequestService
     {
         Task<IBusinessResult> GetAll();
+        Task<IBusinessResult> GetBookingRequestsWithNoSale();
         Task<IBusinessResult> GetById(Guid id);
         Task<IBusinessResult> Save(BookingRequest bookingRequest);
         Task<IBusinessResult> DeleteById(Guid id);
+
     }
     public class BookingRequestService : IBookingRequestService
     {
@@ -68,6 +70,19 @@ namespace KoiOrderingSystemInJapan.Service
             }
         }
 
+        public async Task<IBusinessResult> GetBookingRequestsWithNoSale()
+        {
+            var bookingRequest = await _unitOfWork.BookingRequest.GetBookingRequestsWithNoSale();
+            if (bookingRequest == null)
+            {
+                return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, new List<BookingRequest>());
+            }
+            else
+            {
+                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, bookingRequest);
+            }
+        }
+
         public async Task<IBusinessResult> GetById(Guid code)
         {
             var bookingRequest = await _unitOfWork.BookingRequest.GetByIdAsync(code);
@@ -102,7 +117,8 @@ namespace KoiOrderingSystemInJapan.Service
                 }
                 else
                 {
-                    result = await _unitOfWork.BookingRequest.UpdateAsync(bookingRequest);
+                    _unitOfWork.BookingRequest.Context().Entry(bookingRequestTmp).CurrentValues.SetValues(bookingRequest);
+                    result = await _unitOfWork.BookingRequest.UpdateAsync(bookingRequestTmp);
                     if (result > 0)
                     {
                         return new BusinessResult(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG, result);

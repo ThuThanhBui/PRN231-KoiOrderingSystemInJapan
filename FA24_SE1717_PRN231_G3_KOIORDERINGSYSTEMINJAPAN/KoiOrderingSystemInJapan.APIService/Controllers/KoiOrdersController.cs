@@ -1,5 +1,5 @@
 ﻿using KoiOrderingSystemInJapan.Data.Models;
-using KoiOrderingSystemInJapan.Data.Request.KoiOrder;
+using KoiOrderingSystemInJapan.Data.Request.KoiOrders;
 using KoiOrderingSystemInJapan.Service;
 using KoiOrderingSystemInJapan.Service.Base;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +24,12 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
         public async Task<IBusinessResult> GetInvoice(Guid id)
         {
             return await _koiOrderService.GetById(id);
+        }
+
+        [HttpGet("get_with_detail/{id}")]
+        public async Task<IBusinessResult> GetByIdWithOrderDetail(Guid id)
+        {
+            return await _koiOrderService.GetByIdWithOrderDetail(id);
         }
 
         [HttpPut("{id}")]
