@@ -12,114 +12,19 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">KoiOrderingSystemInJapan.MVCWebApp</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">User</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Customers" asp-action="Index">Customers</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Invoices" asp-action="Index">Invoices</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Sales" asp-action="Index">Sales</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Services" asp-action="Index">Services</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="BookingRequests" asp-action="Index">Booking Requests</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Deliveries" asp-action="Index">Delivery</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="DeliveryDetails" asp-action="Index">DeliveryDetail</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Travels" asp-action="Index">Travels</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Farms" asp-action="Index">Farms</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="KoiOrders" asp-action="Index">Koi Orders</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="KoiFishes" asp-action="Index">Koi Fishes</a>
-                        </li>
-
-                    </ul>
-                </div>
-            </div>
-
-        </nav>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-black text-w border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">KoiOrderingSystemInJapan.MVCWebApp</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Privacy">Giới thiệu</a>
-                        </li>
-
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-light" href="#" id="koiDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Cá Koi Nhật
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="koiDropdown">
-                                @if (Context.Items["KoiCategories"] is List<KoiOrderingSystemInJapan.Data.Models.Category> categories)
-                                {
-                                    @foreach (var category in categories)
-                                    {
-                                        <li>
-                                            <a class="dropdown-item" asp-controller="KoiFishes" asp-action="Index" asp-route-category="@SlugHelper.ConvertToSlugName(category.Name)">
-                                                @category.Name
-                                            </a>
-                                        </li>
-                                    }
-                                }
-
-                            </ul>
-                        </li>
-
-                    </ul>
-
-                    <ul class="navbar-nav">
-
-
-                        <li class="nav-item">
-                            <a class="nav-link text-light" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
-                        </li>
-
-
-                    </ul>
-                </div>
-            </div>
-
-        </nav>
+        @if (Context.Items["IsLogin"] is bool isLogin && isLogin == false)
+        {
+            @await Html.PartialAsync("_NavbarClient")
+        }
+        else
+        {
+            @if (Context.Items["IsGuest"] is bool isGuest && isGuest == true)
+            {
+                @await Html.PartialAsync("_NavbarClient")
+            } else {
+                @await Html.PartialAsync("_NavbarDashboard")
+            }
+        }
     </header>
     <div class="container">
         <main role="main" class="pb-3">
