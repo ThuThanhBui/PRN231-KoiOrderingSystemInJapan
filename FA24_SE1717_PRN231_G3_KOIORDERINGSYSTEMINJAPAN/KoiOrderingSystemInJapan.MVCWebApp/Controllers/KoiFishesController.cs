@@ -95,7 +95,7 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
 
                         if (result != null && result.Data != null)
                         {
-                            var data = JsonConvert.DeserializeObject<List<KoiFish>>(result.Data.ToString());
+                            var data = JsonConvert.DeserializeObject<KoiFish>(result.Data.ToString());
                             return View(data);
                         }
                     }
