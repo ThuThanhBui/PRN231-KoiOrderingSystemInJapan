@@ -1,6 +1,7 @@
 ﻿using KoiOrderingSystemInJapan.Common;
 using KoiOrderingSystemInJapan.Data.Context;
 using KoiOrderingSystemInJapan.Data.Models;
+using KoiOrderingSystemInJapan.MVCWebApp.Tools;
 using KoiOrderingSystemInJapan.Service.Base;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,29 +12,58 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
     public class KoiFishesController : Controller
     {
         private readonly KoiOrderingSystemInJapanContext _context;
-        public KoiFishesController() { }
+
+        public KoiFishesController(KoiOrderingSystemInJapanContext context)
+        {
+            _context = context;
+        }
 
         // GET: KoiFishes
-        public async Task<IActionResult> Index()
-        {
-            using (var httpClient = new HttpClient())
-            {
-                using (var response = await httpClient.GetAsync(Const.APIEndPoint + "KoiFishes"))
-                {
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var content = await response.Content.ReadAsStringAsync();
-                        var result = JsonConvert.DeserializeObject<BusinessResult>(content);
+        //public async Task<IActionResult> Index()
+        //{
+        //    using (var httpClient = new HttpClient())
+        //    {
+        //        using (var response = await httpClient.GetAsync(Const.APIEndPoint + "KoiFishes"))
+        //        {
+        //            if (response.IsSuccessStatusCode)
+        //            {
+        //                var content = await response.Content.ReadAsStringAsync();
+        //                var result = JsonConvert.DeserializeObject<BusinessResult>(content);
 
-                        if (result != null && result.Data != null)
-                        {
-                            var data = JsonConvert.DeserializeObject<List<KoiFish>>(result.Data.ToString());
-                            return View(data);
-                        }
-                    }
-                }
+        //                if (result != null && result.Data != null)
+        //                {
+        //                    var data = JsonConvert.DeserializeObject<List<KoiFish>>(result.Data.ToString());
+        //                    return View(data);
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return View(new List<KoiFish>());
+        //}
+
+        public IActionResult Index(string category)
+        {
+            if (string.IsNullOrEmpty(category))
+            {
+                // Nếu không có category được truyền, lấy tất cả cá koi
+                var allKoiFish = _context.KoiFishes.ToList();
+                return View(allKoiFish);
             }
-            return View(new List<KoiFish>());
+            else
+            {
+                // Nếu có category, lấy các koi dựa trên category
+                var koiFishes = _context.KoiFishes.Include(k => k.Category).ToList(); // Lấy tất cả với category
+                var koiFishByCategory = koiFishes
+                    .Where(k => SlugHelper.ConvertToSlugName(k.Category.Name) == category && !k.Category.IsDeleted)
+                    .ToList();
+
+                if (koiFishByCategory == null || !koiFishByCategory.Any())
+                {
+                    return NotFound(); // Nếu không tìm thấy
+                }
+
+                return View(koiFishByCategory); // Trả dữ liệu về view
+            }
         }
         // GET: KoiFishes/Details/5
         public async Task<IActionResult> Details(Guid? id)

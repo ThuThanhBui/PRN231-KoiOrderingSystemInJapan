@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using KoiOrderingSystemInJapan.MVCWebApp.Tools
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -89,17 +90,18 @@
                                 Cá Koi Nhật
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="koiDropdown">
-                                @if (ViewBag.KoiCategories != null)
+                                @if (Context.Items["KoiCategories"] is List<KoiOrderingSystemInJapan.Data.Models.Category> categories)
                                 {
-                                    @foreach (var category in ViewBag.KoiCategories)
+                                    @foreach (var category in categories)
                                     {
                                         <li>
-                                            <a class="dropdown-item" asp-controller="Koifish" asp-action="Index" asp-route-category="@category.Id">
+                                            <a class="dropdown-item" asp-controller="KoiFishes" asp-action="Index" asp-route-category="@SlugHelper.ConvertToSlugName(category.Name)">
                                                 @category.Name
                                             </a>
                                         </li>
                                     }
                                 }
+
                             </ul>
                         </li>
 
