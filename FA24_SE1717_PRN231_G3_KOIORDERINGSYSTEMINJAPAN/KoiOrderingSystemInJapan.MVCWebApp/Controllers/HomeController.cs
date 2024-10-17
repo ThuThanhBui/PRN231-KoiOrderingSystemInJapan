@@ -2,7 +2,6 @@
 using KoiOrderingSystemInJapan.Data.Models;
 using KoiOrderingSystemInJapan.Service.Base;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
@@ -16,11 +15,18 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
             _logger = logger;
         }
 
-        private async Task<List<Category>> GetCategoriesAsync()
+        // GET: Travels
+        public async Task<IActionResult> Index()
+        {
+            var data = await GetTravelsAsync();
+
+            return View(data);
+        }
+        private async Task<List<Travel>> GetTravelsAsync()
         {
             using (var httpClient = new HttpClient())
             {
-                using (var response = await httpClient.GetAsync(Const.APIEndPoint + "Categories"))
+                using (var response = await httpClient.GetAsync(Const.APIEndPoint + "Travels"))
                 {
                     if (response.IsSuccessStatusCode)
                     {
@@ -28,21 +34,13 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
                         var result = JsonConvert.DeserializeObject<BusinessResult>(content);
                         if (result != null)
                         {
-                            var data = JsonConvert.DeserializeObject<List<Category>>(result.Data.ToString());
+                            var data = JsonConvert.DeserializeObject<List<Travel>>(result.Data.ToString());
                             return data;
                         }
                     }
                 }
             }
-            return new List<Category>();
-        }
-
-        public async Task<IActionResult> Index()
-        {
-            var categories = await GetCategoriesAsync();
-            ViewBag.KoiCategories = categories;
-
-            return View();
+            return new List<Travel>();
         }
 
         public IActionResult Privacy()
