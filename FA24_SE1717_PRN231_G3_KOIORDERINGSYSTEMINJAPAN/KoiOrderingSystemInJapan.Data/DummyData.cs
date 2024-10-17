@@ -317,6 +317,7 @@ namespace KoiOrderingSystemInJapan.Data
                 var fakers = new Faker<KoiFish>()
                     .RuleFor(a => a.Id, f => Guid.NewGuid())
                     .RuleFor(a => a.CategoryId, f => f.PickRandom(cIds))
+                    .RuleFor(a => a.Name, f => "Cá KOI " + f.Name.FullName())
                     .RuleFor(a => a.Gender, f => f.PickRandom<ConstEnum.Gender>())
                     .RuleFor(a => a.Picture, f => f.Image.PicsumUrl())
                     .RuleFor(a => a.Description, f => f.Lorem.Paragraph(3))
