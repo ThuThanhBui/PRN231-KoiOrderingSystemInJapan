@@ -41,13 +41,29 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
         //    return View(new List<KoiFish>());
         //}
 
-        public IActionResult Index(string category)
+        public async Task<IActionResult> IndexAsync(string category)
         {
             if (string.IsNullOrEmpty(category))
             {
                 // Nếu không có category được truyền, lấy tất cả cá koi
-                var allKoiFish = _context.KoiFishes.ToList();
-                return View(allKoiFish);
+                using (var httpClient = new HttpClient())
+                {
+                    using (var response = await httpClient.GetAsync(Const.APIEndPoint + "KoiFishes"))
+                    {
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var content = await response.Content.ReadAsStringAsync();
+                            var result = JsonConvert.DeserializeObject<BusinessResult>(content);
+
+                            if (result != null && result.Data != null)
+                            {
+                                var data = JsonConvert.DeserializeObject<List<KoiFish>>(result.Data.ToString());
+                                return View(data);
+                            }
+                        }
+                    }
+                }
+                return View(new List<KoiFish>());
             }
             else
             {
@@ -167,7 +183,7 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
                     }
                 }
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(IndexAsync));
         }
         // GET: KoiFishes/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
@@ -201,7 +217,7 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(IndexAsync));
         }
 
         private bool DeliveryExists(Guid id)
