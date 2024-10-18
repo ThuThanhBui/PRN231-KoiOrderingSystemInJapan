@@ -233,7 +233,7 @@ namespace KoiOrderingSystemInJapan.Service
             if (user == null) return new BusinessResult(Const.SUCCESS_READ_CODE, "Not find account", new User());
 
             //check password
-            if (!BCrypt.Net.BCrypt.Verify(password, user.Password))
+            if (!user.Password.Equals(password))
                 return new BusinessResult(Const.SUCCESS_READ_CODE, "Not match password", new User());
 
             var (token, expiration) = CreateToken(user);

@@ -70,9 +70,6 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(User request)
         {
-            var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
-            request.Password = passwordHash;
-
             var msg = await _userService.AddUser(request);
             return Ok(msg);
         }
