@@ -8,12 +8,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using KoiOrderingSystemInJapan.Data.Request.BookingRequests;
+using Azure.Core;
 
 namespace KoiOrderingSystemInJapan.Service
 {
     public interface IBookingRequestService
     {
         Task<IBusinessResult> GetAll(BookingRequestRequest request, int page, int pageSize);
+        Task<IBusinessResult> GetAll();
         Task<IBusinessResult> GetBookingRequestsWithNoSale();
         Task<IBusinessResult> GetById(Guid id);
         Task<IBusinessResult> Save(BookingRequest bookingRequest);
@@ -64,6 +66,19 @@ namespace KoiOrderingSystemInJapan.Service
                 totalPages = item.Item2
             };
             if (result.list == null || !result.list.Any())
+            {
+                return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, result);
+            }
+            else
+            {
+                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result);
+            }
+        }
+
+        public async Task<IBusinessResult> GetAll()
+        {
+            var result = await _unitOfWork.BookingRequest.GetAllAsync();
+            if (result == null || !result.Any())
             {
                 return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, result);
             }

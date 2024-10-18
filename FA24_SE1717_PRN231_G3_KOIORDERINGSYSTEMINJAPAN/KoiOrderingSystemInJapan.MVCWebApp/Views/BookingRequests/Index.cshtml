@@ -10,66 +10,56 @@
     <a asp-action="Create" class="btn btn-dark">Tạo mới</a>
 </p>
 
-<!-- Nút để mở modal -->
-<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#advancedFilterModal">
-    Lọc nâng cao
-</button>
-
-<!-- Modal -->
-<div class="modal fade" id="advancedFilterModal" tabindex="-1" role="dialog" aria-labelledby="advancedFilterModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="advancedFilterModalLabel">Lọc nâng cao</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<div class="card mb-2">
+    <div class="card-header">
+        <h5 class="card-title">Lọc nâng cao</h5>
+    </div>
+    <div class="card-body">
+        <form id="searchForm" class="d-flex flex-wrap">
+            <!-- Các trường tìm kiếm -->
+            <div class="form-group flex-fill m-1">
+                <input type="text" class="form-control" id="customerEmail" placeholder="Customer Email">
             </div>
-            <div class="modal-body">
-                <form id="searchForm" class="d-flex flex-wrap">
-                    <!-- Các trường tìm kiếm -->
-                    <div class="form-group flex-fill m-1">
-                        <input type="text" class="form-control" id="customerEmail" placeholder="Customer Email">
-                    </div>
-                    <div class="form-group flex-fill m-1">
-                        <input type="text" class="form-control" id="travelName" placeholder="Travel Name">
-                    </div>
-                    <div class="form-group flex-fill m-1">
-                        <input type="number" class="form-control" id="quantityService" placeholder="Quantity Service">
-                    </div>
-                    <div class="form-group flex-fill m-1">
-                        <input type="number" class="form-control" id="numberOfPerson" placeholder="Number of Person">
-                    </div>
-                    <div class="form-group flex-fill m-1">
-                        <select id="status" class="form-control">
-                            <option value="">--Status--</option>
-                            <option value="0">Pending</option>
-                            <option value="1">Approved</option>
-                            <option value="2">Rejected</option>
-                        </select>
-                    </div>
-                    <div class="form-group flex-fill m-1">
-                        <input type="text" class="form-control" id="createdBy" placeholder="Created By">
-                    </div>
-                    <div class="form-group flex-fill m-1">
-                        <input type="date" class="form-control" id="createdDate" placeholder="Created Date">
-                    </div>
-                    <div class="form-group flex-fill m-1">
-                        <input type="text" class="form-control" id="updatedBy" placeholder="Updated By">
-                    </div>
-                    <div class="form-group flex-fill m-1">
-                        <input type="date" class="form-control" id="updatedDate" placeholder="Updated Date">
-                    </div>
-                    <div class="form-group flex-fill m-1">
-                        <input type="text" class="form-control" id="note" placeholder="Note">
-                    </div>
-                </form>
+            <div class="form-group flex-fill m-1">
+                <input type="text" class="form-control" id="travelName" placeholder="Travel Name">
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-light" onclick="resetForm()">Reset</button>
-                <button type="button" class="btn btn-dark" onclick="getData(1)">Tìm kiếm</button>
+            <div class="form-group flex-fill m-1">
+                <input type="number" class="form-control" id="quantityService" placeholder="Quantity Service">
             </div>
-        </div>
+            <div class="form-group flex-fill m-1">
+                <input type="number" class="form-control" id="numberOfPerson" placeholder="Number of Person">
+            </div>
+            <div class="form-group flex-fill m-1">
+                <select id="status" class="form-control">
+                    <option value="">--Status--</option>
+                    <option value="0">Pending</option>
+                    <option value="1">Approved</option>
+                    <option value="2">Rejected</option>
+                </select>
+            </div>
+            <div class="form-group flex-fill m-1">
+                <input type="text" class="form-control" id="createdBy" placeholder="Created By">
+            </div>
+            <div class="form-group flex-fill m-1">
+                <input type="date" class="form-control" id="createdDate" placeholder="Created Date">
+            </div>
+            <div class="form-group flex-fill m-1">
+                <input type="text" class="form-control" id="updatedBy" placeholder="Updated By">
+            </div>
+            <div class="form-group flex-fill m-1">
+                <input type="date" class="form-control" id="updatedDate" placeholder="Updated Date">
+            </div>
+            <div class="form-group flex-fill m-1">
+                <input type="text" class="form-control" id="note" placeholder="Note">
+            </div>
+        </form>
+    </div>
+    <div class="card-footer text-end">
+        <button type="button" class="btn btn-light" onclick="resetForm()">Reset</button>
+        <button type="button" class="btn btn-dark" onclick="getData(1)">Tìm kiếm</button>
     </div>
 </div>
+
 
 <table class="table table-striped">
     <thead>
@@ -112,6 +102,7 @@
             $('#updatedBy').val('');
             $('#updatedDate').val('');
             $('#note').val('');
+            getData(1);
         }
 
         function getData(page) {
@@ -147,7 +138,14 @@
                         html += '<td>' + item.quantityService + '</td>';
                         html += '<td>' + item.numberOfPerson + '</td>';
                         html += '<td>' + getStatusText(item.status) + '</td>';
-                        html += '<td><a href="/BookingRequests/Edit/' + item.id + '">Edit</a> | <a href="/BookingRequests/Details/' + item.id + '">Details</a> | <a href="/BookingRequests/Delete/' + item.id + '">Delete</a></td>';
+                        html += '<td scope="row">';
+                        html += '<a href="/Services/Edit/' + item.id + '" class="me-1" title="Edit">';
+                        html += '<i class="bi bi-pencil-fill" style="color: black;"></i></a>'; // Icon cho Edit, màu đen
+                        html += '<a href="/Services/Details/' + item.id + '" class="me-1" title="Details">';
+                        html += '<i class="bi bi-eye-fill" style="color: black;"></i></a>'; // Icon cho Details, màu đen
+                        html += '<a href="/Services/Delete/' + item.id + '" title="Delete">';
+                        html += '<i class="bi bi-trash-fill" style="color: black;"></i></a>'; // Icon cho Delete, màu đen
+                        html += '</td>';
                         html += '</tr>';
                     });
                     $('.tblBookingRequests').html(html);
