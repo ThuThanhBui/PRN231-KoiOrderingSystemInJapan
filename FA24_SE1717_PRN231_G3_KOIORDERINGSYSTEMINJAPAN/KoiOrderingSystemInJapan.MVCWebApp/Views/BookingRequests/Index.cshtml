@@ -46,7 +46,7 @@
                         html += '<td scope="row">' + item.travel.name +'</td>'
                         html += '<td scope="row">' + item.quantityService + '</td>'
                         html += '<td scope="row">' + item.numberOfPerson + '</td>'
-                        html += '<td scope="row">' + item.status + '</td>'
+                        html += '<td scope="row">' + getStatusText(item.status) + '</td>'
                         html += '<td scope="row">' + '<a href="/BookingRequests/Edit/'+ item.id + '">Edit</a>' + '</td>'
                         html += '<td scope="row">' + '<a href="/BookingRequests/Details/'+ item.id + '">Details</a>' + '</td>'
                         html += '<td scope="row">' + '<a href="/BookingRequests/Delete/'+ item.id + '">Delete</a>' + '</td>'
@@ -57,6 +57,18 @@
                     alert(xhr.statusText);
                 }
             })
+        }
+        function getStatusText(status) {
+            switch (status) {
+                case 0:
+                    return "Pending";
+                case 1:
+                    return "Approved";
+                case 2:
+                    return "Rejected";
+                default:
+                    return "Unknown";
+            }
         }
     </script>
 }

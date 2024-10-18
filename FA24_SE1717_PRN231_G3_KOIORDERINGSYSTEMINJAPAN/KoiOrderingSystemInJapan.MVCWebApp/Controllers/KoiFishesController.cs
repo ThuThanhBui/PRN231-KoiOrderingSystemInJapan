@@ -4,6 +4,7 @@ using KoiOrderingSystemInJapan.Data.Models;
 using KoiOrderingSystemInJapan.MVCWebApp.Tools;
 using KoiOrderingSystemInJapan.Service.Base;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
@@ -104,9 +105,36 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
             return View(new KoiFish());
         }
         // GET: KoiFishes/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var categories = await GetCategoriesAsync();
+            ViewBag.CategoryId = categories.Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name
+            }).ToList();
             return View();
+        }
+
+        private async Task<List<Category>> GetCategoriesAsync()
+        {
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync(Const.APIEndPoint + "Categories"))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var content = await response.Content.ReadAsStringAsync();
+                        var result = JsonConvert.DeserializeObject<BusinessResult>(content);
+                        if (result != null)
+                        {
+                            var data = JsonConvert.DeserializeObject<List<Category>>(result.Data.ToString());
+                            return data;
+                        }
+                    }
+                }
+            }
+            return new List<Category>();
         }
 
         // POST: KoiFishes/Create
@@ -145,9 +173,40 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
         // GET: Koifishes/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
+            var categories = await GetCategoriesAsync();
+            ViewBag.CategoryId = categories.Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name
+            }).ToList();
 
-            return View(id);
+            var data = await GetKoiFishByIdAsync(id.Value);
+
+            return View(data);
         }
+
+        private async Task<KoiFish> GetKoiFishByIdAsync(Guid id)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync(Const.APIEndPoint + "KoiFishes/" + id))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var content = await response.Content.ReadAsStringAsync();
+                        var result = JsonConvert.DeserializeObject<BusinessResult>(content);
+                        if (result != null)
+                        {
+                            var data = JsonConvert.DeserializeObject<KoiFish>(result.Data.ToString());
+                            return data;
+
+                        }
+                    }
+                }
+            }
+            return new KoiFish();
+        }
+
 
         // POST: KOiFishes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -166,7 +225,7 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
             {
                 using (var httpClient = new HttpClient())
                 {
-                    using (var response = await httpClient.PostAsJsonAsync(Const.APIEndPoint + "Fishs/", fish))
+                    using (var response = await httpClient.PostAsJsonAsync(Const.APIEndPoint + "KoiFishes/", fish))
                     {
                         if (response.IsSuccessStatusCode)
                         {
@@ -185,44 +244,41 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
             }
             return RedirectToAction(nameof(IndexAsync));
         }
-        // GET: KoiFishes/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return RedirectToAction(nameof(Index));
+            var data = await GetKoiFishByIdAsync(id.Value);
 
-            var fish = await _context.KoiFishes
-                .Include(d => d.Category)
-                .Include(d => d.Size)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (fish == null)
-            {
-                return NotFound();
-            }
-
-            return View(fish);
+            return View(data);
         }
 
-        // POST: Deliveries/Delete/5
+        // POST: KoiFishs/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var fish = await _context.KoiFishes.FindAsync(id);
-            if (fish != null)
+            var bookingRequest = await GetKoiFishByIdAsync(id);
+            if (bookingRequest != null)
             {
-                _context.KoiFishes.Remove(fish);
+                // remove
+                using (var httpClient = new HttpClient())
+                {
+                    using (var response = await httpClient.DeleteAsync(Const.APIEndPoint + "KoiFishes/" + id))
+                    {
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var content = await response.Content.ReadAsStringAsync();
+                            var result = JsonConvert.DeserializeObject<BusinessResult>(content);
+                            if (result != null)
+                            {
+                                return RedirectToAction(nameof(Index));
+                            }
+                        }
+                    }
+                }
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(IndexAsync));
-        }
-
-        private bool DeliveryExists(Guid id)
-        {
-            return _context.KoiFishes.Any(e => e.Id == id);
+            return View(bookingRequest);
         }
     }
 }
