@@ -324,11 +324,6 @@ body {
     color: #333;
 }
 
-.card-title:hover {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #dc3545;
-}
 
 .btn-primary {
     background-color: #4c51bf;
