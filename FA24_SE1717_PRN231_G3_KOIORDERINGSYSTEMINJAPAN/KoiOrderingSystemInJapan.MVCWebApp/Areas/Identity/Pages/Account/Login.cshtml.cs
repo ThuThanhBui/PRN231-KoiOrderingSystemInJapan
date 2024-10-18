@@ -92,14 +92,23 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Areas.Identity.Pages.Account
                             {
                                 var data = JsonConvert.DeserializeObject<LoginResponse>(result.Data.ToString());
                                 var token = data.Token;
-                                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-                                HttpContext.Response.Cookies.Append("token", token, new CookieOptions
+                                if (!string.IsNullOrEmpty(token))
                                 {
-                                    HttpOnly = true, // Đảm bảo cookie không thể truy cập từ JavaScript
-                                    Secure = true,   // Chỉ gửi cookie qua HTTPS
-                                    SameSite = SameSiteMode.Strict, // Ngăn chặn gửi cookie từ một miền khác
-                                    Expires = DateTimeOffset.UtcNow.AddDays(7) // Thời gian tồn tại của cookie
-                                });
+                                    HttpContext.Response.Cookies.Append("token", token, new CookieOptions
+                                    {
+                                        HttpOnly = true,
+                                        Secure = true,
+                                        SameSite = SameSiteMode.Strict,
+                                        Expires = DateTimeOffset.UtcNow.AddDays(7)
+                                    });
+                                }
+                                else
+                                {
+                                    // Xử lý khi token bị null
+                                    TempData["ErrorMessage"] = result.Message;
+                                    return Page();
+                                }
+
 
                                 var user = await Helper.DecodedTokenAvailable(HttpContext, token);
 
