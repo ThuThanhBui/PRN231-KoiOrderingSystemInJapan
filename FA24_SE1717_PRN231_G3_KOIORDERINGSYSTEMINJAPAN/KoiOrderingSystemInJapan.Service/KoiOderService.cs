@@ -83,6 +83,19 @@ namespace KoiOrderingSystemInJapan.Service
             }
         }
 
+        public async Task<IBusinessResult> SearchKoiOrder(string? customerName, decimal? price, int? quantity)
+        {
+            var koiOrder = await _unitOfWork.KoiOrder.SearhKoiOrder(customerName, price, quantity);
+            if (koiOrder == null)
+            {
+                return new BusinessResult(Const.FAIL_READ_CODE, Const.FAIL_READ_MSG, new KoiOrder());
+            }
+            else
+            {
+                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, koiOrder);
+            }
+        }
+
         public async Task<IBusinessResult> Save(KoiOrder koiOrder)
         {
             try

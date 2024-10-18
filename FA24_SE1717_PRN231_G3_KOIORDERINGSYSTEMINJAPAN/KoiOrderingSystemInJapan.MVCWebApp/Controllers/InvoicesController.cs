@@ -71,7 +71,6 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Invoice invoice)
         {
             if (ModelState.IsValid)
@@ -160,42 +159,51 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Invoices/Delete/5
-        //public async Task<IActionResult> Delete(Guid? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        //View index delete
+        public async Task<IActionResult> Delete(Guid id)
+        {
+           
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync(Const.APIEndPoint + "Invoices/" + id.ToString()))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var content = await response.Content.ReadAsStringAsync();
+                        var result = JsonConvert.DeserializeObject<BusinessResult>(content);
+                        if (result != null && result.Status == Const.SUCCESS_UPDATE_CODE)
+                        {
+                            var data = JsonConvert.DeserializeObject<Invoice>(result.Data.ToString());
+                            return View(data);
+                        }
+                        else
+                        {
+                            return View(new Invoice { });
+                        }
+                    }
+                    return View(new Invoice { });
+                }
+            }
+        }
 
-        //    var invoice = await _context.Invoices
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (invoice == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(invoice);
-        //}
-
-        // POST: Invoices/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(Guid id)
-        //{
-        //    var invoice = await _context.Invoices.FindAsync(id);
-        //    if (invoice != null)
-        //    {
-        //        _context.Invoices.Remove(invoice);
-        //    }
-
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
-
-        //private bool InvoiceExists(Guid id)
-        //{
-        //    return _context.Invoices.Any(e => e.Id == id);
-        //}
+        [HttpPost, ActionName("delete")]
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        {
+            if (ModelState.IsValid)
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    using (var response = await httpClient.DeleteAsync(Const.APIEndPoint + "Invoices/" + id.ToString()))
+                    {
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var content = await response.Content.ReadAsStringAsync();
+                            var result = JsonConvert.DeserializeObject<BusinessResult>(content);
+                        }
+                    }
+                }
+            }
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
