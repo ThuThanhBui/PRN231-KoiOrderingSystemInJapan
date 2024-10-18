@@ -3,6 +3,8 @@ using KoiOrderingSystemInJapan.Service.Base;
 using KoiOrderingSystemInJapan.Service;
 using Microsoft.AspNetCore.Mvc;
 using ServiceEntity = KoiOrderingSystemInJapan.Data.Models;
+using KoiOrderingSystemInJapan.Data.Request.BookingRequests;
+using KoiOrderingSystemInJapan.Data.Request.Services;
 
 namespace KoiOrderingSystemInJapan.APIService.Controllers
 {
@@ -22,6 +24,13 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
         public async Task<IBusinessResult> GetServices()
         {
             return await _serviceSerivce.GetAll();
+        }
+
+        // GET: api/BookingRequests
+        [HttpPost("filter")]
+        public async Task<IBusinessResult> GetServices([FromBody] ServiceRequest query)
+        {
+            return await _serviceSerivce.GetAll(query, query.Page, query.PageSize);
         }
 
         // GET: api/Services/5
