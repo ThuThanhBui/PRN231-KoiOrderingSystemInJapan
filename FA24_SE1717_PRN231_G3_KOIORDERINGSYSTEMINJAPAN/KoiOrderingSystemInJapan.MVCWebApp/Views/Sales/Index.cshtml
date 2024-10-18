@@ -340,11 +340,13 @@
                 SaleStaffId: $("#saleStaffIdAdd").val(),
                 ProposalDetails: $("#proposalDetailsAdd").val(),
                 TotalPrice: $("#totalPriceAdd").val(),
-                Status: $("#statusAdd").val(),
+                Status: parseInt($("#statusAdd").val()),
                 ResponseDate: $("#responseDateAdd").val(),
                 ResponseBy: $("#responseByAdd").val(),
                 Note: $("#noteAdd").val(),
             };
+
+            console.log("check_", sale);
 
             $.ajax({
                 type: 'POST',
@@ -416,7 +418,7 @@
                 SaleStaffId: $("#saleStaffIdUpdate").val(),
                 ProposalDetails: $("#proposalDetailsUpdate").val(),
                 TotalPrice: $("#totalPriceUpdate").val(),
-                Status: $("#statusUpdate").val(),
+                Status: parseInt($("#statusUpdate").val()),
                 ResponseDate: $("#responseDateUpdate").val(),
                 ResponseBy: $("#responseByUpdate").val(),
                 Note: $("#noteUpdate").val(),

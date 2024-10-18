@@ -62,7 +62,12 @@
                         html += '<td>' + item.isDeleted + '</td>';
                         html += '<td>' + (item.deliveryStaff ? item.deliveryStaff.id : '') + '</td>';
                         html += '<td>' + (item.koiOrder ? item.koiOrder.id : '') + '</td>';
-                        html += '<td>  <a href="/Deliveries/Details/' + item.id + '">Details </a></td>';
+                        html += '<td>' +
+                            '<a href="/Deliveries/Details/' + item.id + '">Details</a> ' +
+                            '<a href="/Deliveries/Edit/' + item.id + '">Edit</a> ' +
+                            '<a href="/Deliveries/Delete/' + item.id + '">Delete</a>' +
+                            '</td>';
+
                         html += '</tr>';
                     });
                     $('.tblDeliveries').html(html);

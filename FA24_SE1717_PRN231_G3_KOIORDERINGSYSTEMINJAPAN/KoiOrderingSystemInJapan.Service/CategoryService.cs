@@ -1,6 +1,7 @@
 ﻿using KoiOrderingSystemInJapan.Common;
 using KoiOrderingSystemInJapan.Data;
 using KoiOrderingSystemInJapan.Data.Models;
+using KoiOrderingSystemInJapan.Data;
 using KoiOrderingSystemInJapan.Service.Base;
 using System;
 using System.Collections.Generic;
@@ -14,9 +15,7 @@ namespace KoiOrderingSystemInJapan.Service
     {
         Task<IBusinessResult> GetAll();
         Task<IBusinessResult> GetById(Guid id);
-        Task<IBusinessResult> Create(Category cate);
-        Task<IBusinessResult> Update(Category cate);
-        Task<IBusinessResult> Save(Category cate);
+        Task<IBusinessResult> Save(Category bookingRequest);
         Task<IBusinessResult> DeleteById(Guid id);
     }
     public class CategoryService : ICategoryService
@@ -24,53 +23,48 @@ namespace KoiOrderingSystemInJapan.Service
         private readonly UnitOfWork _unitOfWork;
         public CategoryService()
         {
-            _unitOfWork = new UnitOfWork();
-        }
-        public Task<IBusinessResult> Create(Category cate)
-        {
-            throw new NotImplementedException();
-        }
-        public Task<IBusinessResult> Update(Category cate)
-        {
-            throw new NotImplementedException();
+            _unitOfWork ??= new UnitOfWork();
         }
 
         public async Task<IBusinessResult> GetAll()
         {
-            var result = await _unitOfWork.Category.GetAllAsync();
-            if (result != null)
+            #region Business rule
+
+            #endregion
+            var bookingRequest = await _unitOfWork.Category.GetAllAsync();
+            if (bookingRequest == null)
             {
-                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result);
+                return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, new List<Category>());
             }
             else
             {
-                return new BusinessResult(Const.FAIL_READ_CODE, Const.FAIL_READ_MSG);
+                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, bookingRequest);
             }
         }
 
-        public async Task<IBusinessResult> GetById(Guid id)
+        public async Task<IBusinessResult> GetById(Guid code)
         {
-            var result = await _unitOfWork.Category.GetByIdAsync(id);
-            if (result != null)
+            var bookingRequest = await _unitOfWork.Category.GetByIdAsync(code);
+            if (bookingRequest == null)
             {
-                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result);
+                return new BusinessResult(Const.FAIL_READ_CODE, Const.FAIL_READ_MSG, new Category());
             }
             else
             {
-                return new BusinessResult(Const.FAIL_READ_CODE, Const.FAIL_READ_MSG);
+                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, bookingRequest);
             }
         }
 
-        public async Task<IBusinessResult> Save(Category cate)
+        public async Task<IBusinessResult> Save(Category bookingRequest)
         {
             try
             {
                 int result = -1;
-                var invoiceTmp = _unitOfWork.Category.GetById(cate.Id);
+                var bookingRequestTmp = _unitOfWork.Category.GetById(bookingRequest.Id);
 
-                if (invoiceTmp == null)
+                if (bookingRequestTmp == null)
                 {
-                    result = await _unitOfWork.Category.CreateAsync(cate);
+                    result = await _unitOfWork.Category.CreateAsync(bookingRequest);
                     if (result > 0)
                     {
                         return new BusinessResult(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG, result);
@@ -82,7 +76,8 @@ namespace KoiOrderingSystemInJapan.Service
                 }
                 else
                 {
-                    result = await _unitOfWork.Category.UpdateAsync(cate);
+                    _unitOfWork.Category.Context().Entry(bookingRequestTmp).CurrentValues.SetValues(bookingRequest);
+                    result = await _unitOfWork.Category.UpdateAsync(bookingRequestTmp);
                     if (result > 0)
                     {
                         return new BusinessResult(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG, result);

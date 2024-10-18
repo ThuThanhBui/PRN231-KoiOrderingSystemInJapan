@@ -12,6 +12,7 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
     public class CategoryRepository : GenericRepository<Category>
     {
         public CategoryRepository() { }
-        public CategoryRepository(KoiOrderingSystemInJapanContext context) : base(context) { }
+        public CategoryRepository(KoiOrderingSystemInJapanContext context) => _context = context;
+
     }
 }

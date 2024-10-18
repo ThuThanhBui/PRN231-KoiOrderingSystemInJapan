@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Request\BookingRequests\" />
+    <ProjectReference Include="..\KoiOrderingSystemInJapan.Common\KoiOrderingSystemInJapan.Common.csproj" />
   </ItemGroup>
 
 </Project>

@@ -7,10 +7,10 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class KoiFishsController : ControllerBase
+    public class KoiFishesController : ControllerBase
     {
-        private readonly KoiFishService _fishService;
-        public KoiFishsController()
+        private readonly IKoiFishService _fishService;
+        public KoiFishesController()
         {
             _fishService ??= new KoiFishService();
         }
@@ -19,6 +19,12 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
         public async Task<IBusinessResult> GetKoiFish()
         {
             return await _fishService.GetAll();
+        }
+
+        [HttpGet("category")]
+        public async Task<IBusinessResult> GetKoiFish([FromQuery]string name)
+        {
+            return await _fishService.GetAllByCategory(name);
         }
 
         // GET: api/KoiFishs/5

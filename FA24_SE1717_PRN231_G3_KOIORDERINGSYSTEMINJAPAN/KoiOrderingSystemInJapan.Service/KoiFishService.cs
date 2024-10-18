@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace KoiOrderingSystemInJapan.Service
 {
-    public interface IFishService
+    public interface IKoiFishService
     {
         Task<IBusinessResult> GetAll();
         Task<IBusinessResult> GetById(Guid id);
@@ -18,8 +18,9 @@ namespace KoiOrderingSystemInJapan.Service
         Task<IBusinessResult> Update(KoiFish fish);
         Task<IBusinessResult> Save(KoiFish fish);
         Task<IBusinessResult> DeleteById(Guid id);
+        Task<IBusinessResult> GetAllByCategory(string category);
     }
-    public class KoiFishService : IFishService
+    public class KoiFishService : IKoiFishService
     {
         private readonly UnitOfWork _unitOfWork;
         public KoiFishService()
@@ -38,6 +39,19 @@ namespace KoiOrderingSystemInJapan.Service
         public async Task<IBusinessResult> GetAll()
         {
             var result = await _unitOfWork.KoiFish.GetAllAsync();
+            if (result != null)
+            {
+                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result);
+            }
+            else
+            {
+                return new BusinessResult(Const.FAIL_READ_CODE, Const.FAIL_READ_MSG);
+            }
+        }
+        
+        public async Task<IBusinessResult> GetAllByCategory(string category)
+        {
+            var result = await _unitOfWork.KoiFish.GetAllByCategoryAsync(category);
             if (result != null)
             {
                 return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result);

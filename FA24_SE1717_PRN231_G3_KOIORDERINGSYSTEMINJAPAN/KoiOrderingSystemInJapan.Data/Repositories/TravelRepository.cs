@@ -40,5 +40,15 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
 
             return await query.ToListAsync();
         }
+
+        public async Task<Travel> GetByIdAsync(Guid id)
+        {
+            var query = _context.Travels.AsQueryable();
+            query = query.Where(m => m.Id == id);
+
+            query = query.Include(k => k.TravelFarms).ThenInclude(m => m.Farm);
+
+            return await query.SingleOrDefaultAsync();
+        }
     }
 }

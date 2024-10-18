@@ -2,7 +2,7 @@
 using KoiOrderingSystemInJapan.Service.Base;
 using KoiOrderingSystemInJapan.Service;
 using Microsoft.AspNetCore.Mvc;
-
+using KoiOrderingSystemInJapan.Data.Request.BookingRequests;
 namespace KoiOrderingSystemInJapan.APIService.Controllers
 {
     [Route("api/[controller]")]
@@ -18,10 +18,10 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
         }
 
         // GET: api/BookingRequests
-        [HttpGet]
-        public async Task<IBusinessResult> GetBookingRequests()
+        [HttpPost("filter")]
+        public async Task<IBusinessResult> GetBookingRequests([FromBody] BookingRequestRequest query)
         {
-            return await _bookingRequestSerivce.GetAll();
+            return await _bookingRequestSerivce.GetAll(query, query.Page, query.PageSize);
         }
 
         [HttpGet("with-no-sale")]

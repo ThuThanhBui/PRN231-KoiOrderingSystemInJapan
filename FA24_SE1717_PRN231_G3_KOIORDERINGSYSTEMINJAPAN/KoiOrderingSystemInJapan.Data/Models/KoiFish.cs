@@ -6,6 +6,8 @@ public partial class KoiFish
 
     public DateTime? Dob {  get; set; }
 
+    public string? Name {  get; set; }
+
     public Guid? CategoryId { get; set; }
 
     public string? Picture { get; set; }
