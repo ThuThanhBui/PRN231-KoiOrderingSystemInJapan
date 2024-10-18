@@ -75,29 +75,30 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
         //    return View();
         //}
 
-        // POST: Sales/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("Id,BookingRequestId,SaleStaffId,ProposalDetails,TotalPrice,Status,ResponseDate,ResponseBy,CreatedBy,CreatedDate,UpdatedBy,UpdatedDate,IsDeleted,Note")] Sale sale)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        sale.Id = Guid.NewGuid();
-        //        sale.CreatedBy = "";
-        //        sale.CreatedDate = DateTime.Now;
-        //        sale.UpdatedDate = DateTime.Now;
-        //        sale.UpdatedBy = "";
-        //        sale.Note = "";
-        //        _context.Add(sale);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    ViewData["BookingRequestId"] = new SelectList(_context.BookingRequests, "Id", "Id", sale.BookingRequestId);
-        //    ViewData["SaleStaffId"] = new SelectList(_context.Users, "Id", "Id", sale.SaleStaffId);
-        //    return View(sale);
-        //}
+        //POST: Sales/Create
+        //To protect from overposting attacks, enable the specific properties you want to bind to.
+        //For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
+       //[HttpPost]
+       // [ValidateAntiForgeryToken]
+       // public async Task<IActionResult> Create([Bind("Id,BookingRequestId,SaleStaffId,ProposalDetails,TotalPrice,Status,ResponseDate,ResponseBy,CreatedBy,CreatedDate,UpdatedBy,UpdatedDate,IsDeleted,Note")] Sale sale)
+       // {
+       //     if (ModelState.IsValid)
+       //     {
+       //         sale.Id = Guid.NewGuid();
+       //         sale.CreatedBy = "";
+       //         sale.CreatedDate = DateTime.Now;
+       //         sale.UpdatedDate = DateTime.Now;
+       //         sale.UpdatedBy = "";
+       //         sale.Note = "";
+       //         _context.Add(sale);
+       //         await _context.SaveChangesAsync();
+       //         return RedirectToAction(nameof(Index));
+       //     }
+       //     ViewData["BookingRequestId"] = new SelectList(_context.BookingRequests, "Id", "Id", sale.BookingRequestId);
+       //     ViewData["SaleStaffId"] = new SelectList(_context.Users, "Id", "Id", sale.SaleStaffId);
+       //     return View(sale);
+       // }
 
         //// GET: Sales/Edit/5
         //public async Task<IActionResult> Edit(Guid? id)
