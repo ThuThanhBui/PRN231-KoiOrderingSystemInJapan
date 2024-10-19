@@ -850,11 +850,13 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                     b.HasOne("KoiOrderingSystemInJapan.Data.Models.Category", "Category")
                         .WithMany("FarmCategories")
                         .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("KoiOrderingSystemInJapan.Data.Models.Farm", "Farm")
                         .WithMany("FarmCategories")
                         .HasForeignKey("FarmId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Category");
@@ -936,11 +938,13 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                     b.HasOne("KoiOrderingSystemInJapan.Data.Models.BookingRequest", "BookingRequest")
                         .WithMany("ServiceXBookingRequest")
                         .HasForeignKey("BookingRequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("KoiOrderingSystemInJapan.Data.Models.Service", "Service")
                         .WithMany("ServiceXBookingRequest")
                         .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("BookingRequest");
@@ -962,11 +966,13 @@ namespace KoiOrderingSystemInJapan.Data.Migrations
                     b.HasOne("KoiOrderingSystemInJapan.Data.Models.Farm", "Farm")
                         .WithMany("TravelFarms")
                         .HasForeignKey("FarmId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("KoiOrderingSystemInJapan.Data.Models.Travel", "Travel")
                         .WithMany("TravelFarms")
                         .HasForeignKey("TravelId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Farm");

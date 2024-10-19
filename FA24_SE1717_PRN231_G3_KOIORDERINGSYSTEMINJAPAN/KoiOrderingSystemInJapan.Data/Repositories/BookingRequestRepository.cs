@@ -17,7 +17,7 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
         public async Task<List<BookingRequest>> GetAllAsync()
         {
             return await _context.Set<BookingRequest>()
-                .Where(m => !m.IsDeleted)
+                .Where(m => !m.IsDeleted).AsNoTracking()
                 .Include(m => m.Customer)
                 .Include(m => m.Travel)
                 .ToListAsync();

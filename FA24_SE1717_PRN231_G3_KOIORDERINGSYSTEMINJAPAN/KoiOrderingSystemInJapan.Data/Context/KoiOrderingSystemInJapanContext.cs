@@ -95,20 +95,25 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
             entity.HasOne(d => d.Customer).WithMany(p => p.BookingRequests)
                 .HasForeignKey(d => d.CustomerId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                ;
 
             entity.HasOne(d => d.Travel).WithMany(p => p.BookingRequests)
                 .HasForeignKey(d => d.TravelId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                ;
+
+            entity.HasMany(e => e.ServiceOrders)
+                .WithOne(e => e.BookingRequest)
+                .HasForeignKey(e => e.BookingRequestId)
+                ;
 
             entity.HasMany(e => e.ServiceXBookingRequest)
                 .WithOne(e => e.BookingRequest)
                 .HasForeignKey(e => e.BookingRequestId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                ;
 
             entity.HasOne(d => d.Sale).WithOne(p => p.BookingRequest)
                 .HasForeignKey<Sale>(d => d.BookingRequestId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                ;
         });
 
         modelBuilder.Entity<Delivery>(entity =>
@@ -122,11 +127,11 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
             entity.HasOne(d => d.DeliveryStaff).WithMany(p => p.Deliveries)
                 .HasForeignKey(d => d.DeliveryStaffId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                ;
 
             entity.HasOne(d => d.KoiOrder).WithOne(p => p.Deliveries)
                 .HasForeignKey<Delivery>(d => d.KoiOrderId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                ;
         });
 
         modelBuilder.Entity<DeliveryDetail>(entity =>
@@ -139,7 +144,7 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
             entity.HasOne(d => d.Delivery).WithMany(p => p.DeliveryDetails)
                 .HasForeignKey(d => d.DeliveryId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                ;
         });
 
         modelBuilder.Entity<Farm>(entity =>
@@ -159,11 +164,11 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
             entity.HasOne(d => d.Category).WithMany(p => p.FarmCategories)
                 .HasForeignKey(d => d.CategoryId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                ;
 
             entity.HasOne(d => d.Farm).WithMany(p => p.FarmCategories)
                 .HasForeignKey(d => d.FarmId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                ;
         });
 
         modelBuilder.Entity<Invoice>(entity =>
@@ -192,11 +197,11 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
             entity.HasOne(d => d.Category).WithMany(p => p.KoiFishes)
                 .HasForeignKey(d => d.CategoryId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                ;
 
             entity.HasOne(d => d.Size).WithOne(p => p.KoiFish)
                 .HasForeignKey<Size>(d => d.KoiFishId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                ;
         });
 
         modelBuilder.Entity<KoiOrder>(entity =>
@@ -209,12 +214,10 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
             entity.Property(e => e.TotalPrice).HasColumnType("decimal(10, 2)");
 
             entity.HasOne(d => d.Customer).WithMany(p => p.KoiOrders)
-                .HasForeignKey(d => d.CustomerId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .HasForeignKey(d => d.CustomerId);
 
             entity.HasOne(d => d.Invoice).WithOne(p => p.KoiOrder)
-                .HasForeignKey<KoiOrder>(d => d.InvoiceId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .HasForeignKey<KoiOrder>(d => d.InvoiceId);
         });
          
         modelBuilder.Entity<OrderDetail>(entity =>
@@ -228,11 +231,11 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
             entity.HasOne(d => d.KoiFish).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.KoiFishId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                ;
 
             entity.HasOne(d => d.KoiOrder).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.KoiOrderId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                ;
         });
 
         modelBuilder.Entity<Sale>(entity =>
@@ -249,7 +252,7 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
             entity.HasOne(d => d.SaleStaff).WithMany(p => p.SaleSaleStaffs)
                 .HasForeignKey(d => d.SaleStaffId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                ;
         });
 
         modelBuilder.Entity<Service>(entity =>
@@ -264,7 +267,7 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
             entity.HasMany(e => e.ServiceXBookingRequest)
                 .WithOne(e => e.Service)
                 .HasForeignKey(e => e.ServiceId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                ;
         });
 
         modelBuilder.Entity<ServiceOrder>(entity =>
@@ -278,11 +281,11 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
             entity.HasOne(d => d.BookingRequest).WithMany(p => p.ServiceOrders)
                 .HasForeignKey(d => d.BookingRequestId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                ;
 
             entity.HasOne(d => d.Invoice).WithOne(p => p.ServiceOrder)
                 .HasForeignKey<ServiceOrder>(d => d.InvoiceId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                ;
         });
 
         modelBuilder.Entity<Travel>(entity =>
@@ -303,11 +306,11 @@ public partial class KoiOrderingSystemInJapanContext : DbContext
 
             entity.HasOne(d => d.Farm).WithMany(p => p.TravelFarms)
                 .HasForeignKey(d => d.FarmId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                ;
 
             entity.HasOne(d => d.Travel).WithMany(p => p.TravelFarms)
                 .HasForeignKey(d => d.TravelId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                ;
         });
 
         modelBuilder.Entity<User>(entity =>
