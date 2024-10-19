@@ -5,7 +5,26 @@
 }
 
 <h1>Index</h1>
+<p>
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <input type="text" id="searchCustomerName" class="form-control" placeholder="Search by Customer Name">
+        </div>
+        <div class="col-md-4">
+            <input type="text" id="searchDescription" class="form-control" placeholder="Search by Description " min="1">
+        </div>
+        <div class="col-md-4">
+            <select id="isdeleted" class="form-control">
+                <option value="false">False</option>
+                <option value="true">True</option>
+            </select>
+        </div>
 
+
+
+    </div>
+    <button type="button" class="btn btn-primary" onclick="searchData()">Search</button>
+</p>
 <p>
     <a asp-action="Create">Create New</a>
 </p>
@@ -82,7 +101,9 @@
                         html += '<td scope="row">' + item.updatedDate + '</td>'
                         html += '<td scope="row">' + item.isDeleted + '</td>'
                         html += '<td scope="row">' + item.note + '</td>'
-                        html += '<td scope="row">' + '<a href="/DeliveryDetails/Details/' + item.id + '">Details</a>' + '  ' + '<a href="/DeliveryDetails/Edit/' + item.id + '">Edit</a>' + '</td>'
+                        html += '<td scope="row">' + '<a href="/DeliveryDetails/Details/' + item.id + '">Details</a>' + '  '
+                                                   + '<a href="/DeliveryDetails/Edit/' + item.id + '">Edit</a>' + '  '
+                                                   + '<a href="/DeliveryDetails/Delete/' + item.id + '">Delete</a>' + '</td>'
                     })
                     $('.tblDeliveryDetail').html(html);
                 },
@@ -90,6 +111,46 @@
                     alert(xhr.statusText);
                 }
             })
+        }
+
+
+        function searchData() {
+            var deliveryname = $("#searchCustomerName").val();
+            var isdeleted = $("#isdeleted").val() === "true";
+            var description = $("#searchDescription").val();
+
+            $.ajax({
+                url: `https://localhost:7298/api/DeliveryDetails/search?deliveryname=${deliveryname ? deliveryname : ""}&isdeleted=${isdeleted}&description=${description ?? ""}`,
+                type: "GET",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    console.log(result)
+                    var html = "";
+                    $.each(result.data, function (key, item) {
+                        console.log(item);
+                        html += '<tr>';
+                        html += '<th scope="row">' + key + '</th>'
+                        html += '<td scope="row">' + item.id + '</td>'
+                        html += '<td scope="row">' + item.deliveryId + '</td>'
+                        html += '<td scope="row">' + item.name + '</td>'
+                        html += '<td scope="row">' + item.description + '</td>'
+                        html += '<td scope="row">' + item.createdBy + '</td>'
+                        html += '<td scope="row">' + item.createdDate + '</td>'
+                        html += '<td scope="row">' + item.updatedBy + '</td>'
+                        html += '<td scope="row">' + item.updatedDate + '</td>'
+                        html += '<td scope="row">' + item.isDeleted + '</td>'
+                        html += '<td scope="row">' + item.note + '</td>'
+                        html += '<td scope="row">' + '<a href="/DeliveryDetails/Details/' + item.id + '">Details</a>' + '  '
+                            + '<a href="/DeliveryDetails/Edit/' + item.id + '">Edit</a>' + '  '
+                            + '<a href="/DeliveryDetails/Delete/' + item.id + '">Delete</a>' + '</td>'
+                    });
+                    $('.tblDeliveryDetail').html(html);
+                },
+                error: function (xhr, error) {
+                    alert("Error: " + xhr.statusText);
+                }
+            });
         }
     </script>
 }
