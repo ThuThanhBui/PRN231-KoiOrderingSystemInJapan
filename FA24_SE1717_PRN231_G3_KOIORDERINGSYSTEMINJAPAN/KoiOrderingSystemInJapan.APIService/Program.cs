@@ -3,14 +3,20 @@ using KoiOrderingSystemInJapan.Data.Context;
 using KoiOrderingSystemInJapan.Data.Request.Payments;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddControllers().AddJsonOptions(x =>
+{
+    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
@@ -23,7 +29,6 @@ builder.Services.AddCors(options =>
         });
 });
 
-builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -54,20 +59,18 @@ builder.Services.AddSwaggerGen(options =>
             }
         });
 });
+
 builder.Services.AddDbContext<KoiOrderingSystemInJapanContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
-        sqlOptions => sqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
     options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
 
+
+
 // Avoid JSON cycles
-//builder.Services.AddControllers().AddJsonOptions(options =>
-//{
-//    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
-//});
-IConfiguration configuration = builder.Configuration;
-MomoSettingsModel.Instance = configuration.GetSection("MomoAPI").Get<MomoSettingsModel>();
+
+MomoSettingsModel.Instance = builder.Configuration.GetSection("MomoAPI").Get<MomoSettingsModel>();
 #region Config_Authentication
 
 _ = builder.Services.AddAuthentication(options =>
