@@ -24,5 +24,22 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
                 .Include(h => h.Deliveries)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
+        public async Task<List<KoiOrder>> SearhKoiOrder(string? customerName, decimal? price, int? quantity)
+        {
+            var koiOrderList = await _context.KoiOrders.Include(y => y.Customer).ToListAsync();
+            if(customerName != null)
+            {
+                koiOrderList = koiOrderList.Where(x => x.Customer.Firstname == customerName).ToList();
+            }
+            if(price != null)
+            {
+                koiOrderList = koiOrderList.Where(x => x.TotalPrice == price).ToList();
+            }
+            if (quantity != null)
+            {
+                koiOrderList = koiOrderList.Where(x => x.Quantity == quantity).ToList();
+            }
+            return koiOrderList;
+        }
     }
 }

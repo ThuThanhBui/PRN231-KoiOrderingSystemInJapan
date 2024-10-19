@@ -33,6 +33,9 @@
             <th scope="col">
                 Details
             </th>
+            <th scope="col">
+                Delete
+            </th>
         </tr>
     </thead>
     <tbody class="tblInvoice">
@@ -61,8 +64,8 @@
                         html += '<td>' + item.createdDate + '</td>';
                         html += '<td>' + item.updatedBy + '</td>';
                         html += '<td>' + item.updatedDate + '</td>';
-                        html += '<td>' + item.isDeleted ? "Deleted" : "Existed" + '</td>';
                         html += '<td>' + '<a href="/Invoices/Details/' + item.id + '">Details</a>' + '</td>';
+                        html += '<td>' + '<a href="/Invoices/Delete/' + item.id + '">Delete</a>' + '</td>';
                         html += '</tr>';
                     });
                     $(".tblInvoice").html(html);

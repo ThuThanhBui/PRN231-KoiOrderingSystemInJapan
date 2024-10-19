@@ -7,11 +7,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using KoiOrderingSystemInJapan.Data.Request.BookingRequests;
+using Azure.Core;
 
 namespace KoiOrderingSystemInJapan.Service
 {
     public interface IBookingRequestService
     {
+        Task<IBusinessResult> GetAll(BookingRequestRequest request, int page, int pageSize);
         Task<IBusinessResult> GetAll();
         Task<IBusinessResult> GetBookingRequestsWithNoSale();
         Task<IBusinessResult> GetById(Guid id);
@@ -54,19 +57,34 @@ namespace KoiOrderingSystemInJapan.Service
             }
         }
 
-        public async Task<IBusinessResult> GetAll()
+        public async Task<IBusinessResult> GetAll(BookingRequestRequest request, int page, int pageSize)
         {
-            #region Business rule
-
-            #endregion
-            var bookingRequest = await _unitOfWork.BookingRequest.GetAllAsync();
-            if (bookingRequest == null)
+            var item = await _unitOfWork.BookingRequest.GetAllAsync(request, page, pageSize);
+            var result = new
             {
-                return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, new List<BookingRequest>());
+                list = item.Item1,
+                totalPages = item.Item2
+            };
+            if (result.list == null || !result.list.Any())
+            {
+                return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, result);
             }
             else
             {
-                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, bookingRequest);
+                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result);
+            }
+        }
+
+        public async Task<IBusinessResult> GetAll()
+        {
+            var result = await _unitOfWork.BookingRequest.GetAllAsync();
+            if (result == null || !result.Any())
+            {
+                return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, result);
+            }
+            else
+            {
+                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result);
             }
         }
 

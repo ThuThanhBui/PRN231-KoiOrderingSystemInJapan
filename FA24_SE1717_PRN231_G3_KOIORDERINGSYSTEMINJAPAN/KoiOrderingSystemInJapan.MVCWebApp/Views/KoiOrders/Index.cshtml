@@ -5,6 +5,20 @@
 <p>
     <button onclick="addKoiOrder()">Add New Order</button>
 </p>
+<p>
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <input type="text" id="searchCustomerName" class="form-control" placeholder="Search by Customer Name">
+            </div>
+            <div class="col-md-4">
+            <input type="number" id="searchTotalPrice" class="form-control" placeholder="Search by Price">
+            </div>
+            <div class="col-md-4">
+                <input type="number" id="searchQuantity" class="form-control" placeholder="Search by Quantity" min="1">
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary" onclick="searchData()">Search</button>
+</p>
 <table class="table table-striped">
     <thead>
         <tr>
@@ -153,6 +167,36 @@
                 }
             })
             getData();
+        }
+        function searchData() {
+            var customerName = $("#searchCustomerName").val();
+            var price = $("#searchTotalPrice").val();
+            var quantity = $("#searchQuantity").val();
+
+            $.ajax({
+                url: `https://localhost:7298/api/KoiOrders/search?customerName=${customerName ? customerName : ""}&price=${price ?? ""}&quantity=${quantity ?? ""}`,
+                type: "GET",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    console.log(result)
+                    var html = "";
+                    $.each(result.data, function (key, item) {
+                        html += '<tr>';
+                        html += '<th scope="row">' + (key + 1) + '</th>';
+                        html += '<td>' + item.customer.firstname + ' ' + item.customer.lastname + '</td>';
+                        html += '<td>' + item.invoiceId + '</td>';
+                        html += '<td>' + item.quantity + '</td>';
+                        html += '<td>' + item.totalPrice + '</td>';
+                        html += '<td>' + '<a href="/KoiOrders/Details/' + item.id + '">Details</a>' + '</td>';
+                        html += '</tr>';
+                    });
+                    $('.tblKoiOrders').html(html);
+                },
+                error: function (xhr, error) {
+                    alert("Error: " + xhr.statusText);
+                }
+            });
         }
     </script>
 }
