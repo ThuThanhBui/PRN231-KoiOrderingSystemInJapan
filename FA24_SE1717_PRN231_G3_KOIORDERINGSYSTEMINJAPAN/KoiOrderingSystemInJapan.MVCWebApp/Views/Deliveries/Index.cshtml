@@ -8,6 +8,19 @@
 
 <p>
     <a asp-action="Create">Create New</a>
+</p><p>
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <input type="text" id="searchName" class="form-control" placeholder="Search by Delivery Name">
+        </div>
+        <div class="col-md-4">
+            <input type="text" id="searchCode" class="form-control" placeholder="Search by Code">
+        </div>
+        <div class="col-md-4">
+            <input type="text" id="searchLocation" class="form-control" placeholder="Search by Location" min="1">
+        </div>
+    </div>
+    <button type="button" class="btn btn-primary" onclick="searchData()">Search</button>
 </p>
 <table class="table">
     <thead>
@@ -66,7 +79,7 @@
                             '<a href="/Deliveries/Details/' + item.id + '">Details</a> ' +
                             '<a href="/Deliveries/Edit/' + item.id + '">Edit</a> ' +
                             '<a href="/Deliveries/Delete/' + item.id + '">Delete</a>' +
-                            '</td>';
+                            '</td>'
 
                         html += '</tr>';
                     });
@@ -74,6 +87,50 @@
                 },
                 error: function (xhr, error) {
                     alert(xhr.statusText);
+                }
+            });
+        }
+
+        function searchData() {
+            var deliveryname = $("#searchName").val();
+            var code = $("#searchCode").val();
+            var location = $("#searchLocation").val();
+
+            $.ajax({
+                url: `https://localhost:7298/api/Deliveries/search?deliveryname=${deliveryname ? deliveryname : ""}&code=${code ?? ""}&location=${location ?? ""}`,
+                type: "GET",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    console.log(result)
+                    var html = "";
+                    $.each(result.data, function (key, item) {
+                        html += '<tr>';
+                        html += '<td>' + item.code + '</td>';
+                        html += '<td>' + item.name + '</td>';
+                        html += '<td>' + item.phone + '</td>';
+                        html += '<td>' + item.address + '</td>';
+                        html += '<td>' + item.totalAmount + '</td>';
+                        html += '<td>' + item.paymentReceived + '</td>';
+                        html += '<td>' + item.createdBy + '</td>';
+                        html += '<td>' + item.createdDate + '</td>';
+                        html += '<td>' + item.updatedBy + '</td>';
+                        html += '<td>' + item.updatedDate + '</td>';
+                        html += '<td>' + item.isDeleted + '</td>';
+                        html += '<td>' + (item.deliveryStaff ? item.deliveryStaff.id : '') + '</td>';
+                        html += '<td>' + (item.koiOrder ? item.koiOrder.id : '') + '</td>';
+                        html += '<td>' +
+                            '<a href="/Deliveries/Details/' + item.id + '">Details</a> ' +
+                            '<a href="/Deliveries/Edit/' + item.id + '">Edit</a> ' +
+                            '<a href="/Deliveries/Delete/' + item.id + '">Delete</a>' +
+                            '</td>'
+
+                        html += '</tr>';
+                    });
+                    $('.tblDeliveries').html(html);
+                },
+                error: function (xhr, error) {
+                    alert("Error: " + xhr.statusText);
                 }
             });
         }

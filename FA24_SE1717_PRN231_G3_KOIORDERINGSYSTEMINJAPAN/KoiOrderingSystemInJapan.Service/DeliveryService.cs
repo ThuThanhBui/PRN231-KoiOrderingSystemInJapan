@@ -13,6 +13,7 @@ namespace KoiOrderingSystemInJapan.Service
         Task<IBusinessResult> Update(Delivery user);
         Task<IBusinessResult> Save(Delivery user);
         Task<IBusinessResult> DeleteById(Guid id);
+        Task<IBusinessResult> SearchDelivery(string? deliveryName, string? code, string? location);
     }
     public class DeliveryService : IDeliveryService
     {
@@ -117,6 +118,19 @@ namespace KoiOrderingSystemInJapan.Service
             catch (Exception ex)
             {
                 return new BusinessResult(Const.ERROR_EXCEPTION, ex.Message);
+            }
+        }
+
+        public async Task<IBusinessResult> SearchDelivery(string? deliveryName, string? code, string? location)
+        {
+            var result = await _unitOfWork.Delivery.SearchDelivery(deliveryName, code, location);
+            if (result != null)
+            {
+                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result);
+            }
+            else
+            {
+                return new BusinessResult(Const.FAIL_READ_CODE, Const.FAIL_READ_MSG);
             }
         }
 

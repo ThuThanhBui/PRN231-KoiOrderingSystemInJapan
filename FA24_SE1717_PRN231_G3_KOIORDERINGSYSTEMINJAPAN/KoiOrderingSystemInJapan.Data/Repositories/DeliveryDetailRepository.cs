@@ -55,5 +55,22 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
+        public async Task<List<DeliveryDetail>> SearchDeliveryDetail(string? deliverydetailName, bool? isdeleted, string? description)
+        {
+            var deliverydetaillist = await _context.DeliveryDetails.Include(x=>x.Delivery).ToListAsync();
+            if (deliverydetailName != null)
+            {
+                deliverydetaillist = deliverydetaillist.Where(x => x.Name.StartsWith(deliverydetailName)).ToList();
+            }
+            if (isdeleted != null)
+            {
+                deliverydetaillist = deliverydetaillist.Where(x => x.IsDeleted == isdeleted).ToList();
+            }
+            if (description != null)
+            {
+                deliverydetaillist = deliverydetaillist.Where(x => x.Description.StartsWith(description)).ToList();
+            }
+            return deliverydetaillist;
+        }
     }
 }

@@ -181,7 +181,7 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
             if(ModelState.IsValid) {
              using (var https = new HttpClient())
                 {
-                    using(var response = await https.GetAsync(Const.APIEndPoint+"Deliveries/" + id))
+                    using(var response = await https.GetAsync(Const.APIEndPoint+ "Deliveries/" + id))
                     {
                         if(response.IsSuccessStatusCode)
                         {
@@ -245,29 +245,22 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
         {
             using (var httpClient = new HttpClient())
             {
-                using (var koiOrderResponse = await httpClient.GetAsync(Const.APIEndPoint + "Deliveries"))
+                using (var response = await httpClient.GetAsync(Const.APIEndPoint + "Deliveries/" + id))
                 {
-                    if (koiOrderResponse.IsSuccessStatusCode)
+                    if (response.IsSuccessStatusCode)
                     {
-                        var content = await koiOrderResponse.Content.ReadAsStringAsync();
+                        var content = await response.Content.ReadAsStringAsync();
                         var result = JsonConvert.DeserializeObject<BusinessResult>(content);
-                        if (result != null && result.Data != null)
+                        if (result != null)
                         {
                             var data = JsonConvert.DeserializeObject<Delivery>(result.Data.ToString());
-                            return View(data); // hoặc trả về view nào đó
+                            return View(data);
+
                         }
-                        else
-                        {
-                            TempData["ErrorMessage"] = "Failed to delete order.";
-                            return RedirectToPage("Index"); // Hoặc view lỗi
-                        }
-                    }
-                    else
-                    {
-                       return NotFound();
                     }
                 }
             }
+            return RedirectToPage("Index");
         }
 
         // POST: Deliveries/Delete/5
@@ -277,7 +270,7 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
         {
             using (var httpClient = new HttpClient())
             {
-                using (var koiOrderResponse = await httpClient.GetAsync(Const.APIEndPoint + "Deliveries" + id))
+                using (var koiOrderResponse = await httpClient.DeleteAsync(Const.APIEndPoint + "Deliveries/" + id))
                 {
                     if (koiOrderResponse.IsSuccessStatusCode)
                     {
@@ -286,12 +279,12 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
                         if (result != null && result.Message == Const.SUCCESS_DELETE_MSG)
                         {
                             TempData["SuccessMessage"] = "Order deleted successfully.";
-                            return RedirectToPage("Index"); // hoặc trả về view nào đó
+                            return RedirectToAction(nameof(Index)); // hoặc trả về view nào đó
                         }
                         else
                         {
                             TempData["ErrorMessage"] = "Failed to delete order.";
-                            return RedirectToPage("ErrorPage"); // Hoặc view lỗi
+                            return RedirectToAction(nameof(Index)); // Hoặc view lỗi
                         }
                     }
                     else

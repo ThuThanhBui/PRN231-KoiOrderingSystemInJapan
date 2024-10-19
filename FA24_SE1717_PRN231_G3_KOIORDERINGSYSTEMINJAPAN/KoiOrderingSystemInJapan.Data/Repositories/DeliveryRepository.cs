@@ -58,6 +58,24 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
             return await _context.SaveChangesAsync() >0;
         }
 
+        public async Task<List<Delivery>> SearchDelivery(string? deliveryName, string? code, string? location)
+        {
+            var deliverylist = await _context.Deliveries.ToListAsync();
+            if(deliveryName!= null)
+            {
+                deliverylist = deliverylist.Where(x=> x.Name.StartsWith(deliveryName)).ToList();
+            } 
+            if(code != null)
+            {
+                deliverylist = deliverylist.Where(x=> x.Code.StartsWith(code)).ToList();
+            }
+            if(location != null)
+            {
+                deliverylist = deliverylist.Where(x=> x.Address.StartsWith(location)).ToList();
+            }
+            return deliverylist;
+        }
+
     }
 }
  
