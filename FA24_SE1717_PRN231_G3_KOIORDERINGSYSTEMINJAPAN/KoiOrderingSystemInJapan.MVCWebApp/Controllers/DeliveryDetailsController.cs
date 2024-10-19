@@ -202,20 +202,31 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
         // GET: DeliveryDetails/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
         {
-            if (id == null)
+            using (var httpClient = new HttpClient())
             {
-                return NotFound();
+                using (var koiOrderResponse = await httpClient.GetAsync(Const.APIEndPoint + "DeliveryDetail"))
+                {
+                    if (koiOrderResponse.IsSuccessStatusCode)
+                    {
+                        var content = await koiOrderResponse.Content.ReadAsStringAsync();
+                        var result = JsonConvert.DeserializeObject<BusinessResult>(content);
+                        if (result != null && result.Message == Const.SUCCESS_DELETE_MSG)
+                        {
+                            TempData["SuccessMessage"] = "Order deleted successfully.";
+                            return RedirectToPage("Index"); // hoặc trả về view nào đó
+                        }
+                        else
+                        {
+                            TempData["ErrorMessage"] = "Failed to delete order.";
+                            return RedirectToPage("ErrorPage"); // Hoặc view lỗi
+                        }
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
             }
-
-            var deliveryDetail = await _context.DeliveryDetails
-                .Include(d => d.Delivery)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (deliveryDetail == null)
-            {
-                return NotFound();
-            }
-
-            return View(deliveryDetail);
         }
 
         // POST: DeliveryDetails/Delete/5

@@ -34,7 +34,7 @@ namespace KoiOrderingSystemInJapan.Service
                 var delivery = await _unitOfWork.Delivery.GetByIdAsync(id);
                 if (delivery != null)
                 {
-                    var result = await _unitOfWork.Delivery.RemoveAsync(delivery);
+                    var result = await _unitOfWork.Delivery.Delete(delivery.Id);
                     if (result)
                     {
                         return new BusinessResult(Const.SUCCESS_DELETE_CODE, Const.SUCCESS_DELETE_MSG, result);

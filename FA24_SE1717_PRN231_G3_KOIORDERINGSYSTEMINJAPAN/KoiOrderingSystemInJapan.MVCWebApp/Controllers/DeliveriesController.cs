@@ -243,21 +243,31 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
         // GET: Deliveries/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
         {
-            if (id == null)
+            using (var httpClient = new HttpClient())
             {
-                return NotFound();
+                using (var koiOrderResponse = await httpClient.GetAsync(Const.APIEndPoint + "Deliveries"))
+                {
+                    if (koiOrderResponse.IsSuccessStatusCode)
+                    {
+                        var content = await koiOrderResponse.Content.ReadAsStringAsync();
+                        var result = JsonConvert.DeserializeObject<BusinessResult>(content);
+                        if (result != null && result.Data != null)
+                        {
+                            var data = JsonConvert.DeserializeObject<Delivery>(result.Data.ToString());
+                            return View(data); // hoặc trả về view nào đó
+                        }
+                        else
+                        {
+                            TempData["ErrorMessage"] = "Failed to delete order.";
+                            return RedirectToPage("Index"); // Hoặc view lỗi
+                        }
+                    }
+                    else
+                    {
+                       return NotFound();
+                    }
+                }
             }
-
-            var delivery = await _context.Deliveries
-                .Include(d => d.DeliveryStaff)
-                .Include(d => d.KoiOrder)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (delivery == null)
-            {
-                return NotFound();
-            }
-
-            return View(delivery);
         }
 
         // POST: Deliveries/Delete/5
@@ -265,14 +275,31 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var delivery = await _context.Deliveries.FindAsync(id);
-            if (delivery != null)
+            using (var httpClient = new HttpClient())
             {
-                _context.Deliveries.Remove(delivery);
+                using (var koiOrderResponse = await httpClient.GetAsync(Const.APIEndPoint + "Deliveries" + id))
+                {
+                    if (koiOrderResponse.IsSuccessStatusCode)
+                    {
+                        var content = await koiOrderResponse.Content.ReadAsStringAsync();
+                        var result = JsonConvert.DeserializeObject<BusinessResult>(content);
+                        if (result != null && result.Message == Const.SUCCESS_DELETE_MSG)
+                        {
+                            TempData["SuccessMessage"] = "Order deleted successfully.";
+                            return RedirectToPage("Index"); // hoặc trả về view nào đó
+                        }
+                        else
+                        {
+                            TempData["ErrorMessage"] = "Failed to delete order.";
+                            return RedirectToPage("ErrorPage"); // Hoặc view lỗi
+                        }
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
             }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
         }
 
         private bool DeliveryExists(Guid id)
