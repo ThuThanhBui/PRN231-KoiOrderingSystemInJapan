@@ -1,4 +1,5 @@
-﻿using KoiOrderingSystemInJapan.Data.Models;
+﻿using KoiOrderingSystemInJapan.Data.Migrations;
+using KoiOrderingSystemInJapan.Data.Models;
 using KoiOrderingSystemInJapan.Data.Request.KoiOrders;
 using KoiOrderingSystemInJapan.Service;
 using KoiOrderingSystemInJapan.Service.Base;
@@ -27,9 +28,10 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
         }
 
         [HttpGet("search")]
-        public async Task<IBusinessResult> SearchKoiOrder([FromQuery]string? customerName, [FromQuery] decimal? price, [FromQuery] int? quantity)
+        public async Task<IBusinessResult> SearchKoiOrder([FromQuery]string? customerName, [FromQuery] decimal? price, [FromQuery] int? quantity, [FromQuery]int page, [FromQuery]int pageSize)
         {
-            return await _koiOrderService.SearchKoiOrder(customerName, price, quantity);
+             var result = await _koiOrderService.SearchKoiOrder(customerName, price, quantity, page, pageSize);
+            return result;
         }
 
         [HttpGet("get_with_detail/{id}")]
