@@ -83,17 +83,18 @@ namespace KoiOrderingSystemInJapan.Service
             }
         }
 
-        public async Task<IBusinessResult> SearchKoiOrder(string? customerName, decimal? price, int? quantity)
+        public async Task<IBusinessResult> SearchKoiOrder(string? customerName, decimal? price, int? quantity, int page = 1, int pageSize = 10)
         {
-            var koiOrder = await _unitOfWork.KoiOrder.SearhKoiOrder(customerName, price, quantity);
-            if (koiOrder == null)
+            var koiOrder = await _unitOfWork.KoiOrder.SearchKoiOrder(customerName, price, quantity, page, pageSize);
+            var paginatedResult = new
             {
-                return new BusinessResult(Const.FAIL_READ_CODE, Const.FAIL_READ_MSG, new KoiOrder());
-            }
-            else
-            {
-                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, koiOrder);
-            }
+                Items = koiOrder.Items,
+                TotalPages = koiOrder.TotalPages,
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalItems = koiOrder.Items.Count() 
+            };
+            return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, paginatedResult);
         }
 
         public async Task<IBusinessResult> Save(KoiOrder koiOrder)
@@ -210,7 +211,7 @@ namespace KoiOrderingSystemInJapan.Service
         public async Task<IBusinessResult> GetByIdWithOrderDetail(Guid id)
         {
             var koiOrder = _unitOfWork.KoiOrder.GetById(id);
-            if(koiOrder == null)
+            if (koiOrder == null)
             {
                 return new BusinessResult(Const.FAIL_READ_CODE, Const.FAIL_READ_MSG, new KoiOrder());
             }

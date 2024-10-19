@@ -24,7 +24,7 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
                 .Include(h => h.Deliveries)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
-        public async Task<List<KoiOrder>> SearhKoiOrder(string? customerName, decimal? price, int? quantity)
+        public async Task<(List<KoiOrder> Items, int TotalPages)> SearchKoiOrder(string? customerName, decimal? price, int? quantity, int page, int pageSize)
         {
             var koiOrderList = await _context.KoiOrders.Include(y => y.Customer).ToListAsync();
             if(customerName != null)
@@ -39,7 +39,10 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
             {
                 koiOrderList = koiOrderList.Where(x => x.Quantity == quantity).ToList();
             }
-            return koiOrderList;
+            var totalItems = koiOrderList.Count();
+            var totalPage = (int)Math.Ceiling(totalItems / (double)pageSize);
+            var items = koiOrderList.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            return (items, totalPage);
         }
     }
 }

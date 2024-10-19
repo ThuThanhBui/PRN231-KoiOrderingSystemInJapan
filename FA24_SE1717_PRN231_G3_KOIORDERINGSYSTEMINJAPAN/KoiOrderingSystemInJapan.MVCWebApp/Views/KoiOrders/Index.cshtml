@@ -62,38 +62,14 @@
         </div>
     </div>
 </div>
-
+<div id="pagination" class="d-flex justify-content-center mt-3"></div>
 @section scripts {
     <script type="text/javascript">
         $(document).ready(function () {
-            getData();
+            searchData();
         });
 
-        function getData() {
-            $.ajax({
-                url: "https://localhost:7298/api/KoiOrders",
-                type: "GET",
-                contentType: "application/json;charset=utf-8",
-                dataType: "json",
-                success: function (result) {
-                    var html = "";
-                    $.each(result.data, function (key, item) {
-                        html += '<tr>';
-                        html += '<th scope="row">' + (key + 1) + '</th>';
-                        html += '<td>' + item.customer.firstname + ' ' + item.customer.lastname + '</td>';
-                        html += '<td>' + item.invoiceId + '</td>';
-                        html += '<td>' + item.quantity + '</td>';
-                        html += '<td>' + item.totalPrice + '</td>';
-                        html += '<td>' + '<a href="/KoiOrders/Details/' + item.id + '">Details</a>' + '</td>';
-                        html += '</tr>';
-                    });
-                    $('.tblKoiOrders').html(html);
-                },
-                error: function (xhr, error) {
-                    alert("Error: " + xhr.statusText);
-                }
-            });
-        }
+       
 
         function addKoiOrder() {
             $("#koiOrderModalLabel").html("Add New Order");
@@ -166,22 +142,22 @@
                     }
                 }
             })
-            getData();
+            searchData();
         }
-        function searchData() {
+        function searchData(page = 1) {
             var customerName = $("#searchCustomerName").val();
             var price = $("#searchTotalPrice").val();
             var quantity = $("#searchQuantity").val();
-
+            var pageSize = 5;
             $.ajax({
-                url: `https://localhost:7298/api/KoiOrders/search?customerName=${customerName ? customerName : ""}&price=${price ?? ""}&quantity=${quantity ?? ""}`,
+                url: `https://localhost:7298/api/KoiOrders/search?customerName=${customerName ? customerName : ""}&price=${price ?? ""}&quantity=${quantity ?? ""}&page=${page}&pageSize=${pageSize}`,
                 type: "GET",
                 contentType: "application/json;charset=utf-8",
                 dataType: "json",
                 success: function (result) {
-                    console.log(result)
+                    console.log(result);
                     var html = "";
-                    $.each(result.data, function (key, item) {
+                    $.each(result.data.items, function (key, item) {
                         html += '<tr>';
                         html += '<th scope="row">' + (key + 1) + '</th>';
                         html += '<td>' + item.customer.firstname + ' ' + item.customer.lastname + '</td>';
@@ -192,11 +168,22 @@
                         html += '</tr>';
                     });
                     $('.tblKoiOrders').html(html);
+                    createPagination(result.data.totalPages, page);
                 },
                 error: function (xhr, error) {
                     alert("Error: " + xhr.statusText);
                 }
             });
+        }
+
+        function createPagination(totalPages, currentPage) {
+            let paginationHtml = '';
+            for (let i = 1; i <= totalPages; i++) {
+                paginationHtml += `<li class="page-item ${i === currentPage ? 'active' : ''}">
+                                    <a class="page-link" href="#" onclick="searchData(${i})">${i}</a>
+                                   </li>`;
+            }
+            $('#pagination').html(`<ul class="pagination">${paginationHtml}</ul>`);
         }
     </script>
 }
