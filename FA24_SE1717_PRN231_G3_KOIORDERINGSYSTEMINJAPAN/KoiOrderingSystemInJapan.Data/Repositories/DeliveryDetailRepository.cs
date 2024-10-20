@@ -55,7 +55,7 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<List<DeliveryDetail>> SearchDeliveryDetail(string? deliverydetailName, bool? isdeleted, string? description)
+        public async Task<(List<DeliveryDetail> Items, int TotalPages)> SearchDeliveryDetail(string? deliverydetailName, bool? isdeleted, string? description , int page , int pagesize)
         {
             var deliverydetaillist = await _context.DeliveryDetails.Include(x=>x.Delivery).ToListAsync();
             if (deliverydetailName != null)
@@ -70,7 +70,11 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
             {
                 deliverydetaillist = deliverydetaillist.Where(x => x.Description.StartsWith(description)).ToList();
             }
-            return deliverydetaillist;
+
+            var totalItem = deliverydetaillist.Count();
+            var totalPage = (int)Math.Ceiling(totalItem / (double)pagesize);
+            var items = deliverydetaillist.Skip((page - 1) * pagesize).Take(pagesize).ToList();    
+            return (items, totalPage);
         }
     }
 }

@@ -63,9 +63,9 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
         }
 
         [HttpGet("search")]
-        public async Task<IBusinessResult> SearchDeliveryDeatil([FromQuery] string? deliveryname, [FromQuery] bool? isdeleted, [FromQuery] string? description)
+        public async Task<IBusinessResult> SearchDeliveryDeatil([FromQuery] string? deliveryname, [FromQuery] bool? isdeleted, [FromQuery] string? description, [FromQuery] int page, [FromQuery] int  pagesize)
         {
-            return await _deliverydetailSerivce.SearchDeliveryDetail(deliveryname, isdeleted, description);
+            return await _deliverydetailSerivce.SearchDeliveryDetail(deliveryname, isdeleted, description , page , pagesize);
         }
 
     }
