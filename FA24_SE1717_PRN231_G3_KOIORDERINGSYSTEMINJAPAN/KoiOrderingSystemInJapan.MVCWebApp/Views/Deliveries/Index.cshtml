@@ -20,7 +20,7 @@
             <input type="text" id="searchLocation" class="form-control" placeholder="Search by Location" min="1">
         </div>
     </div>
-    <button type="button" class="btn btn-primary" onclick="searchData()">Search</button>
+    <button type="button" class="btn btn-primary" onclick="searchData(1)">Search</button>
 </p>
 <table class="table">
     <thead>
@@ -46,50 +46,13 @@
     </tbody>
 </table>
 
+<div id="pagination" class="d-flex justify-content-center mt-3"></div>
+
 @section scripts {
     <script type="text/javascript">
         $(document).ready(function(){
-            loadDeliveries();
+            searchData();
         });
-
-        function loadDeliveries() {
-            $.ajax({
-                url: "https://localhost:7298/api/Deliveries", // Change to your actual API endpoint
-                type: "GET",
-                contentType: "application/json;charset=utf-8",
-                dataType: "json",
-                success: function (result) {
-                    var html = '';
-                    $.each(result.data, function (key, item) {
-                        html += '<tr>';
-                        html += '<td>' + item.code + '</td>';
-                        html += '<td>' + item.name + '</td>';
-                        html += '<td>' + item.phone + '</td>';
-                        html += '<td>' + item.address + '</td>';
-                        html += '<td>' + item.totalAmount + '</td>';
-                        html += '<td>' + item.paymentReceived + '</td>';
-                        html += '<td>' + item.createdBy + '</td>';
-                        html += '<td>' + item.createdDate + '</td>';
-                        html += '<td>' + item.updatedBy + '</td>';
-                        html += '<td>' + item.updatedDate + '</td>';
-                        html += '<td>' + item.isDeleted + '</td>';
-                        html += '<td>' + (item.deliveryStaff ? item.deliveryStaff.id : '') + '</td>';
-                        html += '<td>' + (item.koiOrder ? item.koiOrder.id : '') + '</td>';
-                        html += '<td>' +
-                            '<a href="/Deliveries/Details/' + item.id + '">Details</a> ' +
-                            '<a href="/Deliveries/Edit/' + item.id + '">Edit</a> ' +
-                            '<a href="/Deliveries/Delete/' + item.id + '">Delete</a>' +
-                            '</td>'
-
-                        html += '</tr>';
-                    });
-                    $('.tblDeliveries').html(html);
-                },
-                error: function (xhr, error) {
-                    alert(xhr.statusText);
-                }
-            });
-        }
 
         function searchData(page = 1) {
             var deliveryname = $("#searchName").val();
@@ -106,7 +69,7 @@
                 success: function (result) {
                     console.log(result)
                     var html = "";
-                    $.each(result.data, function (key, item) {
+                    $.each(result.data.items, function (key, item) {
                         html += '<tr>';
                         html += '<td>' + item.code + '</td>';
                         html += '<td>' + item.name + '</td>';
