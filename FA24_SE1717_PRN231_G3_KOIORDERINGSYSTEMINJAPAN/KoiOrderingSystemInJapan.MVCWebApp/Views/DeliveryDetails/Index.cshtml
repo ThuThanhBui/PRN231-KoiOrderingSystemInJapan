@@ -114,13 +114,14 @@
         }
 
 
-        function searchData() {
+        function searchData(page =1) {
+            var pageSize = 5;
             var deliveryname = $("#searchCustomerName").val();
             var isdeleted = $("#isdeleted").val() === "true";
             var description = $("#searchDescription").val();
 
             $.ajax({
-                url: `https://localhost:7298/api/DeliveryDetails/search?deliveryname=${deliveryname ? deliveryname : ""}&isdeleted=${isdeleted}&description=${description ?? ""}`,
+                url: `https://localhost:7298/api/DeliveryDetails/search?deliveryname=${deliveryname ? deliveryname : ""}&isdeleted=${isdeleted}&description=${description ?? ""}&page=${page}&pageSize=${pageSize}`,
                 type: "GET",
                 contentType: "application/json;charset=utf-8",
                 dataType: "json",
@@ -146,11 +147,23 @@
                             + '<a href="/DeliveryDetails/Delete/' + item.id + '">Delete</a>' + '</td>'
                     });
                     $('.tblDeliveryDetail').html(html);
+                    createPagination(result.data.totalPages, page);
                 },
                 error: function (xhr, error) {
                     alert("Error: " + xhr.statusText);
                 }
             });
+        }
+
+
+        function createPagination(totalPages, currentPage) {
+            let paginationHtml = '';
+            for (let i = 1; i <= totalPages; i++) {
+                paginationHtml += `<li class="page-item ${i === currentPage ? 'active' : ''}">
+                                            <a class="page-link" href="#" onclick="searchData(${i})">${i}</a>
+                                           </li>`;
+            }
+            $('#pagination').html(`<ul class="pagination">${paginationHtml}</ul>`);
         }
     </script>
 }

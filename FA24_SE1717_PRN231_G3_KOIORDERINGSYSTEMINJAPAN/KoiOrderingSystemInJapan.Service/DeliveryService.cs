@@ -13,7 +13,7 @@ namespace KoiOrderingSystemInJapan.Service
         Task<IBusinessResult> Update(Delivery user);
         Task<IBusinessResult> Save(Delivery user);
         Task<IBusinessResult> DeleteById(Guid id);
-        Task<IBusinessResult> SearchDelivery(string? deliveryName, string? code, string? location);
+        Task<IBusinessResult> SearchDelivery(string? deliveryName, string? code, string? location, int page = 1, int pageSize = 10);
     }
     public class DeliveryService : IDeliveryService
     {
@@ -121,17 +121,20 @@ namespace KoiOrderingSystemInJapan.Service
             }
         }
 
-        public async Task<IBusinessResult> SearchDelivery(string? deliveryName, string? code, string? location)
+        public async Task<IBusinessResult> SearchDelivery(string? deliveryName, string? code, string? location , int page = 1, int pageSize = 10)
         {
-            var result = await _unitOfWork.Delivery.SearchDelivery(deliveryName, code, location);
-            if (result != null)
+            var result = await _unitOfWork.Delivery.SearchDelivery(deliveryName, code, location , page, pageSize);
+            var paginatedResult = new
             {
-                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result);
-            }
-            else
-            {
-                return new BusinessResult(Const.FAIL_READ_CODE, Const.FAIL_READ_MSG);
-            }
+                Items = result.Item,
+                TotalPages = result.TotalPages,
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalItems = result.Item.Count() // use totalitems from your repository method
+            };
+
+            return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, paginatedResult);
+           
         }
 
         public Task<IBusinessResult> Update(Delivery user)
