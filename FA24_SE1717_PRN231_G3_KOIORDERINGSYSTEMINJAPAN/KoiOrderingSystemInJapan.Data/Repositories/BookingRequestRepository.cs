@@ -111,7 +111,7 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
         public async Task<List<BookingRequest>> GetBookingRequestsWithNoFilter()
         {
             return await _context.Set<BookingRequest>().Where(m => m.IsDeleted==false)
-                .Include(m => m.Travel).ToListAsync();
+                .Include(m => m.Travel).Include(m => m.Customer).ToListAsync();
         }
     }
 }

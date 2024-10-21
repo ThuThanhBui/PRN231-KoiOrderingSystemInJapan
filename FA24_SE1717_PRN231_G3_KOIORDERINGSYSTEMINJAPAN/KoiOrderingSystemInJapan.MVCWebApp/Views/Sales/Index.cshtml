@@ -313,8 +313,8 @@
                 Status: ($('#status').val() !== null && $('#status').val() !== "") ? parseInt($('#status').val()) : null,
                 ResponseDate: $('#responseDate').val() ? new Date($('#responseDate').val()).toISOString() : null,
                 ResponseBy: $('#responseBy').val() || null,
-                CreatedDate: $('#createdDate').val() ? new Date($('#createdDate').val()).toISOString() : null,
-                UpdatedDate: $('#updatedDate').val() ? new Date($('#updatedDate').val()).toISOString() : null,
+                CreatedDate: $('#createdDate').val() ? $('#createdDate').val() + 'T00:00:00Z' : null,
+                UpdatedDate: $('#updatedDate').val() ? $('#updatedDate').val() + 'T00:00:00Z' : null,
                 Page: currentPage,
                 PageSize: 7 // Kích thước trang cố định
             };
@@ -643,17 +643,17 @@
                     cardsContainer.empty(); // Xóa nội dung cũ
                     rs.data.forEach(bookingRequest => {
                         const card = `
-                                                                                                            <div class="col-md-4">
-                                                                                                                <div class="card mb-3" data-id="${bookingRequest.id}" style="cursor: pointer;">
-                                                                                                                    <div class="card-body">
-                                                                                                                        <p class="card-text">Customer: ${bookingRequest.customer.firstname} ${bookingRequest.customer.lastname}</p>
-                                                                                                                        <p class="card-text">Travel: ${bookingRequest.travel.name}</p>
-                                                                                                                        <p class="card-text">Quantity: ${bookingRequest.quantityService}</p>
-                                                                                                                        <p class="card-text">Number of Persons: ${bookingRequest.numberOfPerson}</p>
-                                                                                                                    </div>
-                                                                                                                </div>
-                                                                                                            </div>
-                                                                                                                `;
+                                <div class="col-md-4">
+                                    <div class="card mb-3" data-id="${bookingRequest.id}" style="cursor: pointer;">
+                                        <div class="card-body">
+                                            <p class="card-text">Customer: ${bookingRequest.customer.firstname} ${bookingRequest.customer.lastname}</p>
+                                            <p class="card-text">Travel: ${bookingRequest.travel.name}</p>
+                                            <p class="card-text">Quantity: ${bookingRequest.quantityService}</p>
+                                            <p class="card-text">Number of Persons: ${bookingRequest.numberOfPerson}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                    `;
                         cardsContainer.append(card);
                     });
 
@@ -682,17 +682,17 @@
                     cardsContainer.empty(); // Xóa nội dung cũ
                     rs.data.forEach(bookingRequest => {
                         const card = `
-                                                                                                                <div class="col-md-4">
-                                                                                                                    <div class="card mb-3" data-id="${bookingRequest.id}" style="cursor: pointer;">
-                                                                                                                        <div class="card-body">
-                                                                                                                            <p class="card-text">Customer: ${bookingRequest.customer.firstname} ${bookingRequest.customer.lastname}</p>
-                                                                                                                            <p class="card-text">Travel: ${bookingRequest.travelName}</p>
-                                                                                                                            <p class="card-text">Quantity: ${bookingRequest.quantityService}</p>
-                                                                                                                            <p class="card-text">Number of Persons: ${bookingRequest.numberOfPerson}</p>
-                                                                                                                        </div>
-                                                                                                                    </div>
-                                                                                                                </div>
-                                                                                                                        `;
+                                        <div class="col-md-4">
+                                            <div class="card mb-3" data-id="${bookingRequest.id}" style="cursor: pointer;">
+                                                <div class="card-body">
+                                                    <p class="card-text">Customer: ${bookingRequest.customer.firstname} ${bookingRequest.customer.lastname}</p>
+                                                    <p class="card-text">Travel: ${bookingRequest.travelName}</p>
+                                                    <p class="card-text">Quantity: ${bookingRequest.quantityService}</p>
+                                                    <p class="card-text">Number of Persons: ${bookingRequest.numberOfPerson}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                                `;
                         cardsContainer.append(card);
                     });
 

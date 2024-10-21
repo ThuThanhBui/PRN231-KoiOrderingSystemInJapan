@@ -36,12 +36,22 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
 
             if (query.CreatedDate.HasValue)
             {
-                queryable = queryable.Where(m => m.CreatedDate == query.CreatedDate);
+                var createdDate = query.CreatedDate.Value.Date;
+                queryable = queryable.Where(m =>
+                    m.CreatedDate.HasValue &&
+                    m.CreatedDate.Value.Year == createdDate.Year &&
+                    m.CreatedDate.Value.Month == createdDate.Month &&
+                    m.CreatedDate.Value.Day == createdDate.Day);
             }
 
             if (query.UpdatedDate.HasValue)
             {
-                queryable = queryable.Where(m => m.UpdatedDate == query.UpdatedDate);
+                var updatedDate = query.UpdatedDate.Value.Date;
+                queryable = queryable.Where(m =>
+                    m.UpdatedDate.HasValue &&
+                    m.UpdatedDate.Value.Year == updatedDate.Year &&
+                    m.UpdatedDate.Value.Month == updatedDate.Month &&
+                    m.UpdatedDate.Value.Day == updatedDate.Day);
             }
 
             var totalItems = await queryable.CountAsync();

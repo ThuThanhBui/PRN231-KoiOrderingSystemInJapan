@@ -234,11 +234,17 @@
         function loadData(page) {
             currentPage = page;
 
+            // Lấy giá trị ngày theo định dạng yyyy-MM-dd
+            const getFormattedDate = (inputId) => {
+                const dateVal = $(`#${inputId}`).val();
+                return dateVal ? dateVal : null; // Trả về giá trị yyyy-MM-dd từ input
+            };
+
             var data = {
                 TotalPrice: $('#totalPrice').val() || null,
                 Quantity: $('#quantity').val() || null,
-                CreatedDate: $('#createdDate').val() ? new Date($('#createdDate').val()).toISOString() : null,
-                UpdatedDate: $('#updatedDate').val() ? new Date($('#updatedDate').val()).toISOString() : null,
+                CreatedDate: getFormattedDate('createdDate'),
+                UpdatedDate: getFormattedDate('updatedDate'),
                 Page: currentPage,
                 PageSize: 7 // Kích thước trang cố định
             };
@@ -260,9 +266,9 @@
                         html += '<td>' + (formatDate(item.updatedDate)) ?? 'N/A' + '</td>';
                         // Thêm nút Update và Delete
                         html += `<td>
-                                                    <button class="btn btn-info btn-sm me-2" onclick="viewDetail('${item.id}')">Detail</button>
-                                                    <button class="btn btn-warning btn-sm me-2" onclick="getUpdateServiceOrder('${item.id}')">Update</button>
-                                                    <button class="btn btn-danger btn-sm" onclick="deleteServiceOrder('${item.id}')">Delete</button></td>`;
+                                                                    <button class="btn btn-info btn-sm me-2" onclick="viewDetail('${item.id}')">Detail</button>
+                                                                    <button class="btn btn-warning btn-sm me-2" onclick="getUpdateServiceOrder('${item.id}')">Update</button>
+                                                                    <button class="btn btn-danger btn-sm" onclick="deleteServiceOrder('${item.id}')">Delete</button></td>`;
                         html += '</tr>';
                     });
                     $('.tblServiceOrders').html(html);
@@ -465,17 +471,17 @@
                     cardsContainer.empty(); // Xóa nội dung cũ
                     rs.data.forEach(bookingRequest => {
                         const card = `
-                                                    <div class="col-md-4">
-                                                        <div class="card mb-3" data-id="${bookingRequest.id}" style="cursor: pointer;">
-                                                            <div class="card-body">
-
-                                                                <p class="card-text">Travel: ${bookingRequest.travel.name}</p>
-                                                                <p class="card-text">Quantity: ${bookingRequest.quantityService}</p>
-                                                                <p class="card-text">Number of Persons: ${bookingRequest.numberOfPerson}</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                        `;
+                                    <div class="col-md-4">
+                                        <div class="card mb-3" data-id="${bookingRequest.id}" style="cursor: pointer;">
+                                            <div class="card-body">
+                                                <p class="card-text">Customer: ${bookingRequest.customer.firstname} ${bookingRequest.customer.lastname}</p>
+                                                <p class="card-text">Travel: ${bookingRequest.travel.name}</p>
+                                                <p class="card-text">Quantity: ${bookingRequest.quantityService}</p>
+                                                <p class="card-text">Number of Persons: ${bookingRequest.numberOfPerson}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                        `;
                         cardsContainer.append(card);
                     });
 
@@ -504,17 +510,17 @@
                     cardsContainer.empty(); // Xóa nội dung cũ
                     rs.data.forEach(bookingRequest => {
                         const card = `
-                                            <div class="col-md-4">
-                                                <div class="card mb-3" data-id="${bookingRequest.id}" style="cursor: pointer;">
-                                                    <div class="card-body">
-
-                                                        <p class="card-text">Travel: ${bookingRequest.travelName}</p>
-                                                        <p class="card-text">Quantity: ${bookingRequest.quantityService}</p>
-                                                        <p class="card-text">Number of Persons: ${bookingRequest.numberOfPerson}</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                                                `;
+                            <div class="col-md-4">
+                                <div class="card mb-3" data-id="${bookingRequest.id}" style="cursor: pointer;">
+                                    <div class="card-body">
+                                            <p class="card-text">Customer: ${bookingRequest.customer.firstname} ${bookingRequest.customer.lastname}</p>
+                                        <p class="card-text">Travel: ${bookingRequest.travelName}</p>
+                                        <p class="card-text">Quantity: ${bookingRequest.quantityService}</p>
+                                        <p class="card-text">Number of Persons: ${bookingRequest.numberOfPerson}</p>
+                                    </div>
+                                </div>
+                            </div>
+                                                `;
                         cardsContainer.append(card);
                     });
 
