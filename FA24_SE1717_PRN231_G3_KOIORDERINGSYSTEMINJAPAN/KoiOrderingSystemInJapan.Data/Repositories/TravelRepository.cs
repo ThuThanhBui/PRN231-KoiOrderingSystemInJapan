@@ -1,6 +1,7 @@
 ﻿using KoiOrderingSystemInJapan.Data.Base;
 using KoiOrderingSystemInJapan.Data.Context;
 using KoiOrderingSystemInJapan.Data.Models;
+using KoiOrderingSystemInJapan.Data.Request.Travels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -21,8 +22,47 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
             return await _context.Travels.Include(x => x.TravelFarms).ThenInclude( y => y.Farm).ToListAsync();
         }
 
-        //input: travelName || farmName || Price
-        // khung search: 10000000000
+        public async Task<(List<Travel>, int)> GetAllAsync(TravelRequest query, int page, int pageSize)
+        {
+            var queryable = _context.Set<Travel>()
+        .Include(t => t.TravelFarms).ThenInclude(t => t.Farm) // Include để lấy dữ liệu từ bảng TravelFarms
+        .AsQueryable()
+        .AsNoTracking();
+
+            //if (!string.IsNullOrEmpty(query.FarmName))
+            //{
+            //    // Lọc dữ liệu dựa trên FarmName từ bảng Farm
+            //    queryable = queryable.Where(m => m.TravelFarms.Any(f =>
+            //        f.Farm.Name.Trim().ToLower().Contains(query.Name.Trim().ToLower())));
+            //}
+
+            if (!string.IsNullOrEmpty(query.Name))
+            {
+                queryable = queryable.Where(m => m.Name.Trim().ToLower().Contains(query.Name.Trim().ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(query.Location))
+            {
+                queryable = queryable.Where(m => m.Location.Trim().ToLower().Contains(query.Location.Trim().ToLower()));
+            }
+
+            if (query.Price.HasValue)
+            {
+                queryable = queryable.Where(m => m.Price == query.Price);
+            }
+
+            // Base 
+           
+
+            var totalItems = await queryable.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var data = await queryable
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+            return (data, totalPages);
+        }
 
         public async Task<List<Travel>> GetTravelBySearchKeyAsync(string searchKey)
         {
