@@ -1,4 +1,6 @@
 ﻿using KoiOrderingSystemInJapan.Data.Models;
+using KoiOrderingSystemInJapan.Data.Request.BookingRequests;
+using KoiOrderingSystemInJapan.Data.Request.KoiFishs;
 using KoiOrderingSystemInJapan.Service;
 using KoiOrderingSystemInJapan.Service.Base;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +21,12 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
         public async Task<IBusinessResult> GetKoiFish()
         {
             return await _fishService.GetAll();
+        }
+
+        [HttpPost("filter")]
+        public async Task<IBusinessResult> GetKoiFishs([FromBody] KoiFishRequest query)
+        {
+            return await _fishService.GetAll(query, query.Page, query.PageSize);
         }
 
         [HttpGet("category")]

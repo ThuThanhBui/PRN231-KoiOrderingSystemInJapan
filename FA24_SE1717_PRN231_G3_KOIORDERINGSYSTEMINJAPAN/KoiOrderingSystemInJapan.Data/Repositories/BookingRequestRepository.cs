@@ -25,7 +25,8 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
 
         public async Task<(List<BookingRequest>, int)> GetAllAsync(BookingRequestRequest query, int page, int pageSize)
         {
-            var queryable =_context.Set<BookingRequest>().AsQueryable().AsNoTracking();
+            var queryable =_context.Set<BookingRequest>().AsQueryable()
+                .Include(m => m.Customer).Include(m => m.Travel).AsNoTracking();
 
             if (!string.IsNullOrEmpty(query.Travel?.Name))
             {
@@ -82,7 +83,6 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
             var totalItems = await queryable.CountAsync();
             var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
 
-            queryable = queryable.Include(m => m.Customer).Include(m => m.Travel);
             var data = await queryable
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)

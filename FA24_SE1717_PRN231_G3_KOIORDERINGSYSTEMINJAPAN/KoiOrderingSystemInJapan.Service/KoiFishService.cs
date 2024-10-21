@@ -1,6 +1,8 @@
 ﻿using KoiOrderingSystemInJapan.Common;
 using KoiOrderingSystemInJapan.Data;
 using KoiOrderingSystemInJapan.Data.Models;
+using KoiOrderingSystemInJapan.Data.Request.BookingRequests;
+using KoiOrderingSystemInJapan.Data.Request.KoiFishs;
 using KoiOrderingSystemInJapan.Service.Base;
 using System;
 using System.Collections.Generic;
@@ -13,6 +15,7 @@ namespace KoiOrderingSystemInJapan.Service
     public interface IKoiFishService
     {
         Task<IBusinessResult> GetAll();
+        Task<IBusinessResult> GetAll(KoiFishRequest request, int page, int pageSize);
         Task<IBusinessResult> GetById(Guid id);
         Task<IBusinessResult> Create(KoiFish fish);
         Task<IBusinessResult> Update(KoiFish fish);
@@ -48,7 +51,25 @@ namespace KoiOrderingSystemInJapan.Service
                 return new BusinessResult(Const.FAIL_READ_CODE, Const.FAIL_READ_MSG);
             }
         }
-        
+
+        public async Task<IBusinessResult> GetAll(KoiFishRequest request, int page, int pageSize)
+        {
+            var item = await _unitOfWork.KoiFish.GetAllAsync(request, page, pageSize);
+            var result = new
+            {
+                list = item.Item1,
+                totalPages = item.Item2
+            };
+            if (result.list == null || !result.list.Any())
+            {
+                return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, result);
+            }
+            else
+            {
+                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result);
+            }
+        }
+
         public async Task<IBusinessResult> GetAllByCategory(string category)
         {
             var result = await _unitOfWork.KoiFish.GetAllByCategoryAsync(category);
