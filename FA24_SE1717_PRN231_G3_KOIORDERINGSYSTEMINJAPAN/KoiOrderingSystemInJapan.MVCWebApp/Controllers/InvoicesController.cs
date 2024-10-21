@@ -139,7 +139,7 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
             {
                 using (var httpClient = new HttpClient())
                 {
-                    using (var response = await httpClient.PostAsJsonAsync(Const.APIEndPoint + "Invoices/", invoice))
+                    using (var response = await httpClient.PutAsJsonAsync(Const.APIEndPoint + "Invoices/" + invoice.Id, invoice))
                     {
                         if (response.IsSuccessStatusCode)
                         {

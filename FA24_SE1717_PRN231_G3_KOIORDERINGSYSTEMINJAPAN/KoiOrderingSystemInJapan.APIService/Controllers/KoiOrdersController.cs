@@ -11,7 +11,7 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
     [ApiController]
     public class KoiOrdersController : ControllerBase
     {
-        private readonly KoiOrderService _koiOrderService;
+        private readonly IKoiOrderService _koiOrderService;
 
         public KoiOrdersController() => _koiOrderService ??= new KoiOrderService();
 
