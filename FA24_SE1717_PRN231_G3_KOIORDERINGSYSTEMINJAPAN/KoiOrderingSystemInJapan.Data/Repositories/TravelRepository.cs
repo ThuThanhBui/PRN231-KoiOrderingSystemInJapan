@@ -29,13 +29,17 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
         .AsQueryable()
         .AsNoTracking();
 
-            if (!string.IsNullOrEmpty(query.FarmName))
-            {
-                // Lọc dữ liệu dựa trên FarmName từ bảng Farm
-                queryable = queryable.Where(m => m.TravelFarms.Any(f =>
-                    f.Farm.Name.Trim().ToLower().Contains(query.Name.Trim().ToLower())));
-            }
+            //if (!string.IsNullOrEmpty(query.FarmName))
+            //{
+            //    // Lọc dữ liệu dựa trên FarmName từ bảng Farm
+            //    queryable = queryable.Where(m => m.TravelFarms.Any(f =>
+            //        f.Farm.Name.Trim().ToLower().Contains(query.Name.Trim().ToLower())));
+            //}
 
+            if (!string.IsNullOrEmpty(query.Name))
+            {
+                queryable = queryable.Where(m => m.Name.Trim().ToLower().Contains(query.Name.Trim().ToLower()));
+            }
 
             if (!string.IsNullOrEmpty(query.Location))
             {
@@ -48,31 +52,7 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
             }
 
             // Base 
-            if (!string.IsNullOrEmpty(query.CreatedBy))
-            {
-                queryable = queryable.Where(m => m.CreatedBy.Trim().ToLower().Contains(query.CreatedBy.Trim().ToLower()));
-            }
-
-
-            if (query.CreatedDate.HasValue)
-            {
-                queryable = queryable.Where(m => m.CreatedDate == query.CreatedDate);
-            }
-
-            if (!string.IsNullOrEmpty(query.UpdatedBy))
-            {
-                queryable = queryable.Where(m => m.UpdatedBy.Trim().ToLower().Contains(query.UpdatedBy.Trim().ToLower()));
-            }
-
-            if (query.UpdatedDate.HasValue)
-            {
-                queryable = queryable.Where(m => m.UpdatedDate == query.UpdatedDate);
-            }
-
-            if (!string.IsNullOrEmpty(query.Note))
-            {
-                queryable = queryable.Where(m => m.Note.Trim().ToLower().Contains(query.Note.Trim().ToLower()));
-            }
+           
 
             var totalItems = await queryable.CountAsync();
             var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
