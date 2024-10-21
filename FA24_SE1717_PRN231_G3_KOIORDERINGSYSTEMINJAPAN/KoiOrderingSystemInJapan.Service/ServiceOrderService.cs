@@ -2,6 +2,8 @@
 using KoiOrderingSystemInJapan.Data;
 using KoiOrderingSystemInJapan.Data.Models;
 using KoiOrderingSystemInJapan.Data.Request.Payments;
+using KoiOrderingSystemInJapan.Data.Request.Sale;
+using KoiOrderingSystemInJapan.Data.Request.ServiceOrder;
 using KoiOrderingSystemInJapan.Data.Request.ServiceOrders;
 using KoiOrderingSystemInJapan.Service.Base;
 
@@ -9,7 +11,7 @@ namespace KoiOrderingSystemInJapan.Service
 {
     public interface IServiceOrderService
     {
-        Task<IBusinessResult> GetAll();
+        Task<IBusinessResult> GetAll(ServiceOrderRequest request, int page, int pageSize);
         Task<IBusinessResult> GetById(Guid id);
         Task<IBusinessResult> Create(ServiceOrder serviceOrder);
         Task<IBusinessResult> Update(ServiceOrder serviceOrder);
@@ -60,21 +62,24 @@ namespace KoiOrderingSystemInJapan.Service
             }
         }
 
-        public async Task<IBusinessResult> GetAll()
+        public async Task<IBusinessResult> GetAll(ServiceOrderRequest request, int page, int pageSize)
         {
-            #region Business rule
-
-            #endregion
-            var serviceOrder = await _unitOfWork.ServiceOrder.GetAllAsync();
-            if (serviceOrder == null)
+            var item = await _unitOfWork.ServiceOrder.GetAllAsync(request, page, pageSize);
+            var result = new
             {
-                return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, new List<ServiceOrder>());
+                list = item.Item1,
+                totalPages = item.Item2
+            };
+            if (result.list == null || !result.list.Any())
+            {
+                return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, result);
             }
             else
             {
-                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, serviceOrder);
+                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result);
             }
         }
+
         public async Task<IBusinessResult> GetById(Guid code)
         {
             var serviceOrder = await _unitOfWork.ServiceOrder.GetByIdAsync(code);

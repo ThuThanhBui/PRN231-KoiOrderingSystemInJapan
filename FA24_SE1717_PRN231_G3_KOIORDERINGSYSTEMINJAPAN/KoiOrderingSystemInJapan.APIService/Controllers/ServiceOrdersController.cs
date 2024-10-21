@@ -1,4 +1,5 @@
 ﻿using KoiOrderingSystemInJapan.Data.Models;
+using KoiOrderingSystemInJapan.Data.Request.ServiceOrder;
 using KoiOrderingSystemInJapan.Data.Request.ServiceOrders;
 using KoiOrderingSystemInJapan.Service;
 using KoiOrderingSystemInJapan.Service.Base;
@@ -19,10 +20,10 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
         }
 
         // GET: api/ServiceOrders
-        [HttpGet]
-        public async Task<IBusinessResult> GetServiceOrders()
+        [HttpPost("filter")]
+        public async Task<IBusinessResult> GetServiceOrders([FromBody]ServiceOrderRequest request)
         {
-            return await _serviceOrderSerivce.GetAll();
+            return await _serviceOrderSerivce.GetAll(request, request.Page, request.PageSize);
         }
 
         // GET: api/ServiceOrders/5

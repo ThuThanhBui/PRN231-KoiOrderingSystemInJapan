@@ -105,7 +105,13 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
                 .Where(m => !m.IsDeleted && m.Sale == null)
                 .Include(m => m.Customer)
                 .Include(m => m.Travel).ToListAsync();
-                ;
+        }
+
+
+        public async Task<List<BookingRequest>> GetBookingRequestsWithNoFilter()
+        {
+            return await _context.Set<BookingRequest>().Where(m => m.IsDeleted==false)
+                .Include(m => m.Travel).Include(m => m.Customer).ToListAsync();
         }
     }
 }

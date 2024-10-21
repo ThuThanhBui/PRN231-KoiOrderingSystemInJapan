@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -69,8 +70,16 @@ builder.Services.AddDbContext<KoiOrderingSystemInJapanContext>(options =>
 
 
 // Avoid JSON cycles
-
-MomoSettingsModel.Instance = builder.Configuration.GetSection("MomoAPI").Get<MomoSettingsModel>();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+});
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+{
+    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+});
+IConfiguration configuration = builder.Configuration;
+MomoSettingsModel.Instance = configuration.GetSection("MomoAPI").Get<MomoSettingsModel>();
 #region Config_Authentication
 
 _ = builder.Services.AddAuthentication(options =>
