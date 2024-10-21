@@ -24,6 +24,12 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
             return await _bookingRequestSerivce.GetAll(query, query.Page, query.PageSize);
         }
 
+        [HttpGet("get-all")]
+        public async Task<IBusinessResult> GetAllNoFilter()
+        {
+            return await _bookingRequestSerivce.GetAllNoFilter();
+        }
+
         [HttpGet("with-no-sale")]
         public async Task<IBusinessResult> GetBookingRequestsWithNoSale()
         {

@@ -1,4 +1,5 @@
 ﻿using KoiOrderingSystemInJapan.Data.Models;
+using KoiOrderingSystemInJapan.Data.Request.Sale;
 using KoiOrderingSystemInJapan.Service;
 using KoiOrderingSystemInJapan.Service.Base;
 using Microsoft.AspNetCore.Mvc;
@@ -17,10 +18,10 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
         }
 
         // GET: api/Sales
-        [HttpGet]
-        public async Task<IBusinessResult> GetSales()
+        [HttpPost("filter")]
+        public async Task<IBusinessResult> GetSales([FromBody]SaleRequest request)
         {
-            return await saleService.GetAll();
+            return await saleService.GetAll(request, request.Page, request.PageSize);
         }
 
         // GET: api/Sales/5

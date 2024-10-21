@@ -1,13 +1,15 @@
 ﻿using KoiOrderingSystemInJapan.Common;
 using KoiOrderingSystemInJapan.Data;
 using KoiOrderingSystemInJapan.Data.Models;
+using KoiOrderingSystemInJapan.Data.Request.BookingRequests;
+using KoiOrderingSystemInJapan.Data.Request.Sale;
 using KoiOrderingSystemInJapan.Service.Base;
 
 namespace KoiOrderingSystemInJapan.Service
 {
     public interface ISaleService
     {
-        Task<IBusinessResult> GetAll();
+        Task<IBusinessResult> GetAll(SaleRequest request, int page, int pageSize);
         Task<IBusinessResult> GetById(Guid id);
         Task<IBusinessResult> Create(Sale sale);
         Task<IBusinessResult> Update(Sale sale);
@@ -57,16 +59,21 @@ namespace KoiOrderingSystemInJapan.Service
             }
         }
 
-        public async Task<IBusinessResult> GetAll()
+        public async Task<IBusinessResult> GetAll(SaleRequest request, int page, int pageSize)
         {
-            var sales = await unitOfWork.Sale.GetAllAsync();
-            if (sales == null)
+            var item = await unitOfWork.Sale.GetAllAsync(request, page, pageSize);
+            var result = new
             {
-                return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, new List<Sale>());
+                list = item.Item1,
+                totalPages = item.Item2
+            };
+            if (result.list == null || !result.list.Any())
+            {
+                return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, result);
             }
             else
             {
-                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, sales);
+                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result);
             }
         }
 
@@ -97,6 +104,7 @@ namespace KoiOrderingSystemInJapan.Service
 
                 if (saleTmp == null)
                 {
+                    sale.CreatedDate = DateTime.Now;
                     result = await unitOfWork.Sale.CreateAsync(sale);
                     if (result > 0)
                     {
@@ -109,6 +117,7 @@ namespace KoiOrderingSystemInJapan.Service
                 }
                 else
                 {
+                    sale.UpdatedDate = DateTime.Now;
                     unitOfWork.Sale.Context().Entry(saleTmp).CurrentValues.SetValues(sale);
                     result = await unitOfWork.Sale.UpdateAsync(saleTmp);
                     if (result > 0)
@@ -126,6 +135,7 @@ namespace KoiOrderingSystemInJapan.Service
                 return new BusinessResult(Const.ERROR_EXCEPTION, ex.Message);
             }
         }
+
         public Task<IBusinessResult> Update(Sale sale)
         {
             throw new NotImplementedException();

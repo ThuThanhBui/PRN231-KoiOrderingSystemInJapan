@@ -13,6 +13,7 @@ namespace KoiOrderingSystemInJapan.Service
 {
     public interface IBookingRequestService
     {
+        Task<IBusinessResult> GetAllNoFilter();
         Task<IBusinessResult> GetAll(BookingRequestRequest request, int page, int pageSize);
         Task<IBusinessResult> GetBookingRequestsWithNoSale();
         Task<IBusinessResult> GetById(Guid id);
@@ -52,6 +53,25 @@ namespace KoiOrderingSystemInJapan.Service
             catch (Exception ex)
             {
                 return new BusinessResult(Const.ERROR_EXCEPTION, ex.Message);
+            }
+        }
+
+        public async Task<IBusinessResult> GetAllNoFilter()
+        {
+           try
+            {
+                var result = await _unitOfWork.BookingRequest.GetBookingRequestsWithNoFilter();
+                if (result == null)
+                {
+                    return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, new List<BookingRequest>());
+                }
+                else
+                {
+                    return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result);
+                }
+            } catch (Exception ex)
+            {
+                return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, ex.Message);
             }
         }
 

@@ -14,14 +14,7 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
 
         public BookingRequestRepository(KoiOrderingSystemInJapanContext context) => _context = context;
 
-        public async Task<List<BookingRequest>> GetAllAsync()
-        {
-            return await _context.Set<BookingRequest>()
-                .Where(m => !m.IsDeleted)
-                .Include(m => m.Customer)
-                .Include(m => m.Travel)
-                .ToListAsync();
-        }
+        
 
         public async Task<(List<BookingRequest>, int)> GetAllAsync(BookingRequestRequest query, int page, int pageSize)
         {
@@ -105,7 +98,13 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
                 .Where(m => !m.IsDeleted && m.Sale == null)
                 .Include(m => m.Customer)
                 .Include(m => m.Travel).ToListAsync();
-                ;
+        }
+
+
+        public async Task<List<BookingRequest>> GetBookingRequestsWithNoFilter()
+        {
+            return await _context.Set<BookingRequest>().Where(m => m.IsDeleted==false)
+                .Include(m => m.Travel).ToListAsync();
         }
     }
 }

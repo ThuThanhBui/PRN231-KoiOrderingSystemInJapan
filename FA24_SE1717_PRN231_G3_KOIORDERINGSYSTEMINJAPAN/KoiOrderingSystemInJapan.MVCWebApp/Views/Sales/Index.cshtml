@@ -2,12 +2,65 @@
     <div class="col-md-10">
         <h3 class="display-8">Sale List</h3>
     </div>
-    <div class="col-md-2 text-end">
+    <div class="text-end col-md-2">
         <button type="button" class="btn btn-primary" onclick="add();">
             Add New
         </button>
     </div>
 </div>
+
+<!--Filter&Search-->
+<div class="my-3">
+    <h4 class="display-8">Filter&Search</h4>
+    <div class="row">
+        <div class="col-md-3 form-group flex-fill">
+            <input type="text" class="form-control" id="proposalDetails" placeholder="Proposal details">
+        </div>
+        <div class="col-md-3 form-group flex-fill">
+            <input type="number" class="form-control" id="totalPrice" placeholder="Total price">
+        </div>
+        <div class="col-md-3 form-group flex-fill">
+            <select id="status" class="form-control">
+                <option value="">--Status--</option>
+                <option value="0">Pending</option>
+                <option value="1">Approved</option>
+                <option value="2">Rejected</option>
+            </select>
+        </div>
+        <div class="col-md-3 form-group flex-fill">
+            <input type="text" class="form-control" id="responseBy" placeholder="Response by">
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-4">
+            <div>Response date</div>
+            <div class="form-group flex-fill">
+                <input type="date" class="form-control" id="responseDate" placeholder="Response date">
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div>Created date</div>
+            <div class="form-group flex-fill">
+                <input type="date" class="form-control" id="createdDate" placeholder="Created date">
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div>Updated date</div>
+            <div class="form-group flex-fill">
+                <input type="date" class="form-control" id="updatedDate" placeholder="Updated date">
+            </div>
+        </div>
+    </div>
+    <div>
+        <button type="button" class="btn btn-outline-dark px-4 py-2 mt-2" onclick="resetData(); loadData(1);">Reset</button>
+        <button type="button" class="btn btn-dark px-4 py-2 mt-2" onclick="loadData(1)">Search</button>
+    </div>
+</div>
+
+<!--List-->
 <div class="row">
     <div class="col-md-12">
         <table class="table table-striped table-bordered table-hover">
@@ -19,7 +72,6 @@
                     <th class="card-title text-center">Status</th>
                     <th class="card-title text-center">Response date</th>
                     <th class="card-title text-center">Response by</th>
-                    <th class="card-title text-center">Is deleted</th>
                     <th class="card-title text-center">Note</th>
                     <th class="card-title text-center"></th>
                 </tr>
@@ -27,6 +79,11 @@
             <tbody class="tblSales">
             </tbody>
         </table>
+        <div class="d-flex justify-content-center align-items-center text-center ">
+            <button class="btn btn-light" id="prevPage" onclick="loadData(currentPage - 1)" disabled>Previous</button>
+            <span id="currentPageLabel">Page 1</span>
+            <button class="btn btn-light" id="nextPage" onclick="loadData(currentPage + 1)">Next</button>
+        </div>
     </div>
 </div>
 
@@ -191,6 +248,7 @@
             <div class="modal-body">
                 <input type="hidden" id="saleId" />
                 <input type="hidden" id="bookingRequestIdUpdate" />
+                <input type="hidden" id="createdDateUpdate" />
                 <label for="bookingRequest">Booking request</label>
                 <div id="bookingRequestCardsUpdate" class="row overflow-auto" style="max-height: 200px; overflow-y: auto; padding: 10px; border: 1px solid #dee2e6; border-radius: 5px;">
                     <!-- Các card sẽ được thêm động từ JavaScript -->
@@ -243,19 +301,34 @@
 @section scripts {
     <script type="text/javascript">
         $(document).ready(function () {
-            loadData();
+            loadData(1);
         });
 
-        function loadData() {
+        function loadData(page) {
+            currentPage = page;
+
+            var data = {
+                ProposalDetails: $('#proposalDetails').val() || null,
+                TotalPrice: $('#totalPrice').val() || null,
+                Status: ($('#status').val() !== null && $('#status').val() !== "") ? parseInt($('#status').val()) : null,
+                ResponseDate: $('#responseDate').val() ? new Date($('#responseDate').val()).toISOString() : null,
+                ResponseBy: $('#responseBy').val() || null,
+                CreatedDate: $('#createdDate').val() ? new Date($('#createdDate').val()).toISOString() : null,
+                UpdatedDate: $('#updatedDate').val() ? new Date($('#updatedDate').val()).toISOString() : null,
+                Page: currentPage,
+                PageSize: 7 // Kích thước trang cố định
+            };
+
             $.ajax({
-                url: 'https://localhost:7298/api/Sales',
-                type: "GET",
+                url: 'https://localhost:7298/api/Sales/filter',
+                type: "POST",
                 contentType: "application/json;charset=utf-8",
                 dataType: "json",
+                data: JSON.stringify(data),
                 success: function (result) {
                     var html = '';
-                    console.log(result.data);
-                    $.each(result.data, function (key, item) {
+                    $.each(result.data.list, function (key, item) {
+                        console.log(item.saleStaff)
                         html += '<tr>';
                         html += '<td>' + item.saleStaff.firstname + " " + item.saleStaff.lastname + '</td>';
                         html += '<td>' + item.proposalDetails + '</td>';
@@ -263,21 +336,34 @@
                         html += '<td>' + getStatusText(item.status) + '</td>';
                         html += '<td>' + formatDate(item.responseDate) + '</td>';
                         html += '<td>' + item.responseBy + '</td>';
-                        html += '<td>' + item.isDeleted + '</td>';
                         html += '<td>' + item.note + '</td>';
                         // Thêm nút Update và Delete
                         html += `<td>
-                                    <button class="btn btn-info btn-sm me-2" onclick="viewDetail('${item.id}')">View Detail</button>
-                                    <button class="btn btn-warning btn-sm me-2" onclick="getUpdateSale('${item.id}')">Update</button>
-                                    <button class="btn btn-danger btn-sm" onclick="deleteSale('${item.id}')">Delete</button></td>`;
+                                <button class="btn btn-info btn-sm me-2" onclick="viewDetail('${item.id}')">Detail</button>
+                                <button class="btn btn-warning btn-sm me-2" onclick="getUpdateSale('${item.id}')">Update</button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteSale('${item.id}')">Delete</button></td>`;
                         html += '</tr>';
                     });
                     $('.tblSales').html(html);
+
+                    // Cập nhật trạng thái nút phân trang
+                    updatePagination(result.data.totalPages);
                 },
                 error: function (xhr, error) {
-                    alert(xhr.statusText);
+                    alert("load data fail" + xhr.statusText);
                 }
             });
+        }
+
+        //reset data
+        function resetData() {
+            $('#proposalDetails').val('');
+            $('#totalPrice').val('');
+            $('#status').val('');
+            $('#responseDate').val('');
+            $('#responseBy').val('');
+            $('#createdDate').val('');
+            $('#updatedDate').val('');
         }
 
         //Nhan btn detail
@@ -286,6 +372,9 @@
                 url: `https://localhost:7298/api/Sales/get-by-id/${id}`,
                 type: "GET",
                 success: function (result) {
+
+                    console.log(result);
+                    console.log(result.data);
                     if (result.data) {
                         const sale = result.data;
                         const booking = sale.bookingRequest;
@@ -356,7 +445,7 @@
                 success: function (result) {
                     if (result.status >= 1) {
                         $('#saleModalAdd').modal('hide');
-                        loadData();
+                        loadData(1);
                         $("#bookingRequestIdAdd").val('');
                         $("#saleStaffIdAdd").val('');
                         $("#proposalDetailsAdd").val('');
@@ -393,6 +482,7 @@
                         $("#responseByUpdate").val(item.data.responseBy);
                         $("#statusUpdate").val(item.data.status);
                         $("#noteUpdate").val(item.data.note);
+                        $("#createdDateUpdate").val(item.data.createdDate);
 
                         // Mở modal cập nhật
                         $('#saleModalUpdate').modal('show');
@@ -422,6 +512,7 @@
                 ResponseDate: $("#responseDateUpdate").val(),
                 ResponseBy: $("#responseByUpdate").val(),
                 Note: $("#noteUpdate").val(),
+                CreatedDate: $("#createdDateUpdate").val(),
             };
             console.log(sale);
             $.ajax({
@@ -432,7 +523,7 @@
                 success: function (result) {
                     alert("Sale updated successfully.");
                     $('#saleModalUpdate').modal('hide');
-                    loadData();
+                    loadData(1);
                 },
                 error: function (xhr, error) {
                     console.log(xhr);
@@ -449,7 +540,7 @@
                     type: "PUT",
                     success: function (result) {
                         alert("Sale deleted successfully.");
-                        loadData();
+                        loadData(1);
                     },
                     error: function (xhr, error) {
                         console.log(xhr);
@@ -552,17 +643,17 @@
                     cardsContainer.empty(); // Xóa nội dung cũ
                     rs.data.forEach(bookingRequest => {
                         const card = `
-                            <div class="col-md-4">
-                                <div class="card mb-3" data-id="${bookingRequest.id}" style="cursor: pointer;">
-                                    <div class="card-body">
-                                        <p class="card-text">Customer: ${bookingRequest.customer.firstname} ${bookingRequest.customer.lastname}</p>
-                                        <p class="card-text">Travel: ${bookingRequest.travel.name}</p>
-                                        <p class="card-text">Quantity: ${bookingRequest.quantityService}</p>
-                                        <p class="card-text">Number of Persons: ${bookingRequest.numberOfPerson}</p>
-                                    </div>
-                                </div>
-                            </div>
-                                `;
+                                                                                                            <div class="col-md-4">
+                                                                                                                <div class="card mb-3" data-id="${bookingRequest.id}" style="cursor: pointer;">
+                                                                                                                    <div class="card-body">
+                                                                                                                        <p class="card-text">Customer: ${bookingRequest.customer.firstname} ${bookingRequest.customer.lastname}</p>
+                                                                                                                        <p class="card-text">Travel: ${bookingRequest.travel.name}</p>
+                                                                                                                        <p class="card-text">Quantity: ${bookingRequest.quantityService}</p>
+                                                                                                                        <p class="card-text">Number of Persons: ${bookingRequest.numberOfPerson}</p>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                                `;
                         cardsContainer.append(card);
                     });
 
@@ -591,17 +682,17 @@
                     cardsContainer.empty(); // Xóa nội dung cũ
                     rs.data.forEach(bookingRequest => {
                         const card = `
-                                <div class="col-md-4">
-                                    <div class="card mb-3" data-id="${bookingRequest.id}" style="cursor: pointer;">
-                                        <div class="card-body">
-                                            <p class="card-text">Customer: ${bookingRequest.customer.firstname} ${bookingRequest.customer.lastname}</p>
-                                            <p class="card-text">Travel: ${bookingRequest.travelName}</p>
-                                            <p class="card-text">Quantity: ${bookingRequest.quantityService}</p>
-                                            <p class="card-text">Number of Persons: ${bookingRequest.numberOfPerson}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                        `;
+                                                                                                                <div class="col-md-4">
+                                                                                                                    <div class="card mb-3" data-id="${bookingRequest.id}" style="cursor: pointer;">
+                                                                                                                        <div class="card-body">
+                                                                                                                            <p class="card-text">Customer: ${bookingRequest.customer.firstname} ${bookingRequest.customer.lastname}</p>
+                                                                                                                            <p class="card-text">Travel: ${bookingRequest.travelName}</p>
+                                                                                                                            <p class="card-text">Quantity: ${bookingRequest.quantityService}</p>
+                                                                                                                            <p class="card-text">Number of Persons: ${bookingRequest.numberOfPerson}</p>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                                        `;
                         cardsContainer.append(card);
                     });
 
@@ -629,6 +720,7 @@
             return `${day}/${month}/${year}`;
         }
 
+        //ham dinh dang status
         function getStatusText(status) {
             switch (status) {
                 case 0:
@@ -640,6 +732,13 @@
                 default:
                     return "Unknown";
             }
+        }
+
+        //update phan trang
+        function updatePagination(totalPages) {
+            $('#currentPageLabel').text("Page " + currentPage);
+            $('#prevPage').prop('disabled', currentPage === 1);
+            $('#nextPage').prop('disabled', currentPage === totalPages);
         }
     </script>
 }
