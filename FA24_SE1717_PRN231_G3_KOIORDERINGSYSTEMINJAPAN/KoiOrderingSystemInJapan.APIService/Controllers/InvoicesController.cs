@@ -11,13 +11,12 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
     {
         private readonly IInvoiceService _invoiceService;
 
-
         public InvoicesController() => _invoiceService ??= new InvoiceService();
 
         [HttpGet]
-        public async Task<IBusinessResult> GetInvoices()
+        public async Task<IBusinessResult> GetInvoices([FromQuery] decimal? paymentAmount, [FromQuery] bool? isDeleted, [FromQuery] string? note, [FromQuery] int page, [FromQuery] int pageSize)
         {
-            return await _invoiceService.GetAll();
+            return await _invoiceService.GetAll(paymentAmount, isDeleted, note, page, pageSize);
         }
 
         [HttpGet("{id}")]
@@ -30,7 +29,6 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
         public async Task<IBusinessResult> PutInvoice(Invoice invoice)
         {
             return await _invoiceService.Save(invoice);
-
         }
 
         [HttpPost]

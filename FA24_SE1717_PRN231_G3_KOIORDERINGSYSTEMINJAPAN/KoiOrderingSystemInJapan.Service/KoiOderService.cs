@@ -15,6 +15,8 @@ namespace KoiOrderingSystemInJapan.Service
         Task<IBusinessResult> DeleteById(Guid id);
         Task<IBusinessResult> CreatePayment(RequestPaymentKoiOrderModel koiOrder);
         Task<IBusinessResult> GetByIdWithOrderDetail(Guid id);
+        Task<IBusinessResult> UpdateOrder(RequestUpdateKoiOrderModel model);
+        Task<IBusinessResult> SearchKoiOrder(string? customerName, decimal? price, int? quantity, int page, int pageSize);
     }
     public class KoiOrderService : IKoiOrderService
     {
@@ -92,7 +94,7 @@ namespace KoiOrderingSystemInJapan.Service
                 TotalPages = koiOrder.TotalPages,
                 CurrentPage = page,
                 PageSize = pageSize,
-                TotalItems = koiOrder.Items.Count() 
+                TotalItems = koiOrder.Items.Count()
             };
             return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, paginatedResult);
         }

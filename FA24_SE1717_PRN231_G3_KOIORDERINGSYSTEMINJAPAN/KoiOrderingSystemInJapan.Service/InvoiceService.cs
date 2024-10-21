@@ -7,7 +7,7 @@ namespace KoiOrderingSystemInJapan.Service
 {
     public interface IInvoiceService
     {
-        Task<IBusinessResult> GetAll();
+        Task<IBusinessResult> GetAll(decimal? paymentAmount, bool? isDeleted, string? note, int page, int pageSize);
         Task<IBusinessResult> GetById(Guid id);
         Task<IBusinessResult> Save(Invoice invoice);
         Task<IBusinessResult> DeleteById(Guid id);
@@ -47,20 +47,22 @@ namespace KoiOrderingSystemInJapan.Service
             }
         }
 
-        public async Task<IBusinessResult> GetAll()
+        public async Task<IBusinessResult> GetAll(decimal? paymentAmount, bool? isDeleted, string? note, int page = 1, int pageSize = 10)
         {
             #region Business rule
 
             #endregion
-            var invoice = await _unitOfWork.Invoice.GetAllAsync();
-            if (invoice == null)
+            var invoice = await _unitOfWork.Invoice.GetAll(paymentAmount, isDeleted, note, page, pageSize);
+            var paginatedResult = new
             {
-                return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, new List<Invoice>());
-            }
-            else
-            {
-                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, invoice);
-            }
+                Items = invoice.Items,
+                TotalPages = invoice.TotalPages,
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalItems = invoice.Items.Count()
+            };
+
+            return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, paginatedResult);
         }
 
         public async Task<IBusinessResult> GetById(Guid code)
@@ -81,7 +83,7 @@ namespace KoiOrderingSystemInJapan.Service
             try
             {
                 int result = -1;
-                var invoiceTmp = _unitOfWork.Invoice.GetById(invoice.Id);
+                var invoiceTmp = _unitOfWork.Invoice.GetByIdNoTracking(invoice.Id);
 
                 if (invoiceTmp == null)
                 {
