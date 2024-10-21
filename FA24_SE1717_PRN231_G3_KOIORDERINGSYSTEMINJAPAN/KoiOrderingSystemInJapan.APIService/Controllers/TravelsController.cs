@@ -2,6 +2,7 @@
 using KoiOrderingSystemInJapan.Service.Base;
 using KoiOrderingSystemInJapan.Service;
 using Microsoft.AspNetCore.Mvc;
+using KoiOrderingSystemInJapan.Data.Request.Travels;
 
 namespace KoiOrderingSystemInJapan.APIService.Controllers
 {
@@ -37,6 +38,12 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
             var travel = await _travelSerivce.GetById(id);
 
             return travel;
+        }
+
+        [HttpPost("filter")]
+        public async Task<IBusinessResult> GetTravels([FromBody] TravelRequest query)
+        {
+            return await _travelSerivce.GetAll(query, query.Page, query.PageSize);
         }
 
         // PUT: api/Travels/5
