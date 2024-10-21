@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace KoiOrderingSystemInJapan.Data.Request.BookingRequests
 {
-    public class BookingRequestRequest
+    public class BookingRequestRequest : BaseFilterRequest
     {
         public Guid Id { get; set; }
 
@@ -37,7 +37,6 @@ namespace KoiOrderingSystemInJapan.Data.Request.BookingRequests
 
         public virtual Travel? Travel { get; set; }
 
-        public int Page { get; set; } = 1; 
-        public int PageSize { get; set; } = 10; 
+        
     }
 }

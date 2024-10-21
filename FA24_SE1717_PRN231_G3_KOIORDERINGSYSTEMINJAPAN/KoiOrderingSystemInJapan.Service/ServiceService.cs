@@ -1,6 +1,8 @@
 ﻿using KoiOrderingSystemInJapan.Common;
 using KoiOrderingSystemInJapan.Data;
 using KoiOrderingSystemInJapan.Data.Models;
+using KoiOrderingSystemInJapan.Data.Request.BookingRequests;
+using KoiOrderingSystemInJapan.Data.Request.Services;
 using KoiOrderingSystemInJapan.Service.Base;
 using ServiceEntity = KoiOrderingSystemInJapan.Data.Models;
 namespace KoiOrderingSystemInJapan.Service
@@ -11,6 +13,7 @@ namespace KoiOrderingSystemInJapan.Service
         Task<IBusinessResult> GetById(Guid id);
         Task<IBusinessResult> Save(ServiceEntity.Service service);
         Task<IBusinessResult> DeleteById(Guid id);
+        Task<IBusinessResult> GetAll(ServiceRequest request, int page, int pageSize);
     }
     public class ServiceService : IServiceService
     {
@@ -44,6 +47,24 @@ namespace KoiOrderingSystemInJapan.Service
             catch (Exception ex)
             {
                 return new BusinessResult(Const.ERROR_EXCEPTION, ex.Message);
+            }
+        }
+
+        public async Task<IBusinessResult> GetAll(ServiceRequest request, int page, int pageSize)
+        {
+            var item = await _unitOfWork.Service.GetAllAsync(request, page, pageSize);
+            var result = new
+            {
+                list = item.Item1,
+                totalPages = item.Item2
+            };
+            if (result.list == null || !result.list.Any())
+            {
+                return new BusinessResult(Const.WARNING_NO_DATA_CODE, Const.WARNING_NO_DATA_MSG, result);
+            }
+            else
+            {
+                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result);
             }
         }
 

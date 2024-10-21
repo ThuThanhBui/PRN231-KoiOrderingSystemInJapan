@@ -13,6 +13,7 @@ namespace KoiOrderingSystemInJapan.Service
         Task<IBusinessResult> Update(Delivery user);
         Task<IBusinessResult> Save(Delivery user);
         Task<IBusinessResult> DeleteById(Guid id);
+        Task<IBusinessResult> SearchDelivery(string? deliveryName, string? code, string? location, int page = 1, int pageSize = 10);
     }
     public class DeliveryService : IDeliveryService
     {
@@ -34,7 +35,7 @@ namespace KoiOrderingSystemInJapan.Service
                 var delivery = await _unitOfWork.Delivery.GetByIdAsync(id);
                 if (delivery != null)
                 {
-                    var result = await _unitOfWork.Delivery.RemoveAsync(delivery);
+                    var result = await _unitOfWork.Delivery.Delete(delivery.Id);
                     if (result)
                     {
                         return new BusinessResult(Const.SUCCESS_DELETE_CODE, Const.SUCCESS_DELETE_MSG, result);
@@ -118,6 +119,22 @@ namespace KoiOrderingSystemInJapan.Service
             {
                 return new BusinessResult(Const.ERROR_EXCEPTION, ex.Message);
             }
+        }
+
+        public async Task<IBusinessResult> SearchDelivery(string? deliveryName, string? code, string? location , int page = 1, int pageSize = 10)
+        {
+            var result = await _unitOfWork.Delivery.SearchDelivery(deliveryName, code, location , page, pageSize);
+            var paginatedResult = new
+            {
+                Items = result.Item,
+                TotalPages = result.TotalPages,
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalItems = result.Item.Count() // use totalitems from your repository method
+            };
+
+            return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, paginatedResult);
+           
         }
 
         public Task<IBusinessResult> Update(Delivery user)

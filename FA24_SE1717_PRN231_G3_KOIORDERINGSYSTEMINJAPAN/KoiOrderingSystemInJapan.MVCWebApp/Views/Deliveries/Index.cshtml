@@ -8,6 +8,19 @@
 
 <p>
     <a asp-action="Create">Create New</a>
+</p><p>
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <input type="text" id="searchName" class="form-control" placeholder="Search by Delivery Name">
+        </div>
+        <div class="col-md-4">
+            <input type="text" id="searchCode" class="form-control" placeholder="Search by Code">
+        </div>
+        <div class="col-md-4">
+            <input type="text" id="searchLocation" class="form-control" placeholder="Search by Location" min="1">
+        </div>
+    </div>
+    <button type="button" class="btn btn-primary" onclick="searchData(1)">Search</button>
 </p>
 <table class="table">
     <thead>
@@ -33,21 +46,30 @@
     </tbody>
 </table>
 
+<div id="pagination" class="d-flex justify-content-center mt-3"></div>
+
 @section scripts {
     <script type="text/javascript">
         $(document).ready(function(){
-            loadDeliveries();
+            searchData();
         });
 
-        function loadDeliveries() {
+        function searchData(page = 1) {
+            var deliveryname = $("#searchName").val();
+            var code = $("#searchCode").val();
+            var location = $("#searchLocation").val();
+            var pagesize = 5;
+
             $.ajax({
-                url: "https://localhost:7298/api/Deliveries", // Change to your actual API endpoint
+                url: `https://localhost:7298/api/Deliveries/search?deliveryname=${deliveryname ? deliveryname : ""}&code=${code ?? ""}&location=${location ?? ""}&page=${page}&pageSize=${pagesize}`,
+
                 type: "GET",
                 contentType: "application/json;charset=utf-8",
                 dataType: "json",
                 success: function (result) {
-                    var html = '';
-                    $.each(result.data, function (key, item) {
+                    console.log(result)
+                    var html = "";
+                    $.each(result.data.items, function (key, item) {
                         html += '<tr>';
                         html += '<td>' + item.code + '</td>';
                         html += '<td>' + item.name + '</td>';
@@ -66,16 +88,27 @@
                             '<a href="/Deliveries/Details/' + item.id + '">Details</a> ' +
                             '<a href="/Deliveries/Edit/' + item.id + '">Edit</a> ' +
                             '<a href="/Deliveries/Delete/' + item.id + '">Delete</a>' +
-                            '</td>';
+                            '</td>'
 
                         html += '</tr>';
                     });
                     $('.tblDeliveries').html(html);
+                    createPagination(result.data.totalPages, page);
                 },
                 error: function (xhr, error) {
-                    alert(xhr.statusText);
+                    alert("Error: " + xhr.statusText);
                 }
             });
+        }
+
+        function createPagination(totalPages, currentPage) {
+            let paginationHtml = '';
+            for (let i = 1; i <= totalPages; i++) {
+                paginationHtml += `<li class="page-item ${i === currentPage ? 'active' : ''}">
+                                                    <a class="page-link" href="#" onclick="searchData(${i})">${i}</a>
+                                                   </li>`;
+            }
+            $('#pagination').html(`<ul class="pagination">${paginationHtml}</ul>`);
         }
     </script>
 }

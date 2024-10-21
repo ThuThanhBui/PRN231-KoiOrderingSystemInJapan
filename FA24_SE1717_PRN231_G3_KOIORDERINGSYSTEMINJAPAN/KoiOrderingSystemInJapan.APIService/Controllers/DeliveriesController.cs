@@ -57,5 +57,11 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
             return await _deliverySerivce.DeleteById(id);
         }
 
+        [HttpGet("search")]
+        public async Task<IBusinessResult> SearchDelivery([FromQuery] string? deliveryname, [FromQuery] string? code, [FromQuery] string? location, [FromQuery] int page, [FromQuery] int pageSize)
+        {
+            return await _deliverySerivce.SearchDelivery(deliveryname, code, location , page, pageSize);
+        }
+
     }
 }

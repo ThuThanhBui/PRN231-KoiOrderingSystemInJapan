@@ -10,11 +10,17 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
     public class BookingRequestsController : ControllerBase
     {
 
-        private readonly BookingRequestService _bookingRequestSerivce;
+        private readonly IBookingRequestService _bookingRequestSerivce;
 
         public BookingRequestsController()
         {
             _bookingRequestSerivce ??= new BookingRequestService();
+        }
+
+        [HttpGet]
+        public async Task<IBusinessResult> GetBookingRequests()
+        {
+            return await _bookingRequestSerivce.GetAll();
         }
 
         // GET: api/BookingRequests

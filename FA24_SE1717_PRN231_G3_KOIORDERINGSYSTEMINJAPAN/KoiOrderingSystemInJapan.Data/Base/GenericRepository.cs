@@ -25,15 +25,15 @@ namespace KoiOrderingSystemInJapan.Data.Base
 
         public List<T> GetAll()
         {
-            return _context.Set<T>().ToList();
+            return _context.Set<T>().AsNoTracking().ToList();
         }
         public async Task<List<T>> GetAllAsync()
         {
-            return await _context.Set<T>().ToListAsync();
+            return await _context.Set<T>().AsNoTracking().ToListAsync();
         }
         public async Task<List<T>> GetAllAsyncById(Expression<Func<T, bool>> predicate)
         {
-            return await _context.Set<T>().Where(predicate).ToListAsync();
+            return await _context.Set<T>().AsNoTracking().Where(predicate).ToListAsync();
         }
         public void Create(T entity)
         {

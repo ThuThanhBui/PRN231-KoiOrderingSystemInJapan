@@ -14,11 +14,18 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
 
         public BookingRequestRepository(KoiOrderingSystemInJapanContext context) => _context = context;
 
-        
+        public async Task<List<BookingRequest>> GetAllAsync()
+        {
+            return await _context.Set<BookingRequest>().AsNoTracking()
+                .Where(m => !m.IsDeleted)
+                .Include(m => m.Customer)
+                .Include(m => m.Travel)
+                .ToListAsync();
+        }
 
         public async Task<(List<BookingRequest>, int)> GetAllAsync(BookingRequestRequest query, int page, int pageSize)
         {
-            var queryable =_context.Set<BookingRequest>().AsQueryable();
+            var queryable =_context.Set<BookingRequest>().AsQueryable().AsNoTracking();
 
             if (!string.IsNullOrEmpty(query.Travel?.Name))
             {
@@ -85,16 +92,16 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
 
         public async Task<BookingRequest> GetByIdAsync(Guid id)
         {
-            return await _context.Set<BookingRequest>()
+            return await _context.Set<BookingRequest>().AsNoTracking()
                 .Where(m => !m.IsDeleted)
                 .Include(m => m.Customer) 
                 .Include(m => m.Travel)  
-                .FirstOrDefaultAsync(b => b.Id == id); 
+                .SingleOrDefaultAsync(b => b.Id == id); 
         }
 
         public async Task<List<BookingRequest>> GetBookingRequestsWithNoSale()
         {
-            return await _context.Set<BookingRequest>()
+            return await _context.Set<BookingRequest>().AsNoTracking()
                 .Where(m => !m.IsDeleted && m.Sale == null)
                 .Include(m => m.Customer)
                 .Include(m => m.Travel).ToListAsync();
