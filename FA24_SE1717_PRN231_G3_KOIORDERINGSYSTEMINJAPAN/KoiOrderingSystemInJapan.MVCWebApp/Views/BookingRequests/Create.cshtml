@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="CustomerId" class="control-label"></label>
@@ -75,16 +75,52 @@
                 <span asp-validation-for="Note" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="button" value="Create" class="btn btn-primary" id="submitBtn" />
             </div>
-        </form>
+        
     </div>
 </div>
 
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#submitBtn').click(function () {
+                var bookingRequest = {
+                    CustomerId: $('#CustomerId').val(),
+                    TravelId: $('#TravelId').val(),
+                    QuantityService: $('#QuantityService').val(),
+                    NumberOfPerson: $('#NumberOfPerson').val(),
+                    Status: $('#Status').val(),
+                    CreatedBy: $('#CreatedBy').val(),
+                    CreatedDate: $('#CreatedDate').val(),
+                    UpdatedBy: $('#UpdatedBy').val(),
+                    UpdatedDate: $('#UpdatedDate').val(),
+                    IsDeleted: $('#IsDeleted').is(':checked'),
+                    Note: $('#Note').val()
+                };
+
+                $.ajax({
+                    url: 'https://localhost:7298/api/BookingRequests',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(bookingRequest),
+                    success: function (result) {
+                        alert('Booking request created successfully!');
+                        window.location.href = '@Url.Action("Index")'; // Redirect to index page
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Error: ' + error);
+                    }
+                });
+            });
+        });
+    </script>
 }
