@@ -4,7 +4,7 @@
     ViewData["Title"] = "Travels";
 }
 
-<h1>Booking requests</h1>
+<h1>Travels</h1>
 
 <p>
     <a asp-action="Create" class="btn btn-dark">Tạo mới</a>
@@ -107,11 +107,11 @@
                         html += '<td>' + item.location + '</td>';
                         html += '<td>' + item.price + '</td>';
                         html += '<td scope="row">';
-                        html += '<a href="/Services/Edit/' + item.id + '" class="me-1" title="Edit">';
+                        html += '<a href="/Travels/Edit/' + item.id + '" class="me-1" title="Edit">';
                         html += '<i class="bi bi-pencil-fill" style="color: black;"></i></a>'; // Icon cho Edit, màu đen
-                        html += '<a href="/Services/Details/' + item.id + '" class="me-1" title="Details">';
+                        html += '<a href="/Travels/Details/' + item.id + '" class="me-1" title="Details">';
                         html += '<i class="bi bi-eye-fill" style="color: black;"></i></a>'; // Icon cho Details, màu đen
-                        html += '<a href="/Services/Delete/' + item.id + '" title="Delete">';
+                        html += '<a href="/Travels/Delete/' + item.id + '" title="Delete">';
                         html += '<i class="bi bi-trash-fill" style="color: black;"></i></a>'; // Icon cho Delete, màu đen
                         html += '</td>';
                         html += '</tr>';

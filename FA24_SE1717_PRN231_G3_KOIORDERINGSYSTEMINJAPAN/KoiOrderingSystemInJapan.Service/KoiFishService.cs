@@ -117,6 +117,7 @@ namespace KoiOrderingSystemInJapan.Service
                 }
                 else
                 {
+                    _unitOfWork.BookingRequest.Context().Entry(invoiceTmp).CurrentValues.SetValues(fish);
                     result = await _unitOfWork.KoiFish.UpdateAsync(fish);
                     if (result > 0)
                     {

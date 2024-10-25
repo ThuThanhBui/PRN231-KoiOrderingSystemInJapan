@@ -157,17 +157,13 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
                             var result = JsonConvert.DeserializeObject<BusinessResult>(content);
                             if (result != null && result.Status == Const.SUCCESS_CREATE_CODE)
                             {
-                                return View(result);
-                            }
-                            else
-                            {
-                                return View(fish);
+                                return RedirectToAction(nameof(Index));
                             }
                         }
                     }
                 }
             }
-            return RedirectToAction("Index");
+            return View(fish);
             #endregion
         }
         // GET: Koifishes/Edit/5
@@ -233,16 +229,14 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
                             var result = JsonConvert.DeserializeObject<BusinessResult>(content);
                             if (result != null && result.Status == Const.SUCCESS_UPDATE_CODE)
                             {
+                                return RedirectToAction(nameof(Index));
                             }
-                            else
-                            {
-                                return View(fish);
-                            }
+
                         }
                     }
                 }
             }
-            return RedirectToAction(nameof(IndexAsync));
+            return View(fish);
         }
         public async Task<IActionResult> Delete(Guid? id)
         {
