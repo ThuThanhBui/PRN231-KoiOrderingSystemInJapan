@@ -3,7 +3,9 @@ using KoiOrderingSystemInJapan.Data.Context;
 using KoiOrderingSystemInJapan.Data.Models;
 using KoiOrderingSystemInJapan.Data.Request.Sale;
 using KoiOrderingSystemInJapan.Data.Request.ServiceOrder;
+using KoiOrderingSystemInJapan.Data.Response;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace KoiOrderingSystemInJapan.Data.Repositories
 {
@@ -17,6 +19,24 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
             return await _context.ServiceOrders.Include(e => e.Invoice)
                 .Include(e => e.BookingRequest).ThenInclude(br => br.Customer)
                 .Include(e => e.BookingRequest).ThenInclude(br => br.Travel).ToListAsync();
+        }
+
+        public async Task<PagedResult<ServiceOrder>> GetPagedServiceOrders(int page, int pageSize)
+        {
+            var totalItems = await _context.ServiceOrders.CountAsync(); 
+            var data = await _context.ServiceOrders
+                                     //.OrderBy(s => s.CreatedDate) // Sắp xếp theo ngày tạo (hoặc field khác)
+                                     .Skip((page - 1) * pageSize) // Bỏ qua các bản ghi trước đó
+                                     .Take(pageSize) // Lấy đúng số lượng bản ghi
+                                     .ToListAsync(); // Thực thi truy vấn và lấy kết quả
+
+            return new PagedResult<ServiceOrder>
+            {
+                TotalItems = totalItems,
+                CurrentPage = page,
+                PageSize = pageSize,
+                Data = data
+            };
         }
 
         public async Task<(List<ServiceOrder>, int)> GetAllAsync(ServiceOrderRequest query, int page, int pageSize)

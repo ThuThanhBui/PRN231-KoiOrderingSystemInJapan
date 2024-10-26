@@ -1,41 +1,46 @@
-﻿using KoiOrderingSystemInJapan.Common;
+﻿using Azure;
+using KoiOrderingSystemInJapan.Common;
+using KoiOrderingSystemInJapan.Data.Context;
 using KoiOrderingSystemInJapan.Data.Models;
+using KoiOrderingSystemInJapan.Data.Response;
 using KoiOrderingSystemInJapan.Service.Base;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 
 namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
 {
     public class ServiceOrdersController : Controller
     {
-        private readonly HttpClient _http;
-
         public ServiceOrdersController()
         {
         }
 
         // GET: ServiceOrders
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
         {
-            //using (var httpClient = new HttpClient())
-            //{
-            //    using (var response = await httpClient.GetAsync(Const.APIEndPoint + "ServiceOrders"))
-            //    {
-            //        if (response.IsSuccessStatusCode)
-            //        {
-            //            var content = await response.Content.ReadAsStringAsync();
-            //            var result = JsonConvert.DeserializeObject<BusinessResult>(content);
-            //            if (result != null)
-            //            {
-            //                var data = JsonConvert.DeserializeObject<List<ServiceOrder>>(result.Data.ToString());
-            //                return View(data);
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync(Const.APIEndPoint + "ServiceOrders/" + page + "&" + pageSize))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var content = await response.Content.ReadAsStringAsync();
+                        var result = JsonConvert.DeserializeObject<BusinessResult>(content);
+                        if (result != null)
+                        {
+                            var data = JsonConvert.DeserializeObject<PagedResult<ServiceOrder>>(result.Data.ToString());
 
-            //            }
-            //        }
-            //    }
-            //}
-            //return View(new List<ServiceOrder>());
-            return View();
+                            ViewBag.CurrentPage = data.CurrentPage;
+                            ViewBag.TotalPages = (int)Math.Ceiling((double)data.TotalItems / data.PageSize);
+
+                            return View(data);
+
+                        }
+                    }
+                }
+            }
+            return View(new List<ServiceOrder>());
         }
 
         // GET: ServiceOrders/Details/5
@@ -180,4 +185,5 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
         //}
 
     }
+
 }
