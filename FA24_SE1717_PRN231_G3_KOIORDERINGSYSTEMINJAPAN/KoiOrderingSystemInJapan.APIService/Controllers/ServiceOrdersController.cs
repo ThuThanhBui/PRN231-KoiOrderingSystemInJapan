@@ -20,6 +20,12 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
         }
 
         // GET: api/ServiceOrders
+        [HttpGet("{page}&{pageSize}")]
+        public async Task<IBusinessResult> GetPagedServiceOrders(int page, int pageSize)
+        {
+            return await _serviceOrderSerivce.GetPagedServiceOrders(page, pageSize);
+        }
+
         [HttpPost("filter")]
         public async Task<IBusinessResult> GetServiceOrders([FromBody]ServiceOrderRequest request)
         {

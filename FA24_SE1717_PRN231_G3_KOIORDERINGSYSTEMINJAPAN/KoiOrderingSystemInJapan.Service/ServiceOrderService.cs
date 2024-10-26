@@ -1,17 +1,21 @@
-﻿using KoiOrderingSystemInJapan.Common;
+﻿using Azure.Core;
+using KoiOrderingSystemInJapan.Common;
 using KoiOrderingSystemInJapan.Data;
 using KoiOrderingSystemInJapan.Data.Models;
 using KoiOrderingSystemInJapan.Data.Request.Payments;
 using KoiOrderingSystemInJapan.Data.Request.Sale;
 using KoiOrderingSystemInJapan.Data.Request.ServiceOrder;
 using KoiOrderingSystemInJapan.Data.Request.ServiceOrders;
+using KoiOrderingSystemInJapan.Data.Response;
 using KoiOrderingSystemInJapan.Service.Base;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace KoiOrderingSystemInJapan.Service
 {
     public interface IServiceOrderService
     {
         Task<IBusinessResult> GetAll(ServiceOrderRequest request, int page, int pageSize);
+        Task<IBusinessResult> GetPagedServiceOrders(int page, int pageSize);
         Task<IBusinessResult> GetById(Guid id);
         Task<IBusinessResult> Create(ServiceOrder serviceOrder);
         Task<IBusinessResult> Update(ServiceOrder serviceOrder);
@@ -77,6 +81,19 @@ namespace KoiOrderingSystemInJapan.Service
             else
             {
                 return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, result);
+            }
+        }
+
+        public async Task<IBusinessResult> GetPagedServiceOrders(int page, int pageSize)
+        {
+            var serviceOrder = await _unitOfWork.ServiceOrder.GetPagedServiceOrders(page, pageSize);
+            if (serviceOrder == null)
+            {
+                return new BusinessResult(Const.FAIL_READ_CODE, Const.FAIL_READ_MSG, new PagedResult<ServiceOrder> { Data = new List<ServiceOrder>() });
+            }
+            else
+            {
+                return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, serviceOrder);
             }
         }
 
@@ -209,5 +226,7 @@ namespace KoiOrderingSystemInJapan.Service
         {
             throw new NotImplementedException();
         }
+
+        
     }
 }
