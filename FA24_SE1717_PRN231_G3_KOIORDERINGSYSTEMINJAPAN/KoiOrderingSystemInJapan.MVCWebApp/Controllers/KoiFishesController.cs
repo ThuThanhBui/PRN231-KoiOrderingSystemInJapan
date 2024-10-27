@@ -142,7 +142,7 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Dob, CategoryId, Price, Description, Origin, Status, DateSold, Gender, CreatedBy, CreatedDate, UpdatedBy, UpdateedDate, IsDeleted")] KoiFish fish)
+        public async Task<IActionResult> Create(KoiFish fish)
         {
             #region Save
             if (ModelState.IsValid)
@@ -209,7 +209,7 @@ namespace KoiOrderingSystemInJapan.MVCWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Dob, CategoryId, Price, Description, Origin, Status, DateSold, Gender, CreatedBy, CreatedDate, UpdatedBy, UpdateedDate, IsDeleted")] KoiFish fish)
+        public async Task<IActionResult> Edit(Guid id, KoiFish fish)
         {
             if (id != fish.Id)
             {
