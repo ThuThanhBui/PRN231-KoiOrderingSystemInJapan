@@ -368,17 +368,25 @@ namespace KoiOrderingSystemInJapan.Data
             {
                 var fakers = new Faker<Invoice>()
                     .RuleFor(a => a.Id, f => Guid.NewGuid())
-                    .RuleFor(a => a.PaymentAmount, f => f.Random.Decimal(100, 10000))
-                    .RuleFor(a => a.PaymentDate, f => f.Date.Between(new DateTime(2024, 1, 1), DateTime.Now))
-                    .RuleFor(s => s.CreatedBy, f => "tsql@gmail.com")
-                    .RuleFor(s => s.CreatedDate, f => f.Date.Past(2))
-                    .RuleFor(s => s.UpdatedBy, f => "tsql@gmail.com")
-                    .RuleFor(s => s.UpdatedDate, f => f.Date.Recent())
-                    .RuleFor(s => s.IsDeleted, f => false);
+                    .RuleFor(a => a.PaymentAmount, f => f.Random.Decimal(100, 10000)) // Random amount between 100 and 10,000
+                    .RuleFor(a => a.PaymentDate, f => f.Date.Between(new DateTime(2024, 1, 1), DateTime.Now)) // Date between Jan 1, 2024, and today
+                    .RuleFor(s => s.InvoiceNumber, f => f.Random.Replace("INV-####")) // Invoice number pattern
+                    .RuleFor(s => s.IssueDate, f => f.Date.Past(1)) // Issue date within the past year
+                    .RuleFor(s => s.Status, f => f.PickRandom(new[] { "Paid", "Unpaid", "Overdue" })) // Random status
+                    .RuleFor(s => s.TaxAmount, (f, a) => a.PaymentAmount * f.Random.Decimal(0.05M, 0.2M)) // Tax as 5-20% of payment
+                    .RuleFor(s => s.DiscountAmount, (f, a) => a.PaymentAmount * f.Random.Decimal(0.0M, 0.15M)) // Discount up to 15% of payment
+                    .RuleFor(s => s.PaymentMethod, f => f.PickRandom(new[] { "Credit Card", "Bank Transfer", "PayPal" })) // Random payment method
+                    .RuleFor(s => s.Notes, f => f.Lorem.Sentence()) // Random note
+                    .RuleFor(s => s.CreatedBy, f => "system")
+                    .RuleFor(s => s.CreatedDate, f => f.Date.Past(2)) // Created within the past 2 years
+                    .RuleFor(s => s.UpdatedBy, f => "system")
+                    .RuleFor(s => s.UpdatedDate, f => f.Date.Recent()) // Recently updated
+                    .RuleFor(s => s.IsDeleted, f => f.Random.Bool(0.05f)); // 5% chance of being marked as deleted
+
                 var list = fakers.Generate(count);
 
-                context.Set<Invoice>().AddRange(list); // Thêm vào cơ sở dữ liệu
-                context.SaveChanges(); // Lưu thay đổi
+                context.Set<Invoice>().AddRange(list); // Add to database
+                context.SaveChanges(); // Save changes
             }
         }
 
@@ -413,31 +421,36 @@ namespace KoiOrderingSystemInJapan.Data
 
         public static void GenerateKoiOrder(DbContext context, int count)
         {
-
             if (!context.Set<KoiOrder>().Any())
             {
-                // Lấy danh sách các Id đã tồn tại
+                // Retrieve list of existing Customer and Invoice IDs
                 var cIds = context.Set<User>().Where(u => u.Role == ConstEnum.Role.Customer).Select(u => u.Id).ToList();
-
-                // Lấy danh sách các Id đã tồn tại
                 var iIds = context.Set<Invoice>().Select(u => u.Id).ToList();
 
                 var fakers = new Faker<KoiOrder>()
                     .RuleFor(a => a.Id, f => Guid.NewGuid())
                     .RuleFor(a => a.CustomerId, f => f.PickRandom(cIds))
                     .RuleFor(a => a.InvoiceId, f => f.PickRandom(iIds))
-                    .RuleFor(a => a.Quantity, f => f.Random.Int(1, 10))
-                    .RuleFor(a => a.TotalPrice, f => f.Random.Decimal(100, 10000))
-                    .RuleFor(s => s.CreatedBy, f => "tsql@gmail.com")
-                    .RuleFor(s => s.CreatedDate, f => f.Date.Past(2))
-                    .RuleFor(s => s.UpdatedBy, f => "tsql@gmail.com")
-                    .RuleFor(s => s.UpdatedDate, f => f.Date.Recent())
-                    .RuleFor(s => s.IsDeleted, f => false)
-                    .RuleFor(s => s.Note, f => f.Lorem.Sentence(1));
+                    .RuleFor(a => a.Quantity, f => f.Random.Int(1, 20)) // Random quantity between 1 and 20
+                    .RuleFor(a => a.TotalPrice, (f, a) => a.Quantity * f.Random.Decimal(50, 500)) // Calculate based on quantity
+                    .RuleFor(s => s.OrderDate, f => f.Date.Past(1)) // Order date within the past year
+                    .RuleFor(s => s.DeliveryDate, (f, a) => a.OrderDate.AddDays(f.Random.Int(1, 10))) // Delivery date a few days after order date
+                    .RuleFor(s => s.Status, f => f.PickRandom(new[] { "Pending", "Shipped", "Delivered", "Cancelled" })) // Random status
+                    .RuleFor(s => s.ShippingAddress, f => f.Address.FullAddress()) // Generate a full address
+                    .RuleFor(s => s.BillingAddress, f => f.Address.FullAddress()) // Separate billing address
+                    .RuleFor(s => s.PaymentMethod, f => f.PickRandom(new[] { "Credit Card", "Bank Transfer", "Cash on Delivery" })) // Random payment method
+                    .RuleFor(s => s.IsGift, f => f.Random.Bool()) // Randomly decide if it’s a gift
+                    .RuleFor(s => s.Note, f => f.Lorem.Sentence()) // A random note for the order
+                    .RuleFor(s => s.CreatedBy, f => "system")
+                    .RuleFor(s => s.CreatedDate, f => f.Date.Past(2)) // Created within the last 2 years
+                    .RuleFor(s => s.UpdatedBy, f => "system")
+                    .RuleFor(s => s.UpdatedDate, f => f.Date.Recent()) // Recently updated date
+                    .RuleFor(s => s.IsDeleted, f => f.Random.Bool(0.1f)); // 10% chance of being marked as deleted
+
                 var list = fakers.Generate(count);
 
-                context.Set<KoiOrder>().AddRange(list); // Thêm vào cơ sở dữ liệu
-                context.SaveChanges(); // Lưu thay đổi
+                context.Set<KoiOrder>().AddRange(list); // Add to database
+                context.SaveChanges(); // Save changes
             }
         }
 

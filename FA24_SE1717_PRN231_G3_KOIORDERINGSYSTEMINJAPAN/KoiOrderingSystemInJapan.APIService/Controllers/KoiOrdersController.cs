@@ -58,7 +58,7 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
             return await _koiOrderService.CreatePayment(request);
         }
         [HttpPost("update_koiOrder")]
-        public async Task<IBusinessResult> UpdateKoiOrder(RequestUpdateKoiOrderModel model)
+        public async Task<IBusinessResult> UpdateKoiOrder(KoiOrder model)
         {
             return await _koiOrderService.UpdateOrder(model);
         }
@@ -66,6 +66,11 @@ namespace KoiOrderingSystemInJapan.APIService.Controllers
         public async Task<IBusinessResult> DeleteInvoice(Guid id)
         {
             return await _koiOrderService.DeleteById(id);
+        }
+        [HttpDelete("RemoveOrderDetail/{id}")]
+        public async Task<IBusinessResult> DeleteOrderDetail(Guid id)
+        {
+            return await _koiOrderService.DeleteOrderDetail(id);
         }
 
     }

@@ -1,108 +1,156 @@
 ﻿@model Guid
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Order Details";
 }
-<h1>Details</h1>
 
-<div>
-    <h4>KoiOrder</h4>
-    <hr />
-    <div>
-        <article class="card">
-            <header class="card-header">My Orders / Tracking</header>
-            <div class="card-body">
-                <h6 class="orderId"></h6>
-                <article class="card">
-                    <div class="card-body row delivery_detail">
-                        @* <div class="col">
-                            <strong>Estimated Delivery time:</strong>
-                            <br>29 Nov 2019
+<div class="container py-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Order Details</h5>
+            <span class="badge bg-light text-primary order-status">Status</span>
+        </div>
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h6 class="text-muted">Order Information</h6>
+                    <p class="mb-1">Order ID: <span class="order-id fw-bold"></span></p>
+                    <p class="mb-1">Order Date: <span class="order-date"></span></p>
+                    <p class="mb-1">Total Amount: <span class="order-total fw-bold"></span></p>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="text-muted">Customer Information</h6>
+                    <p class="mb-1">Shipping Address: <span class="shipping-address"></span></p>
+                    <p class="mb-1">Billing Address: <span class="billing-address"></span></p>
+                    <p class="mb-1">Payment Method: <span class="payment-method"></span></p>
+                </div>
+            </div>
+
+            <div class="card mb-4 bg-light">
+                <div class="card-body">
+                    <h6 class="card-title">Delivery Information</h6>
+                    <div class="row delivery-details">
+                        <div class="col-md-3">
+                            <small class="text-muted d-block">Estimated Delivery</small>
+                            <span class="delivery-date"></span>
                         </div>
-                        <div class="col">
-                            <strong>Shipping BY:</strong>
-                            <br> BLUEDART, | <i class="fa fa-phone"></i> +1598675986
+                        <div class="col-md-3">
+                            <small class="text-muted d-block">Shipping By</small>
+                            <span class="shipper-info"></span>
                         </div>
-                        <div class="col">
-                            <strong>Status:</strong>
-                            <br>Picked by the courier
+                        <div class="col-md-3">
+                            <small class="text-muted d-block">Tracking Number</small>
+                            <span class="tracking-number"></span>
                         </div>
-                        <div class="col">
-                            <strong>Tracking #:</strong>
-                            <br> BD045903594059
-                        </div> *@
+                        <div class="col-md-3">
+                            <small class="text-muted d-block">Status</small>
+                            <span class="delivery-status"></span>
+                        </div>
                     </div>
-                </article>
-                <hr>
-                <ul class="row list-unstyled list-item-detail">
-                    
-                </ul>
+                </div>
+            </div>
 
-                <hr>
+            <h6 class="mb-3">Order Items</h6>
+            <div class="row order-items">
+            </div>
 
-                <a asp-action="Index" class="btn btn-warning" data-abc="true">
-                    <i class="fa fa-chevron-left"></i> Back to orders
+            <div class="mt-4">
+                <a asp-action="Index" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Orders
                 </a>
             </div>
-        </article>
+        </div>
     </div>
-
 </div>
-@section scripts {
 
+@section scripts {
     <script>
         $(document).ready(function () {
-            getData();
-        })
+            loadOrderDetails();
+        });
 
-        function getData() {
+        function loadOrderDetails() {
             $.ajax({
-                url: `https://localhost:7298/api/KoiOrders/${'@Model'}`,
+                url: `https://localhost:7298/api/KoiOrders/${"@Model"}`,
                 type: "GET",
-                contentType: "application/json;charset=utf-8",
-                dataType: "json",
-                success: function (result) {
-                    alert("Get detail success");
-
-                    console.log(result.data);
-                    var html = "";
-                    var deliveryDetail = "";
-                    deliveryDetail += ` <div class="col">
-                                    <strong>Estimated Delivery time:</strong>
-                                                    <br>${result.data.deliveries.createdDate}
-                                </div>
-                                <div class="col">
-                                    <strong>Shipping BY:</strong>
-                                                    <br> ${result.data.deliveries.name}, | <i class="fa fa-phone"></i> ${result.data.deliveries.phone}
-                                </div>
-                                <div class="col">
-                                    <strong>Status:</strong>
-                                    <br>Picked by the courier
-                                </div>
-                                <div class="col">
-                                    <strong>Tracking #:</strong>
-                                                    <br> ${result.data.deliveries.code}
-                                </div>`
-                    $.each(result.data.orderDetails, function (key, item) {
-                        html += '<li class="col-md-4 mb-3">';
-                        html += '<figure class="itemside d-flex">';
-                        html += '<div class="aside me-3">';
-                        html += `<img src="${item.koiFish.picture}" class="img-fluid border" style="max-width: 20vw;">`;
-                        html += '</div>';
-                        html += '<figcaption class="info align-self-center">';
-                        html += `<p class="title mb-1">${item.koiFish.category.name}</p>`;
-                        html += `<span class="text-muted">$${item.price}</span>`;
-                        html += '</figcaption>';
-                        html += '</figure>';
-                        html += '</li>';
-                    })
-                    $(".list-item-detail").html(html);
-                    $(".delivery_detail").html(deliveryDetail);
+                contentType: "application/json",
+                success: function (response) {
+                    console.log(response.data)
+                    if (response.data) {
+                        updateOrderSummary(response.data);
+                        updateDeliveryDetails(response.data);
+                        updateOrderItems(response.data.orderDetails);
+                    }
                 },
-                error: function (result) {
-                    alert("Get details fail")
+                error: function (error) {
+                    console.error('Error fetching order details:', error);
                 }
-            })
+            });
+        }
+
+        function updateOrderSummary(order) {
+            $('.order-id').text(order.id);
+            $('.order-date').text(formatDate(order.orderDate));
+            $('.order-total').text(formatCurrency(order.totalPrice));
+            $('.order-status').text(order.status);
+            $('.shipping-address').text(order.shippingAddress);
+            $('.billing-address').text(order.billingAddress);
+            $('.payment-method').text(order.paymentMethod);
+        }
+
+        function updateDeliveryDetails(delivery) {
+            if (delivery) {
+                $('.delivery-date').text(formatDate(delivery.deliveryDate));
+                $('.shipper-info').html(`Not yet<br><small>Not yet</small>`);
+                $('.tracking-number').text(delivery.id);
+                $('.delivery-status').text(delivery.status || 'In Transit');
+            }
+        }
+
+        function updateOrderItems(items) {
+            if (!items || !items.length) {
+                $('.order-items').html('<p class="text-muted">No items found in this order.</p>');
+                return;
+            }
+
+            const itemsHtml = items.map(item => `
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="card h-100">
+                                <img src="${item.koiFish.picture}"
+                                     class="card-img-top order-item-image"
+                                     alt="${item.koiFish.category.name}"
+                                     onerror="this.src='/images/placeholder.jpg'">
+                                <div class="card-body">
+                                    <h6 class="card-title">${item.koiFish.category.name}</h6>
+                                    <p class="card-text">
+                                        <small class="text-muted">Price:</small>
+                                        <span class="fw-bold">${formatCurrency(item.price)}</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+
+            $('.order-items').html(itemsHtml);
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            return new Date(dateString).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function formatCurrency(amount) {
+            if (!amount) return '$0.00';
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+            }).format(amount);
         }
 
     </script>

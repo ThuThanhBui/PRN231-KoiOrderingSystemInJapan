@@ -26,7 +26,7 @@
     </div>
     <button type="button" class="btn btn-primary" onclick="getData()">Search</button>
 </p>
-<table class="table table-hover">
+<table class="table">
     <thead>
         <tr>
             <th scope="col">
@@ -39,19 +39,34 @@
                 CreatedBy
             </th>
             <th scope="col">
-                CreatedDate
-            </th>
-            <th scope="col">
                 UpdatedBy
             </th>
             <th scope="col">
-                UpdatedDate
+                Discount Amount
+            </th>
+            <th scope="col">
+                Due Date
+            </th>
+            <th scope="col">
+                Invoice Number
+            </th>
+            <th scope="col">
+                Issue Date
+            </th>
+            <th scope="col">
+                Payment Method
+            </th>
+            <th scope="col">
+                Tax Amount
+            </th>
+            <th scope="col">
+                Status
             </th>
             <th scope="col">
                 IsDeleted
             </th>
             <th scope="col">
-                Note
+                Notes
             </th>
             <th scope="col">
                 Details
@@ -86,15 +101,20 @@
                     $.each(result.data.items, function (key, item) {
                         html += '<tr>';
                         html += '<td>' + item.paymentAmount + '</td>';
-                        html += '<td>' + item.paymentDate + '</td>';
+                        html += '<td>' + new Date(item.paymentDate).toLocaleDateString() + '</td>';
                         html += '<td>' + item.createdBy + '</td>';
-                        html += '<td>' + item.createdDate + '</td>';
                         html += '<td>' + item.updatedBy + '</td>';
-                        html += '<td>' + item.updatedDate + '</td>';
-                        html += '<td>' + item.isDeleted + '</td>';
-                        html += '<td>' + item.note + '</td>';
-                        html += '<td>' + '<a href="/Invoices/Details/' + item.id + '">Details</a>' + '</td>';
-                        html += '<td>' + '<a href="/Invoices/Delete/' + item.id + '">Delete</a>' + '</td>';
+                        html += '<td>' + item.discountAmount + '</td>';
+                        html += '<td>' + new Date(item.dueDate).toLocaleDateString() + '</td>';
+                        html += '<td>' + item.invoiceNumber + '</td>';
+                        html += '<td>' + new Date(item.issueDate).toLocaleDateString() + '</td>';
+                        html += '<td>' + item.paymentMethod + '</td>';
+                        html += '<td>' + item.taxAmount + '</td>';
+                        html += '<td>' + (item.status ? 'Paid' : 'Unpaid') + '</td>';
+                        html += '<td>' + (item.isDeleted ? 'Yes' : 'No') + '</td>';
+                        html += '<td>' + item.notes + '</td>';
+                        html += '<td><a class="btn btn-info btn-sm" href="/Invoices/Details/' + item.id + '">Details</a></td>';
+                        html += '<td><a class="btn btn-danger btn-sm" href="/Invoices/Delete/' + item.id + '">Delete</a></td>';
                         html += '</tr>';
                     });
                     $(".tblInvoice").html(html);
