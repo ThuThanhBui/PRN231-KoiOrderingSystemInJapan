@@ -1,55 +1,90 @@
 ﻿@model Guid
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Invoice Details";
 }
 
-<h1>Details</h1>
+<h1>Invoice Details</h1>
 
-<div>
-    <h4>Invoice</h4>
+<div class="card p-4 mb-4">
+    <h4>Invoice Information</h4>
     <hr />
     <div class="tblItem"></div>
 </div>
+
 <div>
-    <a asp-action="Edit" asp-route-id="@Model">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model" class="btn btn-primary">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary ml-2">Back to List</a>
 </div>
 
 @section scripts {
     <script type="text/javascript">
         $(document).ready(function () {
             getData();
-        })
+        });
+
         function getData() {
             $.ajax({
-                url: 'https://localhost:7298/api/Invoices/{@Model}',
+                url: `https://localhost:7298/api/Invoices/${"@Model"}`,
                 type: "GET",
                 contentType: "application/json;charset=utf-8",
                 dataType: "json",
                 success: function (result) {
-                    console.log(result);
-                    var html = '';
-                    html += '<dl class="row" >'
-                    html += '<dt class = "col-sm-2">Id</dt>'
-                    html += '<dd class = "col-sm-10">' + result.data.id + '</dd>'
-                    html += '<dt class = "col-sm-2">Payment Amount</dt>'
-                    html += '<dd class = "col-sm-10">' + result.data.paymentAmount + '</dd>'
-                    html += '<dt class = "col-sm-2">Payment Date</dt>'
-                    html += '<dd class = "col-sm-10">' + result.data.paymentDate + '</dd>'
-                    html += '<dt class = "col-sm-2">Created By</dt>'
-                    html += '<dd class = "col-sm-10">' + result.data.createdBy + '</dd>'
-                    html += '<dt class = "col-sm-2">Created Date</dt>'
-                    html += '<dd class = "col-sm-10">' + result.data.createdDate + '</dd>'
-                    html += '<dt class = "col-sm-2">Updated By</dt>'
-                    html += '<dd class = "col-sm-10">' + result.data.updatedBy + '</dd>'
-                    html += '<dt class = "col-sm-2">Updated Date</dt>'
-                    html += '<dd class = "col-sm-10">' + result.data.updatedDate + '</dd>'
-                    html += '<dt class = "col-sm-2">Is Deleted</dt>'
-                    html += '<dd class = "col-sm-10">' + result.data.isDeleted + '</dd>'
-                    $('.tblItem').html(html);
+                    var data = result.data;
+                    var html = `
+                                <dl class="row">
+                                    <dt class="col-sm-3">Invoice Number</dt>
+                                    <dd class="col-sm-9">${data.invoiceNumber ?? 'N/A'}</dd>
+
+                                    <dt class="col-sm-3">Payment Amount</dt>
+                                    <dd class="col-sm-9">${data.paymentAmount ?? 'N/A'}</dd>
+
+                                    <dt class="col-sm-3">Tax Amount</dt>
+                                    <dd class="col-sm-9">${data.taxAmount ?? 'N/A'}</dd>
+
+                                    <dt class="col-sm-3">Discount Amount</dt>
+                                    <dd class="col-sm-9">${data.discountAmount ?? 'N/A'}</dd>
+
+                                    <dt class="col-sm-3">Payment Date</dt>
+                                    <dd class="col-sm-9">${data.paymentDate ?? 'N/A'}</dd>
+
+                                    <dt class="col-sm-3">Issue Date</dt>
+                                    <dd class="col-sm-9">${data.issueDate ?? 'N/A'}</dd>
+
+                                    <dt class="col-sm-3">Due Date</dt>
+                                    <dd class="col-sm-9">${data.dueDate ?? 'N/A'}</dd>
+
+                                    <dt class="col-sm-3">Status</dt>
+                                    <dd class="col-sm-9">${data.status ?? 'N/A'}</dd>
+
+                                    <dt class="col-sm-3">Payment Method</dt>
+                                    <dd class="col-sm-9">${data.paymentMethod ?? 'N/A'}</dd>
+
+                                    <dt class="col-sm-3">Notes</dt>
+                                    <dd class="col-sm-9">${data.notes ?? 'N/A'}</dd>
+
+                                    <dt class="col-sm-3">Created By</dt>
+                                    <dd class="col-sm-9">${data.createdBy ?? 'N/A'}</dd>
+
+                                    <dt class="col-sm-3">Created Date</dt>
+                                    <dd class="col-sm-9">${data.createdDate ?? 'N/A'}</dd>
+
+                                    <dt class="col-sm-3">Updated By</dt>
+                                    <dd class="col-sm-9">${data.updatedBy ?? 'N/A'}</dd>
+
+                                    <dt class="col-sm-3">Updated Date</dt>
+                                    <dd class="col-sm-9">${data.updatedDate ?? 'N/A'}</dd>
+
+                                    <dt class="col-sm-3">Is Deleted</dt>
+                                    <dd class="col-sm-9">${data.isDeleted ? 'Yes' : 'No'}</dd>
+                                </dl>
+                            `;
+                    $(".tblItem").html(html);
+                },
+                error: function () {
+                    $(".tblItem").html('<p class="text-danger">Error loading invoice details.</p>');
                 }
-            })
+            });
         }
     </script>
 }
