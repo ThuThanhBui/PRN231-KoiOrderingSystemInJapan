@@ -27,7 +27,17 @@
             <th scope="col">Invoice Id</th>
             <th scope="col">Quantity</th>
             <th scope="col">Total Price</th>
-            <th scope="col"></th>
+            <th scope="col">Note</th>
+            <th scope="col">Billing Address</th>
+            <th scope="col">Delivery Date</th>
+            <th scope="col">Is Gift</th>
+            <th scope="col">Order Date</th>
+            <th scope="col">Payment Method</th>
+            <th scope="col">Shipping Address</th>
+            <th scope="col">Status</th>
+            <th scope="col">Details</th>
+            <th scope="col">Update</th>
+            <th scope="col">Remove</th>
         </tr>
     </thead>
     <tbody class="tblKoiOrders">
@@ -45,8 +55,45 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="customer_id" class="form-label">Customer Id</label>
-                        <input type="text" class="form-control" id="customer_id" placeholder="Enter customer name" />
+                        <label for="customer_id" class="form-label">Customer: </label>
+                        <select id="customer_id"></select>
+                        <br/>
+
+                        <label for="billingAddress" class="form-label">Billing Address</label>
+                        <input type="text" class="form-control" id="billingAddress" placeholder="Billing Address" />
+                        <br />
+
+                        <label for="deliveryDate" class="form-label">Delivery Date</label>
+                        <input type="datetime-local" class="form-control" id="deliveryDate"  />
+                        <br />
+
+                        <label for="isGift" class="form-label">Is Gift </label>
+                        <select id="isGift">
+                            <option value="false">false</option>
+                            <option value="true">true</option>
+                        </select>
+                        <br />
+
+                        <label for="orderDate" class="form-label">Order Date</label>
+                        <input type="datetime-local" class="form-control" id="orderDate" />
+                        <br />
+
+                        <label for="paymentMethod" class="form-label">Payment Method </label>
+                        <select id="paymentMethod">
+                            <option value="Cash on Delivery">Cash On Delivery</option>
+                            <option value="Bank Transfer">Bank Transfer</option>
+                            <option value="Credit Card">Credit Card</option>
+                        </select>
+                        <br />
+
+                        <label for="shippingAddress" class="form-label">Shipping Address</label>
+                        <input type="text" class="form-control" id="shippingAddress" placeholder="Shipping Address" />
+                        <br />
+
+                        <label for="note" class="form-label">Note</label>
+                        <input type="text" class="form-control" id="note" placeholder="Note" />
+
+                        
                     </div>
                     <h6>Order Details</h6>
                     <div id="orderDetails">
@@ -55,7 +102,7 @@
                     <button type="button" class="btn btn-secondary mt-2" onclick="addOrderDetail()">Add Order Detail</button>
                 </div>
                 <div class="modal-footer">
-                    <button id="btSave" type="button" class="btn btn-primary" onclick="saveOrder()">Save</button>
+                    
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             }
@@ -67,26 +114,177 @@
     <script type="text/javascript">
         $(document).ready(function () {
             searchData();
+            getAllCustomer();
         });
 
-       
 
+        function formatDateForInput(dateString) {
+            const date = new Date(dateString);
+            return date.toISOString().slice(0, 16);
+        }
         function addKoiOrder() {
             $("#koiOrderModalLabel").html("Add New Order");
+            $(".modal-footer").html('<button id="btSave" type="button" class="btn btn-primary" onclick="saveOrder()">Save</button>')
             $('#koiOrderModal').modal('show');
             $('#orderDetails').empty();
             addOrderDetail();
         }
+        function updateKoiOrder(koiOrderId, customerName) {
+            $("#koiOrderModalLabel").html("Update Order");
+            $('#koiOrderModal').modal('show');
+            $('#orderDetails').empty();
+            $.ajax({
+                url: `https://localhost:7298/api/KoiOrders/get_with_detail/${koiOrderId}`,
+                type: "GET",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    var koiOrder = result.data;
+                    $("#customer_id").val(koiOrder.customerId)
+                    $('#billingAddress').val(koiOrder.billingAddress)
+                    $('#deliveryDate').val(formatDateForInput(koiOrder.deliveryDate));
+                    $('#isGift').val(koiOrder.isGift ? "true" : "false")
+                    $('#orderDate').val(formatDateForInput(koiOrder.orderDate));
+                    $('#paymentMethod').val(koiOrder.paymentMethod)
+                    $('#shippingAddress').val(koiOrder.shippingAddress);
+                    $('#note').val(koiOrder.note)
+                    $(".modal-footer").html(`<button id="btSave" type="button" class="btn btn-primary" onclick="updateOrder('${koiOrder.id}', '${koiOrder.invoiceId}')">Update</button>`)
+
+                    var detailHtml = ""
+                    $.each(koiOrder.orderDetails, function (key, item) {
+                        console.log(item)
+                        detailHtml += `
+                                                <div class="order-detail mb-3" value='${item.id}' id="detail-${key}">
+                                            <div class="row">
+                                                <div class="col">
+                                                            <label for="koi_fish_id_${key}" class="form-label">Koi Fish Id</label>
+                                                                     <select id="koi_fish_id_${key}"></select>
+                                                </div>
+                                                <div class="col">
+                                                            <label for="price_${key}" class="form-label">Price</label>
+                                                            <input value=${item.price} type="number" class="form-control" id="price_${key}" placeholder="Enter price" min="0" step="0.01">
+                                                </div>
+                                                <div class="col-auto d-flex align-items-end">
+                                                                    <button type="button" class="btn btn-danger mb-3" onclick="removeUpdateOrderDetail(${key},'${item.id}')">Remove</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `;
+                        getAllKoiFish(key, item.koiFish.id);
+                    })
+                    $('#orderDetails').append(detailHtml);
+                },
+                error: function (xhr, error) {
+                    alert("Error: " + xhr.statusText);
+                }
+            });
+        }
+        function updateOrder(koiOrderId, invoiceId) {
+            const customerId = $('#customer_id').val();
+            const billingAddress = $('#billingAddress').val();
+            const deliveryDate = $('#deliveryDate').val();
+            const isGift = $('#isGift').val();
+            const orderDate = $('#orderDate').val();
+            const paymentMethod = $('#paymentMethod').val();
+            const shippingAddress = $('#shippingAddress').val();
+            const note = $('#note').val();
+            const orderDetails = [];
+            let totalPrice = 0;
+            let orderQuantity = 0;
+            $(".order-detail").each(function () {
+                orderQuantity++;
+                const detailId = $(this).attr('id').split('-')[1];
+                console.log(detailId)
+                const value = $(this).attr('value');
+                console.log("value" +value)
+                totalPrice = totalPrice + Number.parseInt($(`#price_${detailId}`).val());
+                orderDetails.push({
+                    id: value,
+                    koiFishId: $(`#koi_fish_id_${detailId}`).val(),
+                    price: $(`#price_${detailId}`).val()
+                })
+            })
+
+        const order = {
+            id: koiOrderId,
+            invoiceId: invoiceId,
+            customerId: customerId,
+            quantity: orderQuantity,
+            totalPrice: totalPrice,
+            orderDate: orderDate,
+            deliveryDate: deliveryDate,
+            shippingAddress: shippingAddress,
+            billingAddress: billingAddress,
+            paymentMethod: paymentMethod,
+            isGift: isGift,
+            note: note,
+            orderDetails: orderDetails
+        };
+
+            console.log(order);
+            $.ajax({
+                url: "https://localhost:7298/api/KoiOrders/update_koiOrder",
+                type: "POST",
+                processData: false,
+                contentType: "application/json",
+                data: JSON.stringify(order),
+                success: function (result) {
+                    console.log(result);
+                    alert(result.message);
+                    $('#koiOrderModal').modal('hide');
+                    searchData();
+                }
+            })
+            
+        }
+       
 
         let detailCount = 0;
-
+        function getAllCustomer() {
+            $.ajax({
+                url: `https://localhost:7298/api/Users/get-by-role/3`,
+                type: "GET",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    var html = "";
+                    $.each(result.data, function (key,item) {
+                        html += `<option value=${item.id}>${item.firstname} ${item.lastname}</option>`
+                    })
+                    $("#customer_id").html(html)
+                },
+                error: function (xhr, error) {
+                    alert("Error: " + xhr.statusText);
+                }
+            });
+        }
+        function getAllKoiFish(detailCountValue, id = null) {
+            $.ajax({
+                url: `https://localhost:7298/api/KoiFishes`,
+                type: "GET",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    var html = "";
+                    $.each(result.data, function (key, item) {
+                        html += `<option ${item.id == id ? "selected" : "" } value=${item.id}>${item.name}</option>`
+                    })
+                    var newSection = "#koi_fish_id_" + detailCountValue;
+                    console.log(newSection);
+                    $(newSection).html(html)
+                },
+                error: function (xhr, error) {
+                    alert("Error: " + xhr.statusText);
+                }
+            });
+        }
         function addOrderDetail() {
             const detailHtml = `
                                 <div class="order-detail mb-3" id="detail-${detailCount}">
                                     <div class="row">
                                         <div class="col">
                                             <label for="koi_fish_id_${detailCount}" class="form-label">Koi Fish Id</label>
-                                            <input type="text" class="form-control" id="koi_fish_id_${detailCount}" placeholder="Enter Koi Fish Id" />
+                                             <select id="koi_fish_id_${detailCount}"></select>
                                         </div>
                                         <div class="col">
                                             <label for="price_${detailCount}" class="form-label">Price</label>
@@ -99,15 +297,36 @@
                                 </div>
                             `;
             $('#orderDetails').append(detailHtml);
+            getAllKoiFish(detailCount);
+
             detailCount++;
         }
 
         function removeOrderDetail(id) {
             $(`#detail-${id}`).remove();
         }
+        function removeUpdateOrderDetail(key, id) {
+            $.ajax({
+                url: `https://localhost:7298/api/KoiOrders/RemoveOrderDetail/${id}`,
+                type: "DELETE",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    alert("Delete success");
+                    $(`#detail-${key}`).remove();
+                },
+            })
+        }
 
         function saveOrder() {
             const customerId = $('#customer_id').val();
+            const billingAddress = $('#billingAddress').val();
+            const deliveryDate = $('#deliveryDate').val();
+            const isGift = $('#isGift').val();
+            const orderDate = $('#orderDate').val();
+            const paymentMethod = $('#paymentMethod').val();
+            const shippingAddress = $('#shippingAddress').val();
+            const note = $('#note').val();
             const orderDetails = [];
             let totalPrice = 0;
             $('.order-detail').each(function () {
@@ -122,6 +341,13 @@
                 customerId: customerId,
                 quantity: detailCount,
                 totalPrice: totalPrice,
+                orderDate: orderDate,
+                deliveryDate: deliveryDate,
+                shippingAddress: shippingAddress,
+                billingAddress: billingAddress,
+                paymentMethod: paymentMethod,
+                isGift: isGift,
+                note: note,
                 orderDetailList: orderDetails
             };
 
@@ -133,13 +359,9 @@
                 contentType: "application/json",
                 data: JSON.stringify(order),
                 success: function(result) {
-                    if (result.data.resultCode != 0) {
-                        alert(result.data.message);
-                    } else {
-                        alert(result.data.message);
-                        console.log(result.data.payUrl);
-                        window.location.href = result.data.payUrl;
-                    }
+                    console.log(result);
+                        alert(result.message);
+                    $('#koiOrderModal').modal('hide');
                 }
             })
             searchData();
@@ -155,7 +377,6 @@
                 contentType: "application/json;charset=utf-8",
                 dataType: "json",
                 success: function (result) {
-                    console.log(result);
                     var html = "";
                     $.each(result.data.items, function (key, item) {
                         html += '<tr>';
@@ -164,7 +385,17 @@
                         html += '<td>' + item.invoiceId + '</td>';
                         html += '<td>' + item.quantity + '</td>';
                         html += '<td>' + item.totalPrice + '</td>';
+                        html += '<td>' + item.note + '</td>';
+                        html += '<td>' + item.billingAddress + '</td>';
+                        html += '<td>' + item.deliveryDate + '</td>';
+                        html += '<td>' + item.isGift + '</td>';
+                        html += '<td>' + item.orderDate + '</td>';
+                        html += '<td>' + item.paymentMethod +'</td>';
+                        html += '<td>' + item.shippingAddress + '</td>';
+                        html += '<td>' + item.status + '</td>';
                         html += '<td>' + '<a href="/KoiOrders/Details/' + item.id + '">Details</a>' + '</td>';
+                        html += `<td> <button onclick="updateKoiOrder('${item.id}')">Update</button>`;
+                        html += `<td> <button onclick="removeKoiOrder('${item.id}')">Remove</button>`;
                         html += '</tr>';
                     });
                     $('.tblKoiOrders').html(html);
@@ -175,7 +406,18 @@
                 }
             });
         }
-
+        function removeKoiOrder(id) {
+            $.ajax({
+                url: `https://localhost:7298/api/KoiOrders/${id}`,
+                type: "DELETE",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    alert("Delete success");
+                    searchData();
+                },
+            })
+        }
         function createPagination(totalPages, currentPage) {
             let paginationHtml = '';
             for (let i = 1; i <= totalPages; i++) {

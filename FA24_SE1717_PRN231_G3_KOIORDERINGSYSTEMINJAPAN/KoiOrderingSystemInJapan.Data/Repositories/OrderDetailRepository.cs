@@ -20,5 +20,11 @@ namespace KoiOrderingSystemInJapan.Data.Repositories
             _context.OrderDetails.UpdateRange(listOrder);
             _context.SaveChanges();
         }
+
+        public async Task RemoveRange(List<OrderDetail> listOrder)
+        {
+            _context.OrderDetails.RemoveRange(listOrder);
+            _context.SaveChanges();
+        }
     }
 }

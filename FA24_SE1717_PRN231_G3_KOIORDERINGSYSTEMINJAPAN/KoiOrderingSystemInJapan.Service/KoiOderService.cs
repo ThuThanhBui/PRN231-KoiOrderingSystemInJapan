@@ -15,7 +15,8 @@ namespace KoiOrderingSystemInJapan.Service
         Task<IBusinessResult> DeleteById(Guid id);
         Task<IBusinessResult> CreatePayment(RequestPaymentKoiOrderModel koiOrder);
         Task<IBusinessResult> GetByIdWithOrderDetail(Guid id);
-        Task<IBusinessResult> UpdateOrder(RequestUpdateKoiOrderModel model);
+        Task<IBusinessResult> UpdateOrder(KoiOrder model);
+        Task<IBusinessResult> DeleteOrderDetail(Guid id);
         Task<IBusinessResult> SearchKoiOrder(string? customerName, decimal? price, int? quantity, int page, int pageSize);
     }
     public class KoiOrderService : IKoiOrderService
@@ -32,6 +33,8 @@ namespace KoiOrderingSystemInJapan.Service
         {
             try
             {
+                var orderDetails = await _unitOfWork.OrderDetail.GetByOrderId(code);
+                await _unitOfWork.OrderDetail.RemoveRange(orderDetails);
                 var koiOrder = await _unitOfWork.KoiOrder.GetByIdAsync(code);
                 if (koiOrder == null)
                 {
@@ -159,7 +162,16 @@ namespace KoiOrderingSystemInJapan.Service
                         PaymentAmount = koiOrder.TotalPrice,
                         PaymentDate = DateTime.Now
                     },
-                    OrderDetails = orderDetailList
+                    OrderDetails = orderDetailList,
+                    BillingAddress = koiOrder.BillingAddress,
+                    CreatedDate = DateTime.Now,
+                    DeliveryDate = koiOrder.DeliveryDate,
+                    IsGift = koiOrder.IsGift,
+                    Note = koiOrder.Note,
+                    PaymentMethod = koiOrder.PaymentMethod,
+                    ShippingAddress = koiOrder.ShippingAddress,
+                    Status = "Peding",
+                    OrderDate = koiOrder.OrderDate,
                 };
 
                 var koiOrderResult = await _unitOfWork.KoiOrder.CreateAsync(koiOrderEntity);
@@ -167,16 +179,7 @@ namespace KoiOrderingSystemInJapan.Service
                 {
                     return new BusinessResult(Const.FAIL_CREATE_CODE, Const.FAIL_CREATE_MSG, new KoiOrder());
                 }
-                var momorequest = new RequestCreateOrderModel
-                {
-                    Buy_date = DateTime.Now,
-                    OrderId = koiOrderEntity.Id,
-                    OrderType = "KoiOrder",
-                    Price = (decimal)koiOrder.TotalPrice,
-                };
-                var result = await _paymentService.CreatePaymentAsync(momorequest);
-
-                return new BusinessResult(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG, result);
+                return new BusinessResult(Const.SUCCESS_CREATE_CODE, Const.SUCCESS_CREATE_MSG, koiOrderResult);
             }
             catch (Exception ex)
             {
@@ -184,31 +187,46 @@ namespace KoiOrderingSystemInJapan.Service
             }
         }
 
-        public async Task<IBusinessResult> UpdateOrder(RequestUpdateKoiOrderModel model)
+        public async Task<IBusinessResult> UpdateOrder(KoiOrder model)
         {
-            var foundKoiOrder = await this.GetById(model.Id);
-            if (foundKoiOrder.Status == -1)
+            try
             {
-                return new BusinessResult(Const.FAIL_READ_CODE, Const.FAIL_READ_MSG, new KoiOrder());
+                await _unitOfWork.KoiOrder.UpdateAsync(model);
+                return new BusinessResult(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG, model);
             }
-            var updateKoiOrder = (KoiOrder)foundKoiOrder.Data;
-            updateKoiOrder.Note = model.NoteStatus;
-            var updateResult = await this.Save(updateKoiOrder);
-            if (updateResult.Status == -1)
+            catch (Exception ex)
             {
-                return updateResult;
+                return new BusinessResult(Const.ERROR_EXCEPTION, ex.Message);
             }
-            var foundOrderDetails = await _unitOfWork.OrderDetail.GetByOrderId(model.Id);
-
-            List<OrderDetail> orderDetailList = new List<OrderDetail>();
-            foreach (var orderDetail in foundOrderDetails)
-            {
-                orderDetail.Note = model.NoteStatus;
-                orderDetailList.Add(orderDetail);
-            }
-            await _unitOfWork.OrderDetail.UpdateRange(orderDetailList);
-            return new BusinessResult(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG, foundKoiOrder);
+            
+      
         }
+
+        //public async Task<IBusinessResult> UpdateOrder(RequestUpdateKoiOrderModel model)
+        //{
+        //    var foundKoiOrder = await this.GetById(model.Id);
+        //    if (foundKoiOrder.Status == -1)
+        //    {
+        //        return new BusinessResult(Const.FAIL_READ_CODE, Const.FAIL_READ_MSG, new KoiOrder());
+        //    }
+        //    var updateKoiOrder = (KoiOrder)foundKoiOrder.Data;
+        //    updateKoiOrder.Note = model.NoteStatus;
+        //    var updateResult = await this.Save(updateKoiOrder);
+        //    if (updateResult.Status == -1)
+        //    {
+        //        return updateResult;
+        //    }
+        //    var foundOrderDetails = await _unitOfWork.OrderDetail.GetByOrderId(model.Id);
+
+        //    List<OrderDetail> orderDetailList = new List<OrderDetail>();
+        //    foreach (var orderDetail in foundOrderDetails)
+        //    {
+        //        orderDetail.Note = model.NoteStatus;
+        //        orderDetailList.Add(orderDetail);
+        //    }
+        //    await _unitOfWork.OrderDetail.UpdateRange(orderDetailList);
+        //    return new BusinessResult(Const.SUCCESS_UPDATE_CODE, Const.SUCCESS_UPDATE_MSG, foundKoiOrder);
+        //}
 
         public async Task<IBusinessResult> GetByIdWithOrderDetail(Guid id)
         {
@@ -221,6 +239,13 @@ namespace KoiOrderingSystemInJapan.Service
             koiOrder.OrderDetails = orderDetail;
 
             return new BusinessResult(Const.SUCCESS_READ_CODE, Const.SUCCESS_READ_MSG, koiOrder);
+        }
+
+        public async Task<IBusinessResult> DeleteOrderDetail(Guid id)
+        {
+            var orderDetail = await _unitOfWork.OrderDetail.GetByIdAsync(id);
+            await _unitOfWork.OrderDetail.RemoveAsync(orderDetail);
+            return new BusinessResult(Const.SUCCESS_DELETE_CODE, Const.SUCCESS_DELETE_MSG, orderDetail);
         }
     }
 }
