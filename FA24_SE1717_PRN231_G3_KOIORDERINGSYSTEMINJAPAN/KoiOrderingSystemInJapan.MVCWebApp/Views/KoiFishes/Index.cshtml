@@ -102,7 +102,9 @@
                 data: JSON.stringify(data),
                 success: function (result) {
                     var html = "";
+                   
                     $.each(result.data.list, function (key, item) {
+                        var gender = item.gender == 0 ? "Male" : item.gender == 1 ? "Female" : "Order";
                         html += '<tr>';
                         html += '<th scope="row">' + (key + 1 + (currentPage - 1) * 10) + '</th>' // Tính số thứ tự
                         html += '<td>' + item.name + '</td>';
@@ -111,7 +113,7 @@
                         html += '<td>' + item.dob + '</td>';
                         html += '<td>' + item.description + '</td>';
                         html += '<td>' + item.origin + '</td>';
-                        html += '<td>' + item.gender + '</td>';
+                        html += '<td>' + gender + '</td>';
                         html += '<td scope="row">';
                         html += '<a href="/KoiFishes/Edit/' + item.id + '" class="me-1" title="Edit">';
                         html += '<i class="bi bi-pencil-fill" style="color: black;"></i></a>'; // Icon cho Edit, màu đen

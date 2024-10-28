@@ -4,7 +4,71 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<div>
+    <h1 class="text-center mb-4">Koi Fish Details</h1>
+    <hr />
+    <div class="tblFish"></div>
+</div>
+<div>
+    <a class ="btn btn-primary" asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a class="btn btn-secondary" asp-action="Index">Back to List</a>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            getData();
+        })
+        function getData() {
+            $.ajax({
+                url: 'https://localhost:7298/api/KoiFishes/' + encodeURIComponent('@Model?.Id'),
+                type: "GET",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (fish) {
+                    console.log(fish);
+                    var html = '';
+                    var gender = fish.data.gender == 0 ? "Male" : fish.data.gender == 1 ? "Female" : "Other";
+                    html += '<dl class="row">';
+                    html += '<dt class="col-sm-3 font-weight-bold">Name:</dt>';
+                    html += '<dd class="col-sm-9">' + fish.data.name + '</dd>';
+                    html += '<dt class="col-sm-3 font-weight-bold">Day of Birth:</dt>';
+                    html += '<dd class="col-sm-9">' + fish.data.dob + '</dd>';
+                    html += '<dt class="col-sm-3 font-weight-bold">Price:</dt>';
+                    html += '<dd class="col-sm-9">' + fish.data.price + '</dd>';
+                    html += '<dt class="col-sm-3 font-weight-bold">Description:</dt>';
+                    html += '<dd class="col-sm-9">' + fish.data.description + '</dd>';
+                    html += '<dt class="col-sm-3 font-weight-bold">Origin:</dt>';
+                    html += '<dd class="col-sm-9">' + fish.data.origin + '</dd>';
+                    html += '<dt class="col-sm-3 font-weight-bold">Status:</dt>';
+                    html += '<dd class="col-sm-9">' + fish.data.status + '</dd>';
+                    html += '<dt class="col-sm-3 font-weight-bold">Date Sold:</dt>';
+                    html += '<dd class="col-sm-9">' + fish.data.dateSold + '</dd>';
+                    html += '<dt class="col-sm-3 font-weight-bold">Gender:</dt>';
+                    html += '<dd class="col-sm-9">' + gender + '</dd>';
+                    html += '<dt class="col-sm-3 font-weight-bold">Created By:</dt>';
+                    html += '<dd class="col-sm-9">' + fish.data.createdBy + '</dd>';
+                    html += '<dt class="col-sm-3 font-weight-bold">Created Date:</dt>';
+                    html += '<dd class="col-sm-9">' + fish.data.createdDate + '</dd>';
+                    html += '<dt class="col-sm-3 font-weight-bold">Updated By:</dt>';
+                    html += '<dd class="col-sm-9">' + fish.data.updatedBy + '</dd>';
+                    html += '<dt class="col-sm-3 font-weight-bold">Updated Date:</dt>';
+                    html += '<dd class="col-sm-9">' + fish.data.updatedDate + '</dd>';
+                    html += '<dt class="col-sm-3 font-weight-bold">Is Deleted:</dt>';
+                    html += '<dd class="col-sm-9">' + fish.data.isDeleted + '</dd>';
+                    html += '<dt class="col-sm-3 font-weight-bold">Note:</dt>';
+                    html += '<dd class="col-sm-9">' + fish.data.note + '</dd>';
+                    html += '<dt class="col-sm-3 font-weight-bold">Category:</dt>';
+                    html += '<dd class="col-sm-9">' + fish.data.category.name + '</dd>';
+                    html += '</dl>';
+                    
+                    $('.tblFish').html(html);
+                }
+            })
+        }
+    </script>
+}
+@* <h1>Details</h1>
 
 <div>
     <h4>KoiFish</h4>
@@ -111,4 +175,4 @@
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
-</div>
+</div> *@
